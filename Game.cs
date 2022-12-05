@@ -31,6 +31,9 @@ namespace Celestia
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            // Allow game window to be resized.
+            Window.AllowUserResizing = true;
         }
 
         protected override void Initialize()
