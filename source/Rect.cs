@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 
 namespace Celestia {
     public class Rect {
+        public static Rect Zero = new Rect(0f, 0f, 0f, 0f);
+        public static Rect One = new Rect(1f, 1f, 1f, 1f);
+
         public float X { get; private set; }
         public float Y { get; private set; }
         public float Width { get; private set; }
@@ -29,7 +32,7 @@ namespace Celestia {
         }
 
         public override string ToString() {
-            return $"{{{X},{Y},{Width},{Height}}}";
+            return $"{X.ToString("0.00")} {Y.ToString("0.00")} {Width.ToString("0.00")} {Height.ToString("0.00")}";
         }
 
         public virtual Rectangle ToXnaRectangle()
@@ -45,6 +48,10 @@ namespace Celestia {
         public virtual Vector2 GetCenter()
         {
             return new Vector2(X + (Width / 2f), Y + (Height / 2f));
+        }
+
+        public virtual Vector2 GetSize() {
+            return new Vector2(Width, Height);
         }
     }
 }
