@@ -1,3 +1,3 @@
-# Celestia
+![Celestia Banner](/tree/readme-update/img/banner.jpg)
 
-![Celestia Banner](https://github.com/leafal-io/celestia/blob/readme-update/img/banner.jpg?raw=true)
+This repository contains the source code for Celestia.
