@@ -51,9 +51,11 @@ namespace Celestia
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            Input.Update();
+
             // If either mouse button is clicked.
-            if (((int) Mouse.GetState().LeftButton) + ((int) Mouse.GetState().RightButton) > 0) {
-                activeMenus[0].ResolveMouseClick(Mouse.GetState().Position, Mouse.GetState().LeftButton, Mouse.GetState().RightButton);
+            if (Input.MouseButtons != MouseButtonState.None) {
+                activeMenus[0].ResolveMouseClick(Input.MousePosition, Input.MouseButtons);
             }
 
             // TODO: Add your update logic here
