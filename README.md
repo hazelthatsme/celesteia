@@ -1,3 +1,4 @@
-# Celestia
+![Celestia Banner](/img/banner.jpg)
 
-**Please only develop on the `development` branch!**
+# Celestia
+This repository contains the source code for Celestia.
