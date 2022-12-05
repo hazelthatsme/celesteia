@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Celestia.UI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -6,8 +8,20 @@ namespace Celestia
 {
     public class Game : Microsoft.Xna.Framework.Game
     {
+        /* BEGINNING OF EXPERIMENTAL INSTANCE-BASED CONTROLS. */
+        /* Maybe do this a little more neatly? */
+        private static Game instance;
+
+        public static GameWindow GetGameWindow() { return instance.Window; }
+
+        public static SpriteBatch GetSpriteBatch() { return instance._spriteBatch; }
+
+        /* END OF EXPERIMENTAL STUFF. */
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private Menu[] activeMenus;
 
         public Game()
         {
@@ -18,7 +32,9 @@ namespace Celestia
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            instance = this;
+
+            activeMenus = new Menu[16];
 
             base.Initialize();
         }
@@ -27,13 +43,18 @@ namespace Celestia
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            activeMenus[0] = new PauseMenu();
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            // If either mouse button is clicked.
+            if (((int) Mouse.GetState().LeftButton) + ((int) Mouse.GetState().RightButton) > 0) {
+                activeMenus[0].ResolveMouseClick(Mouse.GetState().Position, Mouse.GetState().LeftButton, Mouse.GetState().RightButton);
+            }
 
             // TODO: Add your update logic here
 
@@ -44,7 +65,12 @@ namespace Celestia
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+            for (int index = 0; index < activeMenus.Length; index++)
+                if (activeMenus[index]) activeMenus[index].Draw();
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
