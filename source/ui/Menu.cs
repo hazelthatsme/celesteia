@@ -1,29 +1,26 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Celestia.UI {
-    public abstract class Menu {
-        public List<Button> buttons = new List<Button>();
+    public class Menu {
+        public List<IElement> elements = new List<IElement>();
 
         public virtual void ResolveMouseClick(Point position, MouseButtonState mouseButtonState) {
-            // Loop through all the buttons.
-            for (int index = 0; index < buttons.Count; index++)
-                // Check if the button's rectangle envelopes/contains the mouse position.
-                if (buttons[index].rect.Contains(position)) {
-                    // Click the button.
-                    buttons[index].Click(position);
-                    continue;
+            elements.FindAll(x => x.GetType() == typeof(Button)).ForEach(element => {
+                Button button = element as Button;
+
+                if (button.GetRect().Contains(position)) {
+                    button.Click(position);
                 }
+            });
         }
 
         // Draw all elements.
-        public virtual void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont) {
-            for (int index = 0; index < buttons.Count; index++) {
-                buttons[index].Draw(spriteBatch, spriteFont);
-            }
+        public virtual void Draw(SpriteBatch spriteBatch) {
+            elements.ForEach(element => {
+                element.Draw(spriteBatch);
+            });
         }
 
         // If the menu is referred to as a boolean, return whether it is non-null (true) or null (false).

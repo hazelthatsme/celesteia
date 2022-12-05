@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using Celestia.Screens;
 using Celestia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,10 +23,9 @@ namespace Celestia
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private SpriteFont arialSpriteFont;
-        private SpriteFont arialBoldSpriteFont;
-
         private Menu[] activeMenus;
+
+        private IScreen _screen;
 
         public Game()
         {
@@ -40,7 +41,15 @@ namespace Celestia
         {
             instance = this;
 
+            _screen = new SplashScreen(this);
             activeMenus = new Menu[16];
+
+            Window.Title = "Celestia";
+
+            _graphics.PreferredBackBufferWidth = _graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = _graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height;
+            _graphics.IsFullScreen = true;
+            _graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -49,25 +58,22 @@ namespace Celestia
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            activeMenus[0] = new PauseMenu();
+            // Load the splash screen.
+            LoadScreen(new SplashScreen(this));
+        }
 
-            arialSpriteFont = Content.Load<SpriteFont>("Arial");
-            arialBoldSpriteFont = Content.Load<SpriteFont>("ArialBold");
+        public void LoadScreen(IScreen screen) {
+            _screen?.Dispose();
+
+            _screen = screen;
+            _screen.Load(Content);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             Input.Update();
 
-            // If either mouse button is clicked.
-            if (Input.MouseButtons != MouseButtonState.None) {
-                activeMenus[0].ResolveMouseClick(Input.MousePosition, Input.MouseButtons);
-            }
-
-            // TODO: Add your update logic here
+            _screen.Update((float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f));
 
             base.Update(gameTime);
         }
@@ -76,10 +82,10 @@ namespace Celestia
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
-            for (int index = 0; index < activeMenus.Length; index++)
-                activeMenus[index]?.Draw(_spriteBatch, arialBoldSpriteFont);
+            // Draw the screen's content.
+            _screen.Draw(_spriteBatch);
 
             _spriteBatch.End();
 

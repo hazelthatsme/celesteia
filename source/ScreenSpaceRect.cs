@@ -48,5 +48,12 @@ namespace Celestia {
                 (float) Math.Floor(GetAbsoluteY() + (GetAbsoluteHeight() / 2f))
             );
         }
+
+        public override Vector2 GetSize() {
+            return new Vector2(
+                GetAbsoluteWidth(),
+                GetAbsoluteHeight()
+            );
+        }
     }
 }
