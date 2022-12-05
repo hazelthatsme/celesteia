@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Celestia.Extra.Discord;
 using Celestia.Screens;
 using Celestia.UI;
 using Microsoft.Xna.Framework;
@@ -37,6 +38,9 @@ namespace Celestia
         {
             _graphics = new GraphicsDeviceManager(this);
             _window = Window;
+
+            //DiscordControl.Init("1049462556806365184");
+
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
