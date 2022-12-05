@@ -14,8 +14,6 @@ namespace Celestia {
             float screenSpaceX = point.X / (float) Game.GetGameWindow().ClientBounds.Width;
             float screenSpaceY = point.Y / (float) Game.GetGameWindow().ClientBounds.Height;
 
-            Debug.WriteLine(screenSpaceX + ", " + screenSpaceY);
-
             return (
                 screenSpaceX >= this.X && 
                 screenSpaceY >= this.Y && 
@@ -28,18 +26,26 @@ namespace Celestia {
             return Contains(new Point(x, y));
         }
 
+        public int GetAbsoluteX() { return (int) Math.Floor(X * Game.GetGameWindow().ClientBounds.Width); }
+        public int GetAbsoluteY() { return (int) Math.Floor(Y * Game.GetGameWindow().ClientBounds.Height); }
+        public int GetAbsoluteWidth() { return (int) Math.Floor(Width * Game.GetGameWindow().ClientBounds.Width); }
+        public int GetAbsoluteHeight() { return (int) Math.Floor(Height * Game.GetGameWindow().ClientBounds.Height); }
+
         public override Rectangle ToXnaRectangle()
         {
-            int absoluteX = (int) Math.Floor(X * Game.GetGameWindow().ClientBounds.Width);
-            int absoluteY = (int) Math.Floor(Y * Game.GetGameWindow().ClientBounds.Height);
-            int absoluteWidth = (int) Math.Floor(Width * Game.GetGameWindow().ClientBounds.Width);
-            int absoluteHeight = (int) Math.Floor(Height * Game.GetGameWindow().ClientBounds.Height);
-
             return new Rectangle(
-                absoluteX,
-                absoluteY,
-                absoluteWidth,
-                absoluteHeight
+                GetAbsoluteX(),
+                GetAbsoluteY(),
+                GetAbsoluteWidth(),
+                GetAbsoluteHeight()
+            );
+        }
+
+        public override Vector2 GetCenter()
+        {
+            return new Vector2(
+                (float) Math.Floor(GetAbsoluteX() + (GetAbsoluteWidth() / 2f)),
+                (float) Math.Floor(GetAbsoluteY() + (GetAbsoluteHeight() / 2f))
             );
         }
     }

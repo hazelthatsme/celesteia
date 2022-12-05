@@ -21,6 +21,9 @@ namespace Celestia
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private SpriteFont arialSpriteFont;
+        private SpriteFont arialBoldSpriteFont;
+
         private Menu[] activeMenus;
 
         public Game()
@@ -44,6 +47,9 @@ namespace Celestia
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             activeMenus[0] = new PauseMenu();
+
+            arialSpriteFont = Content.Load<SpriteFont>("Arial");
+            arialBoldSpriteFont = Content.Load<SpriteFont>("ArialBold");
         }
 
         protected override void Update(GameTime gameTime)
@@ -51,9 +57,11 @@ namespace Celestia
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            Input.Update();
+
             // If either mouse button is clicked.
-            if (((int) Mouse.GetState().LeftButton) + ((int) Mouse.GetState().RightButton) > 0) {
-                activeMenus[0].ResolveMouseClick(Mouse.GetState().Position, Mouse.GetState().LeftButton, Mouse.GetState().RightButton);
+            if (Input.MouseButtons != MouseButtonState.None) {
+                activeMenus[0].ResolveMouseClick(Input.MousePosition, Input.MouseButtons);
             }
 
             // TODO: Add your update logic here
@@ -65,10 +73,10 @@ namespace Celestia
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
             for (int index = 0; index < activeMenus.Length; index++)
-                if (activeMenus[index]) activeMenus[index].Draw();
+                activeMenus[index]?.Draw(_spriteBatch, arialBoldSpriteFont);
 
             _spriteBatch.End();
 

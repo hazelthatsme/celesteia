@@ -8,7 +8,7 @@ namespace Celestia.UI {
     public abstract class Menu {
         public List<Button> buttons = new List<Button>();
 
-        public virtual void ResolveMouseClick(Point position, ButtonState leftButton, ButtonState rightButton) {
+        public virtual void ResolveMouseClick(Point position, MouseButtonState mouseButtonState) {
             // Loop through all the buttons.
             for (int index = 0; index < buttons.Count; index++)
                 // Check if the button's rectangle envelopes/contains the mouse position.
@@ -19,12 +19,14 @@ namespace Celestia.UI {
                 }
         }
 
-        public virtual void Draw() {
+        // Draw all elements.
+        public virtual void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont) {
             for (int index = 0; index < buttons.Count; index++) {
-                Game.GetSpriteBatch().Draw(buttons[index].GetTexture(), buttons[index].rect.ToXnaRectangle(), Color.White);
+                buttons[index].Draw(spriteBatch, spriteFont);
             }
         }
 
+        // If the menu is referred to as a boolean, return whether it is non-null (true) or null (false).
         public static implicit operator bool(Menu menu)
         {
             return !object.ReferenceEquals(menu, null);

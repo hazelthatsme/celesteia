@@ -41,5 +41,10 @@ namespace Celestia {
                 (int) Math.Floor(Height)
             );
         }
+
+        public virtual Vector2 GetCenter()
+        {
+            return new Vector2(X + (Width / 2f), Y + (Height / 2f));
+        }
     }
 }
