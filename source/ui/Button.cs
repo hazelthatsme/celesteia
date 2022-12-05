@@ -33,7 +33,7 @@ namespace Celestia.UI {
         }
 
         public void Click(Point position) {
-            onClick.Invoke(position);
+            onClick?.Invoke(position);
         }
     }
 }

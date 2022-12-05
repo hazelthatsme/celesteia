@@ -68,7 +68,7 @@ namespace Celestia
             _spriteBatch.Begin();
 
             for (int index = 0; index < activeMenus.Length; index++)
-                if (activeMenus[index]) activeMenus[index].Draw();
+                activeMenus[index]?.Draw();
 
             _spriteBatch.End();
 
