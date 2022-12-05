@@ -21,6 +21,9 @@ namespace Celestia
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private SpriteFont arialSpriteFont;
+        private SpriteFont arialBoldSpriteFont;
+
         private Menu[] activeMenus;
 
         public Game()
@@ -44,6 +47,9 @@ namespace Celestia
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             activeMenus[0] = new PauseMenu();
+
+            arialSpriteFont = Content.Load<SpriteFont>("Arial");
+            arialBoldSpriteFont = Content.Load<SpriteFont>("ArialBold");
         }
 
         protected override void Update(GameTime gameTime)
@@ -67,10 +73,10 @@ namespace Celestia
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
             for (int index = 0; index < activeMenus.Length; index++)
-                activeMenus[index]?.Draw();
+                activeMenus[index]?.Draw(_spriteBatch, arialBoldSpriteFont);
 
             _spriteBatch.End();
 

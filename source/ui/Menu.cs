@@ -20,9 +20,9 @@ namespace Celestia.UI {
         }
 
         // Draw all elements.
-        public virtual void Draw() {
+        public virtual void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont) {
             for (int index = 0; index < buttons.Count; index++) {
-                Game.GetSpriteBatch().Draw(buttons[index].GetTexture(), buttons[index].rect.ToXnaRectangle(), Color.White);
+                buttons[index].Draw(spriteBatch, spriteFont);
             }
         }
 

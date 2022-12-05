@@ -20,3 +20,10 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+#begin ArialBold.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:ArialBold.spritefont
+
