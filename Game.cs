@@ -66,8 +66,6 @@ namespace Celestia
 
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            Debug.WriteLine(_graphics.PreferredBackBufferWidth);
-            Debug.WriteLine(_graphics.PreferredBackBufferHeight);
             _graphics.IsFullScreen = true;
 
             ApplyHardwareMode();
@@ -90,7 +88,7 @@ namespace Celestia
             Window.Title = "Celestia";
 
             //_graphics.PreferMultiSampling = false;
-            GoFullScreen();
+            if (!_isFullScreen) ToggleFullScreen();
             _graphics.ApplyChanges();
 
             base.Initialize();
