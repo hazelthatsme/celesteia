@@ -27,9 +27,19 @@ namespace Celestia.Screens {
             float heightToWidthRatio = leafalLogo.Height / (float) leafalLogo.Width;
             float verticalOffset = 0.5f - (heightToWidthRatio / 2f);
 
-            backgroundImage = new Image(new ScreenSpaceRect(0f, 0f, 1f, 1f), null, Color.Black, 0f);
+            backgroundImage = new Image(new Rect(
+                new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
+                new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
+                new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
+                new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
+            ), null, Color.Black, 0f);
 
-            logoRect = UpdateLogoRect();
+            logoRect = new Rect(
+                new ScreenSpaceUnit(0.25f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
+                new ScreenSpaceUnit(0.5f - (heightToWidthRatio / 2f), ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
+                new ScreenSpaceUnit(0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
+                new ScreenSpaceUnit(heightToWidthRatio * 0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal)
+            );
             logoElement = new Image(logoRect, leafalLogo, Color.White, 1f);
         }
         
@@ -42,8 +52,6 @@ namespace Celestia.Screens {
         private Color color = Color.White;
 
         public void Update(float deltaTime) {
-            logoElement.SetRect(UpdateLogoRect());
-
             timeElapsed += deltaTime;
             float alpha = 1f;
             if (timeElapsed <= fadeInTime) alpha = Math.Min(timeElapsed / fadeInTime, 1f);
@@ -55,19 +63,6 @@ namespace Celestia.Screens {
             if (progress >= 1f) {
                 gameRef.LoadScreen(new MainMenuScreen(gameRef));
             }
-        }
-
-        private Rect UpdateLogoRect() {
-            float heightToWidthRatio = (float) leafalLogo.Height / (float) leafalLogo.Width;
-            float width = 0.5f * Game.GetGameWindow().ClientBounds.Width;
-            float height = heightToWidthRatio * width;
-
-            return new Rect(
-                0.25f * Game.GetGameWindow().ClientBounds.Width,
-                (0.5f - (heightToWidthRatio / 2f)) * Game.GetGameWindow().ClientBounds.Height,
-                width,
-                height
-            );
         }
 
         public void Draw(SpriteBatch spriteBatch)

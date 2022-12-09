@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Celestia.UI {
     public class Button : IElement {
-        private Rect rect = Rect.Zero;
+        private Rect rect = Rect.AbsoluteZero;
 
         public delegate void OnClick(Point position);
         private OnClick onClick = null;
@@ -44,16 +44,16 @@ namespace Celestia.UI {
             Vector2 origin = 0.5f * size;
 
             if (textAlignment.HasFlag(TextAlignment.Left))
-                origin.X += rect.Width / 2f - size.X / 2f;
+                origin.X += rect.Width.Resolve() / 2f - size.X / 2f;
 
             if (textAlignment.HasFlag(TextAlignment.Right))
-                origin.X -= rect.Width / 2f - size.X / 2f;
+                origin.X -= rect.Width.Resolve() / 2f - size.X / 2f;
 
             if (textAlignment.HasFlag(TextAlignment.Top))
-                origin.Y += rect.Height / 2f - size.Y / 2f;
+                origin.Y += rect.Height.Resolve() / 2f - size.Y / 2f;
 
             if (textAlignment.HasFlag(TextAlignment.Bottom))
-                origin.Y -= rect.Height / 2f - size.Y / 2f;
+                origin.Y -= rect.Height.Resolve() / 2f - size.Y / 2f;
 
             spriteBatch.DrawString(spriteFont, text, rect.GetCenter(), Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
         }

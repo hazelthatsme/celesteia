@@ -19,7 +19,13 @@ namespace Celestia.Screens {
         public void Load(ContentManager contentManager)
         {
             arialBold = contentManager.Load<SpriteFont>("ArialBold");
-            this.mainMenu.elements.Add(new Button(new Rect(10f, 10f, 200f, 50f), (position) => { gameRef.Exit(); }, null, "Quit Game", TextAlignment.Center, arialBold));
+            this.mainMenu.elements.Add(new Button(new Rect(
+                AbsoluteUnit.WithValue(10f),
+                AbsoluteUnit.WithValue(10f),
+                AbsoluteUnit.WithValue(200f),
+                AbsoluteUnit.WithValue(50f)
+            ),
+            (position) => { gameRef.Exit(); }, null, "Quit Game", TextAlignment.Center, arialBold));
             return;
         }
 
