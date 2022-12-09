@@ -4,6 +4,7 @@ using Celestia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Celestia.Screens {
     public class SplashScreen : IScreen {
@@ -53,7 +54,7 @@ namespace Celestia.Screens {
         private Color color = Color.White;
 
         public void Update(float deltaTime) {
-            if (progress >= 1f || Input.GetAnyKey()) {
+            if (progress >= 1f || (Input.GetAnyKey() && !Input.GetKeyHeld(Keys.F11))) {
                 gameRef.LoadScreen(new MainMenuScreen(gameRef));
                 return;
             }
