@@ -89,8 +89,8 @@ namespace Celestia
 
             Window.Title = "Celestia";
 
-            _graphics.PreferMultiSampling = false;
-            _graphics.IsFullScreen = false;
+            //_graphics.PreferMultiSampling = false;
+            GoFullScreen();
             _graphics.ApplyChanges();
 
             base.Initialize();
