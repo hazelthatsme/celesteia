@@ -22,6 +22,12 @@ namespace Celestia
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private GameWindow _window;
+
+        private bool _isFullScreen = false;
+        private bool _isBorderless = true;
+        private int _windowedWidth = 0;
+        private int _windowedHeight = 0;
 
         private Menu[] activeMenus;
 
@@ -30,11 +36,48 @@ namespace Celestia
         public Game()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _window = Window;
+
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
             // Allow game window to be resized.
             Window.AllowUserResizing = true;
+        }
+
+        public void ToggleFullScreen() {
+            _isFullScreen = !_isFullScreen;
+            ApplyFullscreenChange();
+        }
+
+        public void ApplyFullscreenChange() {
+            if (_isFullScreen) GoFullScreen();
+            else LeaveFullScreen();
+        }
+
+        private void ApplyHardwareMode() {
+            _graphics.HardwareModeSwitch = !_isBorderless;
+            _graphics.ApplyChanges();
+        }
+
+        private void GoFullScreen() {
+            _windowedWidth = Window.ClientBounds.Width;
+            _windowedHeight = Window.ClientBounds.Height;
+
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            Debug.WriteLine(_graphics.PreferredBackBufferWidth);
+            Debug.WriteLine(_graphics.PreferredBackBufferHeight);
+            _graphics.IsFullScreen = true;
+
+            ApplyHardwareMode();
+        }
+
+        private void LeaveFullScreen() {
+            _graphics.PreferredBackBufferWidth = _windowedWidth;
+            _graphics.PreferredBackBufferHeight = _windowedHeight;
+            _graphics.IsFullScreen = false;
+            _graphics.ApplyChanges();
         }
 
         protected override void Initialize()
@@ -46,9 +89,8 @@ namespace Celestia
 
             Window.Title = "Celestia";
 
-            _graphics.PreferredBackBufferWidth = _graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = _graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height;
-            _graphics.IsFullScreen = true;
+            _graphics.PreferMultiSampling = false;
+            _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
 
             base.Initialize();
@@ -72,6 +114,8 @@ namespace Celestia
         protected override void Update(GameTime gameTime)
         {
             Input.Update();
+
+            if (Input.GetKeyDown(Keys.F11)) ToggleFullScreen();
 
             _screen.Update((float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f));
 
