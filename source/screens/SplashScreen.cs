@@ -15,6 +15,8 @@ namespace Celestia.Screens {
         Image logoElement;
         Rect logoRect;
 
+        private float logoRatio;
+
         public SplashScreen(Game gameRef) {
             this.gameRef = gameRef;
         }
@@ -24,8 +26,7 @@ namespace Celestia.Screens {
             arialBold = contentManager.Load<SpriteFont>("ArialBold");
             leafalLogo = contentManager.Load<Texture2D>("branding/leafal/TextLogo");
 
-            float heightToWidthRatio = leafalLogo.Height / (float) leafalLogo.Width;
-            float verticalOffset = 0.5f - (heightToWidthRatio / 2f);
+            logoRatio = leafalLogo.Height / (float) leafalLogo.Width;
 
             backgroundImage = new Image(new Rect(
                 new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
@@ -36,9 +37,9 @@ namespace Celestia.Screens {
 
             logoRect = new Rect(
                 new ScreenSpaceUnit(0.25f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
-                new ScreenSpaceUnit(0.5f - (heightToWidthRatio / 2f), ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
+                new ScreenSpaceUnit(0.5f - (logoRatio / 2f), ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
                 new ScreenSpaceUnit(0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
-                new ScreenSpaceUnit(heightToWidthRatio * 0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal)
+                new ScreenSpaceUnit(logoRatio * 0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal)
             );
             logoElement = new Image(logoRect, leafalLogo, Color.White, 1f);
         }
@@ -52,6 +53,12 @@ namespace Celestia.Screens {
         private Color color = Color.White;
 
         public void Update(float deltaTime) {
+            if (progress >= 1f || Input.GetAnyKey()) {
+                gameRef.LoadScreen(new MainMenuScreen(gameRef));
+                return;
+            }
+
+
             timeElapsed += deltaTime;
             float alpha = 1f;
             if (timeElapsed <= fadeInTime) alpha = Math.Min(timeElapsed / fadeInTime, 1f);
@@ -60,9 +67,19 @@ namespace Celestia.Screens {
             color.A = (byte) ((int) (alpha * 255));
 
             progress = timeElapsed / (duration + endTimeout);
-            if (progress >= 1f) {
-                gameRef.LoadScreen(new MainMenuScreen(gameRef));
-            }
+            UpdateLogoRect(progress);
+        }
+
+        private float growFactor = 0f;
+        private void UpdateLogoRect(float progress) {
+            Rect r = logoElement.GetRect();
+
+            r.X.SetValue(0.25f - (progress * (growFactor / 2f)));
+            r.Y.SetValue(0.5f - (logoRatio / 2f) - ((logoRatio / 2f) * progress * (growFactor / 2f)));
+            r.Width.SetValue(0.5f + (progress * growFactor));
+            r.Height.SetValue(0.5f * logoRatio + ((progress * growFactor * logoRatio)));
+
+            logoElement.SetRect(r);
         }
 
         public void Draw(SpriteBatch spriteBatch)

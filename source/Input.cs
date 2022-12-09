@@ -16,6 +16,10 @@ namespace Celestia {
             UpdateKeyboard();
         }
 
+        public static bool GetAnyKey() {
+            return currentKeyState.GetPressedKeyCount() > 0;
+        }
+
         public static bool GetKeyDown(Keys key) {
             return currentKeyState.IsKeyDown(key) && !previousKeyState.IsKeyDown(key);
         }
