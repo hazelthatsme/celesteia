@@ -39,3 +39,15 @@
 /processorParam:TextureFormat=Color
 /build:branding/leafal/leafal-text-logo.png;branding/leafal/TextLogo.png
 
+#begin celestia/title-rebrand-borders.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:celestia/title-rebrand-borders.png;celestia/logo.png
+

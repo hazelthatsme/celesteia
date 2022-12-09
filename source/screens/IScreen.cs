@@ -9,5 +9,7 @@ namespace Celestia.Screens {
         void Update(float deltaTime);
 
         void Draw(SpriteBatch spriteBatch);
+
+        SamplerState GetSamplerState();
     }
 }

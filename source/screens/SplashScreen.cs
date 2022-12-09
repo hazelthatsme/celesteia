@@ -54,7 +54,7 @@ namespace Celestia.Screens {
         private Color color = Color.White;
 
         public void Update(float deltaTime) {
-            if (progress >= 1f || (Input.GetAnyKey() && !Input.GetKeyHeld(Keys.F11))) {
+            if (progress >= 1f || ((Input.GetAnyKey() || Input.GetAnyButton()) && !Input.GetKeyHeld(Keys.F11))) {
                 gameRef.LoadScreen(new MainMenuScreen(gameRef));
                 return;
             }
@@ -89,6 +89,11 @@ namespace Celestia.Screens {
             
             logoElement.color = color;
             logoElement.Draw(spriteBatch);
+        }
+
+        public SamplerState GetSamplerState()
+        {
+            return SamplerState.LinearClamp;
         }
 
         public void Dispose()

@@ -82,6 +82,9 @@ namespace Celestia
         {
             instance = this;
 
+            this.IsFixedTimeStep = false;
+            this._graphics.SynchronizeWithVerticalRetrace = false;
+
             _screen = new SplashScreen(this);
             activeMenus = new Menu[16];
 
@@ -103,6 +106,7 @@ namespace Celestia
         }
 
         public void LoadScreen(IScreen screen) {
+            Content.Unload();
             _screen?.Dispose();
 
             _screen = screen;
@@ -124,7 +128,7 @@ namespace Celestia
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, _screen.GetSamplerState());
 
             // Draw the screen's content.
             _screen.Draw(_spriteBatch);
