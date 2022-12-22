@@ -22,6 +22,8 @@ namespace Celestia
 
         /* END OF EXPERIMENTAL STUFF. */
 
+        private double maximumFramerate = 280;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private GameWindow _window;
@@ -91,7 +93,11 @@ namespace Celestia
         {
             instance = this;
 
-            this.IsFixedTimeStep = false;
+            // Disable slowdown on window focus loss.
+            InactiveSleepTime = new TimeSpan(0);
+            TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
+
+            this.IsFixedTimeStep = true;
             this._graphics.SynchronizeWithVerticalRetrace = true;
 
             _screen = new SplashScreen(this);
@@ -99,9 +105,6 @@ namespace Celestia
 
             Window.Title = "Celestia";
 
-            //_graphics.PreferMultiSampling = false;
-            // Disable slowdown on window focus loss.
-            InactiveSleepTime = new TimeSpan(0);
             _graphics.ApplyChanges();
 
             Input.Load();
