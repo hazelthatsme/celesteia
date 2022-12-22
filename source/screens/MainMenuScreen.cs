@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using Celestia.GameInput;
 using Celestia.UI;
+using Celestia.GUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,14 +10,14 @@ namespace Celestia.Screens {
     public class MainMenuScreen : IScreen
     {
         private Game gameRef;
-        private Menu mainMenu;
+        private GUI mainMenu;
         private Texture2D logo;
         private SpriteFont arialBold;
 
         public MainMenuScreen(Game gameRef) {
             this.gameRef = gameRef;
 
-            this.mainMenu = new Menu();
+            this.mainMenu = new GUI();
         }
 
         public void Load(ContentManager contentManager)
@@ -25,6 +27,7 @@ namespace Celestia.Screens {
 
             float logoRatio = logo.Height / (float) logo.Width;
             
+            // Todo: Make custom MainMenu GUI.
             this.mainMenu.elements.Add(new Image(new Rect(
                 new ScreenSpaceUnit(.3f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
                 new ScreenSpaceUnit(.1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
@@ -58,8 +61,8 @@ namespace Celestia.Screens {
 
         public void Update(float deltaTime)
         {
-            if (!Input.MouseButtons.Equals(MouseButtonState.None)) {
-                this.mainMenu.ResolveMouseClick(Input.MousePosition, Input.MouseButtons);
+            if (Input.Mouse.GetMouseUp(MouseButtons.Left)) {
+                this.mainMenu.ResolveMouseClick(Input.Mouse.GetPosition(), MouseButtons.Left);
             }
             return;
         }

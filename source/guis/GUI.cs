@@ -1,12 +1,16 @@
 using System.Collections.Generic;
+using System.Diagnostics;
+using Celestia.GameInput;
+using Celestia.UI;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.UI {
-    public class Menu {
+namespace Celestia.GUIs {
+    public class GUI {
         public List<IElement> elements = new List<IElement>();
 
-        public virtual void ResolveMouseClick(Point position, MouseButtonState mouseButtonState) {
+        public virtual void ResolveMouseClick(Point position, MouseButtons buttons) {
             elements.FindAll(x => x.GetType() == typeof(Button)).ForEach(element => {
                 Button button = element as Button;
 
@@ -16,6 +20,10 @@ namespace Celestia.UI {
             });
         }
 
+        public virtual void Load(ContentManager contentManager) {}
+
+        public virtual void Update(GameTime gameTime) {}
+
         // Draw all elements.
         public virtual void Draw(SpriteBatch spriteBatch) {
             elements.ForEach(element => {
@@ -24,9 +32,9 @@ namespace Celestia.UI {
         }
 
         // If the menu is referred to as a boolean, return whether it is non-null (true) or null (false).
-        public static implicit operator bool(Menu menu)
+        public static implicit operator bool(GUI gui)
         {
-            return !object.ReferenceEquals(menu, null);
+            return !object.ReferenceEquals(gui, null);
         }
     }
 }

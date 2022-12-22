@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Celestia.GameInput;
 using Celestia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -54,11 +55,10 @@ namespace Celestia.Screens {
         private Color color = Color.White;
 
         public void Update(float deltaTime) {
-            if (progress >= 1f || ((Input.GetAnyKey() || Input.GetAnyButton()) && !Input.GetKeyHeld(Keys.F11))) {
+            if (progress >= 1f || Input.GetAny()) {
                 gameRef.LoadScreen(new MainMenuScreen(gameRef));
                 return;
             }
-
 
             timeElapsed += deltaTime;
             float alpha = 1f;

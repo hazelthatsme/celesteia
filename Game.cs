@@ -2,9 +2,11 @@
 using System.Diagnostics;
 using Celestia.Screens;
 using Celestia.UI;
+using Celestia.GameInput;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Celestia.GUIs;
 
 namespace Celestia
 {
@@ -29,7 +31,10 @@ namespace Celestia
         private int _windowedWidth = 0;
         private int _windowedHeight = 0;
 
-        private Menu[] activeMenus;
+
+        private bool _debug = false;
+
+        private DebugGUI debugGUI;
 
         private IScreen _screen;
 
@@ -43,6 +48,10 @@ namespace Celestia
 
             // Allow game window to be resized.
             Window.AllowUserResizing = true;
+
+            #if DEBUG
+                _debug = true;
+            #endif
         }
 
         public void ToggleFullScreen() {
@@ -83,16 +92,19 @@ namespace Celestia
             instance = this;
 
             this.IsFixedTimeStep = false;
-            this._graphics.SynchronizeWithVerticalRetrace = false;
+            this._graphics.SynchronizeWithVerticalRetrace = true;
 
             _screen = new SplashScreen(this);
-            activeMenus = new Menu[16];
+            debugGUI = new DebugGUI();
 
             Window.Title = "Celestia";
 
             //_graphics.PreferMultiSampling = false;
-            if (!_isFullScreen) ToggleFullScreen();
+            // Disable slowdown on window focus loss.
+            InactiveSleepTime = new TimeSpan(0);
             _graphics.ApplyChanges();
+
+            Input.Load();
 
             base.Initialize();
         }
@@ -101,12 +113,15 @@ namespace Celestia
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Load the Debug GUI.
+            debugGUI.Load(Content);
+
             // Load the splash screen.
             LoadScreen(new SplashScreen(this));
         }
 
         public void LoadScreen(IScreen screen) {
-            Content.Unload();
+            //Content.Unload();
             _screen?.Dispose();
 
             _screen = screen;
@@ -117,7 +132,10 @@ namespace Celestia
         {
             Input.Update();
 
-            if (Input.GetKeyDown(Keys.F11)) ToggleFullScreen();
+            if (_debug) debugGUI.Update(gameTime);
+
+            if (Input.Keyboard.GetKeyDown(Keys.F3)) _debug = !_debug;
+            if (Input.Keyboard.GetKeyDown(Keys.F11)) ToggleFullScreen();
 
             _screen.Update((float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f));
 
@@ -132,6 +150,8 @@ namespace Celestia
 
             // Draw the screen's content.
             _screen.Draw(_spriteBatch);
+
+            if (_debug) debugGUI.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
