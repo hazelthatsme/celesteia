@@ -22,7 +22,11 @@ namespace Celestia.GUIs {
 
         public virtual void Load(ContentManager contentManager) {}
 
-        public virtual void Update(GameTime gameTime) {}
+        public virtual void Update(GameTime gameTime) {
+            if (Input.Mouse.GetMouseUp(MouseButtons.Left)) {
+                ResolveMouseClick(Input.Mouse.GetPosition(), MouseButtons.Left);
+            }
+        }
 
         // Draw all elements.
         public virtual void Draw(SpriteBatch spriteBatch) {

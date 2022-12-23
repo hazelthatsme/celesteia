@@ -133,14 +133,15 @@ namespace Celestia
 
         protected override void Update(GameTime gameTime)
         {
+            float deltaTime = (float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f);
+
             Input.Update();
+            _screen.Update(gameTime);
 
             if (_debug) debugGUI.Update(gameTime);
 
             if (Input.Keyboard.GetKeyDown(Keys.F3)) _debug = !_debug;
             if (Input.Keyboard.GetKeyDown(Keys.F11)) ToggleFullScreen();
-
-            _screen.Update((float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f));
 
             base.Update(gameTime);
         }

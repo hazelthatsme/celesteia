@@ -54,13 +54,13 @@ namespace Celestia.Screens {
         private float progress = 0f;
         private Color color = Color.White;
 
-        public void Update(float deltaTime) {
+        public void Update(GameTime gameTime) {
             if (progress >= 1f || Input.GetAny()) {
                 gameRef.LoadScreen(new MainMenuScreen(gameRef));
                 return;
             }
 
-            timeElapsed += deltaTime;
+            timeElapsed += (float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f);
             float alpha = 1f;
             if (timeElapsed <= fadeInTime) alpha = Math.Min(timeElapsed / fadeInTime, 1f);
             if (duration - fadeOutTime <= timeElapsed) alpha = Math.Max((duration - timeElapsed) / fadeOutTime, 0f);
