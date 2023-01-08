@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Celestia.GUIs;
 using System.Collections.Generic;
+using Celestia.Graphics;
 
 namespace Celestia
 {
@@ -20,11 +21,6 @@ namespace Celestia
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private GameWindow _window;
-
-        private bool _isFullScreen = false;
-        private bool _isBorderless = true;
-        private int _windowedWidth = 0;
-        private int _windowedHeight = 0;
 
         private List<GUI> globalGUIs;
 
@@ -72,39 +68,6 @@ namespace Celestia
             UIReferences.gameWindow = Window;
         }
 
-        public void ToggleFullScreen() {
-            _isFullScreen = !_isFullScreen;
-            ApplyFullscreenChange();
-        }
-
-        public void ApplyFullscreenChange() {
-            if (_isFullScreen) GoFullScreen();
-            else LeaveFullScreen();
-        }
-
-        private void ApplyHardwareMode() {
-            _graphics.HardwareModeSwitch = !_isBorderless;
-            _graphics.ApplyChanges();
-        }
-
-        private void GoFullScreen() {
-            _windowedWidth = Window.ClientBounds.Width;
-            _windowedHeight = Window.ClientBounds.Height;
-
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            _graphics.IsFullScreen = true;
-
-            ApplyHardwareMode();
-        }
-
-        private void LeaveFullScreen() {
-            _graphics.PreferredBackBufferWidth = _windowedWidth;
-            _graphics.PreferredBackBufferHeight = _windowedHeight;
-            _graphics.IsFullScreen = false;
-            _graphics.ApplyChanges();
-        }
-
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -149,7 +112,7 @@ namespace Celestia
             if (Input.Keyboard.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
 
             // If F11 is pressed, toggle Fullscreen.
-            if (Input.Keyboard.GetKeyDown(Keys.F11)) ToggleFullScreen();
+            if (Input.Keyboard.GetKeyDown(Keys.F11)) GraphicsUtility.ToggleFullScreen(Window, _graphics);
 
             base.Update(gameTime);
         }
