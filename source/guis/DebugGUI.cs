@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Celestia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -33,6 +34,11 @@ namespace Celestia.GUIs {
             fpsLabel.text = "FPS: " + fps.ToString("0");
 
             lastUpdate = gameTime.TotalGameTime.TotalSeconds;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (Game.DebugMode) base.Draw(spriteBatch);
         }
     }
 }

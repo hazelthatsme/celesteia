@@ -10,7 +10,7 @@ namespace Celestia.GameInput {
         public static MouseWrapper Mouse { get; private set; }
         public static GamepadWrapper Gamepad { get; private set; }
 
-        public static void Load() {
+        public static void Initialize() {
             Keyboard = new KeyboardWrapper();
             Mouse = new MouseWrapper();
             Gamepad = new GamepadWrapper();

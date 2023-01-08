@@ -112,11 +112,13 @@ namespace Celestia.UI {
 
         public float Resolve()
         {
-            switch (orientation) {
-                case ScreenSpaceOrientation.Horizontal:
-                    return value * Game.GetGameWindow().ClientBounds.Width;
-                case ScreenSpaceOrientation.Vertical:
-                    return value * Game.GetGameWindow().ClientBounds.Height;
+            if (UIReferences.gameWindow != null) {
+                switch (orientation) {
+                    case ScreenSpaceOrientation.Horizontal:
+                        return value * UIReferences.gameWindow.ClientBounds.Width;
+                    case ScreenSpaceOrientation.Vertical:
+                        return value * UIReferences.gameWindow.ClientBounds.Height;
+                }
             }
             return 0f;
         }

@@ -29,7 +29,7 @@ namespace Celestia.GameInput {
         }
 
         private static bool GetAnyKey(KeyboardState state) {
-            return state.GetPressedKeyCount() > 0;
+            return !state.IsKeyDown(Keys.F3) && !state.IsKeyDown(Keys.F11) && state.GetPressedKeyCount() > 0;
         }
 
         private static bool GetKeyHeld(KeyboardState state, Keys keys) {

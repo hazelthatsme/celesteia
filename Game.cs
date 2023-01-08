@@ -7,20 +7,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Celestia.GUIs;
+using System.Collections.Generic;
 
 namespace Celestia
 {
     public class Game : Microsoft.Xna.Framework.Game
     {
-        /* BEGINNING OF EXPERIMENTAL INSTANCE-BASED CONTROLS. */
-        /* Maybe do this a little more neatly? */
-        private static Game instance;
-
-        public static GameWindow GetGameWindow() { return instance.Window; }
-
-        public static SpriteBatch GetSpriteBatch() { return instance._spriteBatch; }
-
-        /* END OF EXPERIMENTAL STUFF. */
+        public static bool DebugMode { get; private set; }
 
         private double maximumFramerate = 280;
 
@@ -33,10 +26,7 @@ namespace Celestia
         private int _windowedWidth = 0;
         private int _windowedHeight = 0;
 
-
-        private bool _debug = false;
-
-        private DebugGUI debugGUI;
+        private List<GUI> globalGUIs;
 
         private IScreen _screen;
 
@@ -47,13 +37,39 @@ namespace Celestia
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+        }
 
-            // Allow game window to be resized.
-            Window.AllowUserResizing = true;
-
+        protected override void Initialize()
+        {
+            // Automatically enable debug mode when running a debug build.
             #if DEBUG
-                _debug = true;
+                DebugMode = true;
             #endif
+
+            // Set up graphics and window (eventually from settings).
+            SetupGraphicsAndWindow();
+
+            // Set up the input manager.
+            Input.Initialize();
+
+            // Run XNA native initialization logic.
+            base.Initialize();
+        }
+
+        private void SetupGraphicsAndWindow() {
+            // Disable slowdown on window focus loss.
+            InactiveSleepTime = new TimeSpan(0);
+
+            // Set maximum framerate to avoid resource soaking.
+            this.IsFixedTimeStep = true;
+            TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
+
+            // Allow game window to be resized, and set the title.
+            Window.AllowUserResizing = true;
+            Window.Title = "Celestia";
+
+            // Make sure the UI knows what game window to refer to for screen space calculations.
+            UIReferences.gameWindow = Window;
         }
 
         public void ToggleFullScreen() {
@@ -89,38 +105,25 @@ namespace Celestia
             _graphics.ApplyChanges();
         }
 
-        protected override void Initialize()
-        {
-            instance = this;
-
-            // Disable slowdown on window focus loss.
-            InactiveSleepTime = new TimeSpan(0);
-            TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
-
-            this.IsFixedTimeStep = true;
-            this._graphics.SynchronizeWithVerticalRetrace = true;
-
-            _screen = new SplashScreen(this);
-            debugGUI = new DebugGUI();
-
-            Window.Title = "Celestia";
-
-            _graphics.ApplyChanges();
-
-            Input.Load();
-
-            base.Initialize();
-        }
-
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // Load the Debug GUI.
-            debugGUI.Load(Content);
+            // Load global GUIs.
+            LoadGUI();
 
             // Load the splash screen.
             LoadScreen(new SplashScreen(this));
+        }
+
+        private void LoadGUI() {
+            globalGUIs = new List<GUI>();
+
+            // Add Debug GUI.
+            globalGUIs.Add(new DebugGUI());
+
+            // Load each global GUI.
+            globalGUIs.ForEach((gui) => { gui.Load(Content); });
         }
 
         public void LoadScreen(IScreen screen) {
@@ -133,14 +136,19 @@ namespace Celestia
 
         protected override void Update(GameTime gameTime)
         {
-            float deltaTime = (float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f);
-
+            // Update the input.
             Input.Update();
+
+            // Update the active screen.
             _screen.Update(gameTime);
 
-            if (_debug) debugGUI.Update(gameTime);
+            // Update each global GUI.
+            globalGUIs.ForEach((gui) => { gui.Update(gameTime); });
 
-            if (Input.Keyboard.GetKeyDown(Keys.F3)) _debug = !_debug;
+            // If F3 is pressed, toggle Debug Mode.
+            if (Input.Keyboard.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
+
+            // If F11 is pressed, toggle Fullscreen.
             if (Input.Keyboard.GetKeyDown(Keys.F11)) ToggleFullScreen();
 
             base.Update(gameTime);
@@ -155,7 +163,8 @@ namespace Celestia
             // Draw the screen's content.
             _screen.Draw(_spriteBatch);
 
-            if (_debug) debugGUI.Draw(_spriteBatch);
+            // Draw each global GUI.
+            globalGUIs.ForEach((gui) => { gui.Draw(_spriteBatch); });
 
             _spriteBatch.End();
 
