@@ -36,7 +36,7 @@ namespace Celestia.GUIs {
 
         // Draw all elements.
         public virtual void Draw(GameTime gameTime) {
-            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
+            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap);
 
             elements.ForEach(element => {
                 element.Draw(Game.SpriteBatch);

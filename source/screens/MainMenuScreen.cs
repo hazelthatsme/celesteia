@@ -32,14 +32,13 @@ namespace Celestia.Screens {
         public override void Update(GameTime gameTime)
         {
             this.mainMenu.Update(gameTime);
-            
         }
 
         public override void Dispose()
         {
-            Debug.WriteLine("Unloading SplashScreen content...");
+            Debug.WriteLine("Unloading MainMenuScreen content...");
             base.UnloadContent();
-            Debug.WriteLine("Disposing SplashScreen...");
+            Debug.WriteLine("Disposing MainMenuScreen...");
             base.Dispose();
         }
     }
