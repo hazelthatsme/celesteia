@@ -10,6 +10,7 @@ using Celestia.GUIs;
 using System.Collections.Generic;
 using Celestia.Graphics;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Input.InputListeners;
 
 namespace Celestia
 {
@@ -25,6 +26,9 @@ namespace Celestia
         private List<GUI> globalGUIs;
 
         private readonly ScreenManager _screenManager;
+
+        public KeyboardListener _keyboard;
+        public MouseListener _mouse;
 
         public Game()
         {
@@ -49,7 +53,11 @@ namespace Celestia
             SetupGraphicsAndWindow();
 
             // Set up the input manager.
+            _keyboard = new KeyboardListener();
+            _mouse = new MouseListener();
+
             Input.Initialize();
+            Components.Add(new InputListenerComponent(this, _keyboard, _mouse));
 
             // Run XNA native initialization logic.
             base.Initialize();
@@ -59,8 +67,11 @@ namespace Celestia
             // Disable slowdown on window focus loss.
             InactiveSleepTime = new TimeSpan(0);
 
+            _graphics.SynchronizeWithVerticalRetrace = true;
+            _graphics.ApplyChanges();
+
             // Set maximum framerate to avoid resource soaking.
-            this.IsFixedTimeStep = true;
+            this.IsFixedTimeStep = false;
             TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
 
             // Allow game window to be resized, and set the title.
@@ -78,8 +89,12 @@ namespace Celestia
             // Load global GUIs.
             LoadGUI();
 
-            // Load the splash screen.
-            LoadScreen(new SplashScreen(this));
+            // Load the splash screen if it's a release build, load the game directly if it's a debug build.
+            #if DEBUG
+                LoadScreen(new GameplayScreen(this));
+            #else
+                LoadScreen(new SplashScreen(this));
+            #endif
         }
 
         private void LoadGUI() {
@@ -104,10 +119,10 @@ namespace Celestia
             globalGUIs.ForEach((gui) => { gui.Update(gameTime); });
 
             // If F3 is pressed, toggle Debug Mode.
-            if (Input.Keyboard.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
+            if (KeyboardWrapper.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
 
             // If F11 is pressed, toggle Fullscreen.
-            if (Input.Keyboard.GetKeyDown(Keys.F11)) GraphicsUtility.ToggleFullScreen(Window, _graphics);
+            if (KeyboardWrapper.GetKeyDown(Keys.F11)) GraphicsUtility.ToggleFullScreen(Window, _graphics);
 
             base.Update(gameTime);
         }

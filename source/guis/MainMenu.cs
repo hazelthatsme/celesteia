@@ -40,6 +40,8 @@ namespace Celestia.GUIs {
                 new ScreenSpaceUnit(.1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
             ),
             (position) => { Game.Exit(); }, null, "Quit Game", TextAlignment.Center, arialBold));
+
+            base.LoadContent();
         }
     }
 }

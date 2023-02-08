@@ -5,18 +5,22 @@ using Celestia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Input;
+using MonoGame.Extended.Input.InputListeners;
 
 namespace Celestia.GUIs {
     public class GUI {
         public Game Game;
 
         public List<IElement> elements = new List<IElement>();
+        private readonly MouseListener _mouseListener;
 
         public GUI(Game Game) {
             this.Game = Game;
         }
 
-        public virtual void ResolveMouseClick(Point position, MouseButtons buttons) {
+        public virtual void ResolveMouseClick(Point position, MouseButton button) {
+            Debug.WriteLine(position);
             elements.FindAll(x => x.GetType() == typeof(Button)).ForEach(element => {
                 Button button = element as Button;
 
@@ -26,11 +30,15 @@ namespace Celestia.GUIs {
             });
         }
 
-        public virtual void LoadContent() {}
+        public virtual void LoadContent() {
+            Debug.WriteLine("Loaded GUI.");
+        }
 
         public virtual void Update(GameTime gameTime) {
-            if (Input.Mouse.GetMouseUp(MouseButtons.Left)) {
-                ResolveMouseClick(Input.Mouse.GetPosition(), MouseButtons.Left);
+            //Debug.WriteLine(MouseWrapper.GetMouseHeld(MouseButton.Left));
+            if (MouseWrapper.GetMouseDown(MouseButton.Left)) {
+                Debug.WriteLine("Hello.");
+                ResolveMouseClick(MouseWrapper.GetPosition(), MouseButton.Left);
             }
         }
 

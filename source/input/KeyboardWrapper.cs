@@ -1,38 +1,29 @@
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Input;
 
 namespace Celestia.GameInput {
     public class KeyboardWrapper {
-        private KeyboardState currentState;
-        private KeyboardState previousState;
+        private static KeyboardStateExtended state;
 
-        public void Update() {
-            UpdateState();
+        public static void Update() {
+            state = KeyboardExtended.GetState();
         }
 
-        private void UpdateState() {
-            previousState = currentState;
-            currentState = Keyboard.GetState();
+        public static bool GetAnyKey() {
+            return !state.IsKeyDown(Keys.F3) && !state.IsKeyDown(Keys.F11) && state.GetPressedKeys().Length > 0;
         }
 
-        public bool GetAnyKey() {
-            return GetAnyKey(currentState);
+        public static bool GetKeyDown(Keys keys) {
+            return state.WasKeyJustUp(keys) && state.IsKeyDown(keys);
         }
 
-        public bool GetKeyDown(Keys keys) {
-            return GetKeyHeld(currentState, keys) && !GetKeyHeld(previousState, keys);
+        public static bool GetKeyUp(Keys keys) {
+            return state.WasKeyJustDown(keys) && state.IsKeyUp(keys);
         }
 
-        public bool GetKeyUp(Keys keys) {
-            return !GetKeyHeld(currentState, keys) && GetKeyHeld(previousState, keys);
-        }
-
-        private static bool GetAnyKey(KeyboardState state) {
-            return !state.IsKeyDown(Keys.F3) && !state.IsKeyDown(Keys.F11) && state.GetPressedKeyCount() > 0;
-        }
-
-        private static bool GetKeyHeld(KeyboardState state, Keys keys) {
+        public static bool GetKeyHeld(Keys keys) {
             return state.IsKeyDown(keys);
         }
     }
