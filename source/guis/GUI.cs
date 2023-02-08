@@ -8,7 +8,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Celestia.GUIs {
     public class GUI {
+        public Game Game;
+
         public List<IElement> elements = new List<IElement>();
+
+        public GUI(Game Game) {
+            this.Game = Game;
+        }
 
         public virtual void ResolveMouseClick(Point position, MouseButtons buttons) {
             elements.FindAll(x => x.GetType() == typeof(Button)).ForEach(element => {
@@ -20,7 +26,7 @@ namespace Celestia.GUIs {
             });
         }
 
-        public virtual void Load(ContentManager contentManager) {}
+        public virtual void LoadContent() {}
 
         public virtual void Update(GameTime gameTime) {
             if (Input.Mouse.GetMouseUp(MouseButtons.Left)) {
@@ -29,10 +35,14 @@ namespace Celestia.GUIs {
         }
 
         // Draw all elements.
-        public virtual void Draw(SpriteBatch spriteBatch) {
+        public virtual void Draw(GameTime gameTime) {
+            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
+
             elements.ForEach(element => {
-                element.Draw(spriteBatch);
+                element.Draw(Game.SpriteBatch);
             });
+
+            Game.SpriteBatch.End();
         }
 
         // If the menu is referred to as a boolean, return whether it is non-null (true) or null (false).

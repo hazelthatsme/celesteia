@@ -6,17 +6,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Celestia.GUIs {
     public class MainMenu : GUI {
+        private new Game Game => (Game) base.Game;
+        public MainMenu(Game game) : base(game) {}
+
         private Texture2D logo;
         private SpriteFont arialBold;
-        private Game gameRef;
 
-        public MainMenu(Game gameRef) {
-            this.gameRef = gameRef;
-        }
-
-        public override void Load(ContentManager contentManager) {
-            logo = contentManager.Load<Texture2D>("celestia/logo");
-            arialBold = contentManager.Load<SpriteFont>("ArialBold");
+        public override void LoadContent() {
+            logo = Game.Content.Load<Texture2D>("celestia/logo");
+            arialBold = Game.Content.Load<SpriteFont>("ArialBold");
 
             float logoRatio = logo.Height / (float) logo.Width;
 
@@ -33,7 +31,7 @@ namespace Celestia.GUIs {
                 new ScreenSpaceUnit(.4f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
                 new ScreenSpaceUnit(.1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
             ),
-            (position) => { gameRef.LoadScreen(new GameScreen(gameRef)); }, null, "Start Game", TextAlignment.Center, arialBold));
+            (position) => { Game.LoadScreen(new GameplayScreen(Game)); }, null, "Start Game", TextAlignment.Center, arialBold));
 
             elements.Add(new Button(new Rect(
                 new ScreenSpaceUnit(.3f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
@@ -41,7 +39,7 @@ namespace Celestia.GUIs {
                 new ScreenSpaceUnit(.4f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
                 new ScreenSpaceUnit(.1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
             ),
-            (position) => { gameRef.Exit(); }, null, "Quit Game", TextAlignment.Center, arialBold));
+            (position) => { Game.Exit(); }, null, "Quit Game", TextAlignment.Center, arialBold));
         }
     }
 }

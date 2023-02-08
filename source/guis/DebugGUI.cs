@@ -6,21 +6,24 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Celestia.GUIs {
     public class DebugGUI : GUI {
-        private SpriteFont arial;
+        private new Game Game => (Game) base.Game;
+        public DebugGUI(Game game) : base(game) {}
+
+        private SpriteFont debugFont;
 
         private double fps;
         private double lastUpdate;
 
         private Label fpsLabel;
 
-        public override void Load(ContentManager contentManager) {
-            arial = contentManager.Load<SpriteFont>("Arial");
+        public override void LoadContent() {
+            debugFont = Game.Content.Load<SpriteFont>("Hobo");
 
             fpsLabel = new Label(
                 new Rect(AbsoluteUnit.WithValue(10), AbsoluteUnit.WithValue(10), AbsoluteUnit.WithValue(200), AbsoluteUnit.WithValue(50)),
                 "",
                 TextAlignment.Top | TextAlignment.Left,
-                arial
+                debugFont
             );
 
             elements.Add(fpsLabel);
@@ -36,9 +39,9 @@ namespace Celestia.GUIs {
             lastUpdate = gameTime.TotalGameTime.TotalSeconds;
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
-            if (Game.DebugMode) base.Draw(spriteBatch);
+            if (Game.DebugMode) base.Draw(gameTime);
         }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Celestia.GUIs;
 using System.Collections.Generic;
 using Celestia.Graphics;
+using MonoGame.Extended.Screens;
 
 namespace Celestia
 {
@@ -16,23 +17,25 @@ namespace Celestia
     {
         public static bool DebugMode { get; private set; }
 
-        private double maximumFramerate = 280;
+        private double maximumFramerate = 144;
 
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-        private GameWindow _window;
+        public SpriteBatch SpriteBatch;
 
         private List<GUI> globalGUIs;
 
-        private IScreen _screen;
+        private readonly ScreenManager _screenManager;
 
         public Game()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _window = Window;
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            
+            // Load the screen manager.
+            _screenManager = new ScreenManager();
+            Components.Add(_screenManager);
         }
 
         protected override void Initialize()
@@ -70,7 +73,7 @@ namespace Celestia
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load global GUIs.
             LoadGUI();
@@ -82,28 +85,20 @@ namespace Celestia
         private void LoadGUI() {
             globalGUIs = new List<GUI>();
 
-            // Add Debug GUI.
-            globalGUIs.Add(new DebugGUI());
+            globalGUIs.Add(new DebugGUI(this));
 
             // Load each global GUI.
-            globalGUIs.ForEach((gui) => { gui.Load(Content); });
+            globalGUIs.ForEach((gui) => { gui.LoadContent(); });
         }
 
-        public void LoadScreen(IScreen screen) {
-            //Content.Unload();
-            _screen?.Dispose();
-
-            _screen = screen;
-            _screen.Load(Content);
+        public void LoadScreen(GameScreen screen) {
+            _screenManager.LoadScreen(screen);
         }
 
         protected override void Update(GameTime gameTime)
         {
             // Update the input.
             Input.Update();
-
-            // Update the active screen.
-            _screen.Update(gameTime);
 
             // Update each global GUI.
             globalGUIs.ForEach((gui) => { gui.Update(gameTime); });
@@ -119,19 +114,11 @@ namespace Celestia
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, _screen.GetSamplerState());
-
-            // Draw the screen's content.
-            _screen.Draw(_spriteBatch);
-
-            // Draw each global GUI.
-            globalGUIs.ForEach((gui) => { gui.Draw(_spriteBatch); });
-
-            _spriteBatch.End();
+            GraphicsDevice.Clear(Color.Black);
 
             base.Draw(gameTime);
+
+            globalGUIs.ForEach((gui) => { gui.Draw(gameTime); });
         }
     }
 }

@@ -1,45 +1,35 @@
 using System.Diagnostics;
-using Celestia.GameInput;
-using Celestia.UI;
-using Celestia.GUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 
 namespace Celestia.Screens {
-    public class MainMenuScreen : GameScreen
-    {
+    public class GameplayScreen : GameScreen {
         private new Game Game => (Game) base.Game;
 
-        private MainMenu mainMenu;
-
-        public MainMenuScreen(Game game) : base(game) {}
+        public GameplayScreen(Game game) : base(game) {}
 
         public override void LoadContent()
         {
             base.LoadContent();
-
-            this.mainMenu = new MainMenu(Game);
-            this.mainMenu.LoadContent();
         }
 
         public override void Draw(GameTime gameTime)
         {
-            this.mainMenu.Draw(gameTime);
+
         }
 
         public override void Update(GameTime gameTime)
         {
-            this.mainMenu.Update(gameTime);
             
         }
 
         public override void Dispose()
         {
-            Debug.WriteLine("Unloading SplashScreen content...");
+            Debug.WriteLine("Unloading GameplayScreen content...");
             base.UnloadContent();
-            Debug.WriteLine("Disposing SplashScreen...");
+            Debug.WriteLine("Disposing GameplayScreen...");
             base.Dispose();
         }
     }

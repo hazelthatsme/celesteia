@@ -51,3 +51,10 @@
 /processorParam:TextureFormat=Color
 /build:celestia/title-rebrand-borders.png;celestia/logo.png
 
+#begin Hobo.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Hobo.spritefont
+

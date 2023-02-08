@@ -1,17 +1,18 @@
 using System;
 using System.Diagnostics;
 using Celestia.GameInput;
+using Celestia.GUIs;
 using Celestia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Screens;
 
 namespace Celestia.Screens {
-    public class SplashScreen : IScreen {
-        private Game gameRef;
+    public class SplashScreen : GameScreen {
+        private new Game Game => (Game) base.Game;
 
-        SpriteFont arialBold;
         Texture2D leafalLogo;
         Image backgroundImage;
         Image logoElement;
@@ -19,14 +20,13 @@ namespace Celestia.Screens {
 
         private float logoRatio;
 
-        public SplashScreen(Game gameRef) {
-            this.gameRef = gameRef;
-        }
+        public SplashScreen(Game game) : base(game) {}
 
-        public void Load(ContentManager contentManager)
+        public override void LoadContent()
         {
-            arialBold = contentManager.Load<SpriteFont>("ArialBold");
-            leafalLogo = contentManager.Load<Texture2D>("branding/leafal/TextLogo");
+            base.LoadContent();
+
+            leafalLogo = Game.Content.Load<Texture2D>("branding/leafal/TextLogo");
 
             logoRatio = leafalLogo.Height / (float) leafalLogo.Width;
 
@@ -54,9 +54,9 @@ namespace Celestia.Screens {
         private float progress = 0f;
         private Color color = Color.White;
 
-        public void Update(GameTime gameTime) {
+        public override void Update(GameTime gameTime) {
             if (progress >= 1f || Input.GetAny()) {
-                gameRef.LoadScreen(new MainMenuScreen(gameRef));
+                Game.LoadScreen(new MainMenuScreen(Game));
                 return;
             }
 
@@ -83,22 +83,24 @@ namespace Celestia.Screens {
             logoElement.SetRect(r);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
-            backgroundImage.Draw(spriteBatch);
+            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp);
+
+            backgroundImage.Draw(Game.SpriteBatch);
             
             logoElement.color = color;
-            logoElement.Draw(spriteBatch);
+            logoElement.Draw(Game.SpriteBatch);
+
+            Game.SpriteBatch.End();
         }
 
-        public SamplerState GetSamplerState()
+        public override void Dispose()
         {
-            return SamplerState.LinearClamp;
-        }
-
-        public void Dispose()
-        {
+            Debug.WriteLine("Unloading SplashScreen content...");
+            base.UnloadContent();
             Debug.WriteLine("Disposing SplashScreen...");
+            base.Dispose();
         }
     }
 }
