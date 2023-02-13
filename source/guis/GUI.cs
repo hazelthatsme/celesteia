@@ -13,7 +13,6 @@ namespace Celestia.GUIs {
         public Game Game;
 
         public List<IElement> elements = new List<IElement>();
-        private readonly MouseListener _mouseListener;
 
         public GUI(Game Game) {
             this.Game = Game;
@@ -35,9 +34,7 @@ namespace Celestia.GUIs {
         }
 
         public virtual void Update(GameTime gameTime) {
-            //Debug.WriteLine(MouseWrapper.GetMouseHeld(MouseButton.Left));
             if (MouseWrapper.GetMouseDown(MouseButton.Left)) {
-                Debug.WriteLine("Hello.");
                 ResolveMouseClick(MouseWrapper.GetPosition(), MouseButton.Left);
             }
         }
