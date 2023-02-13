@@ -39,6 +39,12 @@
 /processorParam:TextureFormat=Color
 /build:branding/leafal/leafal-text-logo.png;branding/leafal/TextLogo.png
 
+#begin branding/leafal/splash.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Medium
+/build:branding/leafal/splash.mp3
+
 #begin celestia/title-rebrand-borders.png
 /importer:TextureImporter
 /processor:TextureProcessor

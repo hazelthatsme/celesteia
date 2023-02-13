@@ -1,12 +1,10 @@
 using System;
 using System.Diagnostics;
 using Celestia.GameInput;
-using Celestia.GUIs;
 using Celestia.UI;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
 
 namespace Celestia.Screens {
@@ -14,6 +12,8 @@ namespace Celestia.Screens {
         private new Game Game => (Game) base.Game;
 
         Texture2D leafalLogo;
+        SoundEffect splashSound;
+        
         Image backgroundImage;
         Image logoElement;
         Rect logoRect;
@@ -27,6 +27,7 @@ namespace Celestia.Screens {
             base.LoadContent();
 
             leafalLogo = Game.Content.Load<Texture2D>("branding/leafal/TextLogo");
+            splashSound = Game.Content.Load<SoundEffect>("branding/leafal/splash");
 
             logoRatio = leafalLogo.Height / (float) leafalLogo.Width;
 
@@ -44,12 +45,14 @@ namespace Celestia.Screens {
                 new ScreenSpaceUnit(logoRatio * 0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal)
             );
             logoElement = new Image(logoRect, leafalLogo, Color.White, 1f);
+
+            splashSound.Play(0.5f, 0f, 0f);
         }
         
         private float timeElapsed = 0f;
-        private float fadeInTime = 1.5f;
-        private float fadeOutTime = 1.5f;
-        private float duration = 5f;
+        private float fadeInTime = 0.25f;
+        private float fadeOutTime = 0.75f;
+        private float duration = 3f;
         private float endTimeout = 1f;
         private float progress = 0f;
         private Color color = Color.White;
