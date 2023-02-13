@@ -11,30 +11,38 @@ using System.Collections.Generic;
 using Celestia.Graphics;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Input.InputListeners;
+using System.Linq;
 
 namespace Celestia
 {
     public class Game : Microsoft.Xna.Framework.Game
     {
         public static bool DebugMode { get; private set; }
+        private readonly List<string> cmdArgs;
 
         private double maximumFramerate = 144;
 
         private GraphicsDeviceManager _graphics;
+        private GraphicsController GraphicsController;
         public SpriteBatch SpriteBatch;
 
         private List<GUI> globalGUIs;
 
         private readonly ScreenManager _screenManager;
 
-        public KeyboardListener _keyboard;
-        public MouseListener _mouse;
-
         public Game()
         {
+            // Graphics setup.
             _graphics = new GraphicsDeviceManager(this);
+            GraphicsController = new GraphicsController(this, _graphics);
 
+            // Load command line arguments into list.
+            cmdArgs = Environment.GetCommandLineArgs().ToList();
+
+            // Declare root of content management.
             Content.RootDirectory = "Content";
+
+            // Make sure mouse is visible.
             IsMouseVisible = true;
             
             // Load the screen manager.
@@ -52,26 +60,23 @@ namespace Celestia
             // Set up graphics and window (eventually from settings).
             SetupGraphicsAndWindow();
 
-            // Set up the input manager.
-            _keyboard = new KeyboardListener();
-            _mouse = new MouseListener();
-
+            // Initialize input management.
             Input.Initialize();
-            Components.Add(new InputListenerComponent(this, _keyboard, _mouse));
 
             // Run XNA native initialization logic.
             base.Initialize();
         }
 
         private void SetupGraphicsAndWindow() {
+            GraphicsController.VSync = true;
+            GraphicsController.FullScreen = FullscreenMode.Fullscreen;
+            GraphicsController.Apply();
+            
             // Disable slowdown on window focus loss.
             InactiveSleepTime = new TimeSpan(0);
 
-            _graphics.SynchronizeWithVerticalRetrace = true;
-            _graphics.ApplyChanges();
-
             // Set maximum framerate to avoid resource soaking.
-            this.IsFixedTimeStep = false;
+            IsFixedTimeStep = true;
             TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
 
             // Allow game window to be resized, and set the title.
@@ -90,11 +95,8 @@ namespace Celestia
             LoadGUI();
 
             // Load the splash screen if it's a release build, load the game directly if it's a debug build.
-            #if DEBUG
-                LoadScreen(new GameplayScreen(this));
-            #else
-                LoadScreen(new SplashScreen(this));
-            #endif
+            if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this));
+            else LoadScreen(new SplashScreen(this));
         }
 
         private void LoadGUI() {
@@ -122,7 +124,10 @@ namespace Celestia
             if (KeyboardWrapper.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
 
             // If F11 is pressed, toggle Fullscreen.
-            if (KeyboardWrapper.GetKeyDown(Keys.F11)) GraphicsUtility.ToggleFullScreen(Window, _graphics);
+            if (KeyboardWrapper.GetKeyDown(Keys.F11)) {
+                GraphicsController.ToggleFullScreen();
+                GraphicsController.Apply();
+            }
 
             base.Update(gameTime);
         }
