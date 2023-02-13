@@ -37,7 +37,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:branding/leafal/leafal-text-logo.png;branding/leafal/TextLogo.png
+/build:branding/leafal/leafal_text_logo.png
 
 #begin branding/leafal/splash.mp3
 /importer:Mp3Importer
@@ -55,7 +55,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:celestia/title-rebrand-borders.png;celestia/logo.png
+/build:celestia/logo.png
 
 #begin Hobo.spritefont
 /importer:FontDescriptionImporter
@@ -63,6 +63,12 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Hobo.spritefont
+
+#begin music/Stargaze Symphony.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/stargaze_symphony.ogg
 
 #begin sprites/entities/player/base_sample.png
 /importer:TextureImporter

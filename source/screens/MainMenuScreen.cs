@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
+using Microsoft.Xna.Framework.Media;
 
 namespace Celestia.Screens {
     public class MainMenuScreen : GameScreen
@@ -14,11 +15,19 @@ namespace Celestia.Screens {
 
         private MainMenu mainMenu;
 
+        private Song mainMenuTheme;
+
         public MainMenuScreen(Game game) : base(game) {}
 
         public override void LoadContent()
         {
             base.LoadContent();
+
+            mainMenuTheme = Game.Content.Load<Song>("music/stargaze_symphony");
+
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = 0.1f;
+            MediaPlayer.Play(mainMenuTheme);
 
             this.mainMenu = new MainMenu(Game);
             this.mainMenu.LoadContent();

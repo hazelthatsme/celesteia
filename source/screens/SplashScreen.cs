@@ -26,7 +26,7 @@ namespace Celestia.Screens {
         {
             base.LoadContent();
 
-            leafalLogo = Game.Content.Load<Texture2D>("branding/leafal/TextLogo");
+            leafalLogo = Game.Content.Load<Texture2D>("branding/leafal/leafal_text_logo");
             splashSound = Game.Content.Load<SoundEffect>("branding/leafal/splash");
 
             logoRatio = leafalLogo.Height / (float) leafalLogo.Width;
