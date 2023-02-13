@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using Celestia.Screens;
-using Celestia.UI;
 using Celestia.GameInput;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +8,6 @@ using Celestia.GUIs;
 using System.Collections.Generic;
 using Celestia.Graphics;
 using MonoGame.Extended.Screens;
-using MonoGame.Extended.Input.InputListeners;
 using System.Linq;
 
 namespace Celestia
@@ -18,6 +15,7 @@ namespace Celestia
     public class Game : Microsoft.Xna.Framework.Game
     {
         public static bool DebugMode { get; private set; }
+        
         private readonly List<string> cmdArgs;
 
         private double maximumFramerate = 144;
@@ -69,7 +67,8 @@ namespace Celestia
 
         private void SetupGraphicsAndWindow() {
             GraphicsController.VSync = true;
-            GraphicsController.FullScreen = FullscreenMode.Fullscreen;
+            GraphicsController.FullScreen = FullscreenMode.Windowed;
+            GraphicsController.Resolution = Window.ClientBounds;
             GraphicsController.Apply();
             
             // Disable slowdown on window focus loss.
