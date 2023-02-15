@@ -8,7 +8,7 @@ namespace Celestia.Graphics {
         private readonly Game game;
 
         private FullscreenMode _screenMode;
-        private bool _useBorderless = true;
+        private bool _useBorderless = false;
         private bool _verticalRetrace;
         private Rectangle _resolution;
         private Rectangle lastBounds;
