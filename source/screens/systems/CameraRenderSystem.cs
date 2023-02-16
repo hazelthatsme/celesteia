@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Celestia.Graphics;
 using Celestia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,13 +11,13 @@ using MonoGame.Extended.Sprites;
 namespace Celestia.Screens.Systems {
     public class CameraRenderSystem : EntityDrawSystem
     {
-        private readonly OrthographicCamera _camera;
+        private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
 
         private ComponentMapper<Transform2> transformMapper;
         private ComponentMapper<EntityFrames> entityFramesMapper;
 
-        public CameraRenderSystem(OrthographicCamera camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Transform2), typeof(EntityFrames))) {
+        public CameraRenderSystem(Camera2D camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Transform2), typeof(EntityFrames))) {
             _camera = camera;
             _spriteBatch = spriteBatch;
         }

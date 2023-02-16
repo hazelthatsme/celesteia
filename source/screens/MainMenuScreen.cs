@@ -35,6 +35,7 @@ namespace Celestia.Screens {
 
         public override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.Clear(Color.Black);
             this.mainMenu.Draw(gameTime);
         }
 

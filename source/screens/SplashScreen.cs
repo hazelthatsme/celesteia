@@ -88,6 +88,7 @@ namespace Celestia.Screens {
 
         public override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.Clear(Color.Black);
             Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.AnisotropicWrap);
 
             backgroundImage.Draw(Game.SpriteBatch);

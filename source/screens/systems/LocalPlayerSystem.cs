@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Celestia.GameInput;
 using Celestia.Screens.Components;
+using Celestia.Screens.Components.Entities.Player.Movement;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -11,26 +12,26 @@ namespace Celestia.Screens.Systems {
     {
         private ComponentMapper<Transform2> transformMapper;
         private ComponentMapper<EntityAttributes> attributesMapper;
-        private ComponentMapper<InputTest> inputMapper;
+        private ComponentMapper<PlayerMovement> movementMapper;
 
-        public LocalPlayerSystem() : base(Aspect.All(typeof(Transform2), typeof(InputTest), typeof(LocalPlayer))) { }
+        public LocalPlayerSystem() : base(Aspect.All(typeof(Transform2), typeof(PlayerMovement), typeof(LocalPlayer))) { }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
             transformMapper = mapperService.GetMapper<Transform2>();
             attributesMapper = mapperService.GetMapper<EntityAttributes>();
-            inputMapper = mapperService.GetMapper<InputTest>();
+            movementMapper = mapperService.GetMapper<PlayerMovement>();
         }
 
         public override void Update(GameTime gameTime)
         {
             foreach (int entityId in ActiveEntities) {
-                InputTest input = inputMapper.Get(entityId);
+                PlayerMovement input = movementMapper.Get(entityId);
                 EntityAttributes.EntityAttributeMap attributes = attributesMapper.Get(entityId).Attributes;
                 transformMapper.Get(entityId).Position += new Vector2(
-                    input.Definition.Test() * attributes.Get(EntityAttribute.MovementSpeed) * (gameTime.ElapsedGameTime.Milliseconds / 1000f),
-                    0f
-                );
+                    input.TestHorizontal(),
+                    input.TestVertical()
+                ) * attributes.Get(EntityAttribute.MovementSpeed) * (gameTime.ElapsedGameTime.Milliseconds / 1000f);
             }
         }
     }

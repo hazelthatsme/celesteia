@@ -7,13 +7,13 @@ using MonoGame.Extended.TextureAtlases;
 namespace Celestia.Resources.Sprites {
     public class BlockFrames {
         private readonly int _size;
-        private readonly float _scaling;
+        private readonly Vector2 _scaling;
 
         private TextureRegion2D[] _frames;
 
         public BlockFrames(TextureAtlas atlas, int size, int startIndex, int frameCount) {
             _size = size;
-            _scaling = 1f / _size;
+            _scaling = new Vector2(ResourceManager.SPRITE_SCALING);
 
             _frames = new TextureRegion2D[frameCount];
             for (int i = 0; i < frameCount; i++) 
@@ -21,7 +21,7 @@ namespace Celestia.Resources.Sprites {
         }
 
         public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color) {
-            spriteBatch.Draw(_frames[index % _frames.Length], position, color, 0f, Vector2.Zero, new Vector2(_scaling), SpriteEffects.None, 0f, null);
+            spriteBatch.Draw(_frames[index % _frames.Length], position, color, 0f, Vector2.Zero, _scaling, SpriteEffects.None, 0f, null);
         }
     }
 }

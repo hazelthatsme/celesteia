@@ -12,6 +12,8 @@ using MonoGame.Extended.Screens;
 using MonoGame.Extended.ViewportAdapters;
 using MonoGame.Extended.Sprites;
 using Celestia.Resources;
+using Celestia.Graphics;
+using Celestia.GUIs;
 
 namespace Celestia.Screens {
     public class GameplayScreen : GameScreen {
@@ -19,7 +21,7 @@ namespace Celestia.Screens {
 
         public GameplayScreen(Game game) : base(game) {}
 
-        private OrthographicCamera Camera;
+        private Camera2D Camera;
         private World _world;
         private EntityFactory _entityFactory;
 
@@ -27,16 +29,14 @@ namespace Celestia.Screens {
         {
             base.LoadContent();
 
-            ViewportAdapter adapter = new ScalingViewportAdapter(GraphicsDevice, 10, 5);
-            Camera = new OrthographicCamera(adapter);
-            Camera.Zoom = 5f;
+            Camera = new Camera2D(GraphicsDevice);
 
             _world = new WorldBuilder()
                 .AddSystem(new WorldDrawingSystem(Camera, Game.SpriteBatch))
                 .AddSystem(new LocalPlayerSystem())
                 .AddSystem(new CameraFollowSystem(Camera))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
-                .AddSystem(new EntityDebugSystem(Game.Content.Load<SpriteFont>("hobo"), Camera, Game.SpriteBatch))
+                //.AddSystem(new EntityDebugSystem(Game.Content.Load<SpriteFont>("hobo"), Camera, Game.SpriteBatch))
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);
@@ -48,11 +48,13 @@ namespace Celestia.Screens {
 
         public override void Update(GameTime gameTime)
         {
+            DebugGUI.camCenter = Camera.Center;
             _world.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
+            Game.GraphicsDevice.Clear(Color.SkyBlue);
             _world.Draw(gameTime);
         }
 

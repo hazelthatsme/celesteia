@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Celestia.Graphics;
 using Celestia.Screens.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,14 +11,14 @@ using MonoGame.Extended.Sprites;
 namespace Celestia.Screens.Systems {
     public class CameraFollowSystem : EntityUpdateSystem
     {
-        private readonly OrthographicCamera _camera;
+        private readonly Camera2D _camera;
         private Vector2 _current;
         private Vector2 _target;
 
         private ComponentMapper<Transform2> transformMapper;
         private ComponentMapper<CameraFollow> followMapper;
 
-        public CameraFollowSystem(OrthographicCamera camera) : base(Aspect.All(typeof(Transform2), typeof(CameraFollow))) {
+        public CameraFollowSystem(Camera2D camera) : base(Aspect.All(typeof(Transform2), typeof(CameraFollow))) {
             _camera = camera;
         }
 
@@ -29,7 +30,7 @@ namespace Celestia.Screens.Systems {
 
         public override void Update(GameTime gameTime)
         {
-            Vector2 calculatedCenter = _camera.Position;
+            Vector2 calculatedCenter = _camera.Center;
             float cumulativeWeight = 0f;
 
             foreach (int entityId in ActiveEntities) {
@@ -43,9 +44,8 @@ namespace Celestia.Screens.Systems {
             _target = calculatedCenter;
 
             // Move camera smoothly.
-            _current = Vector2.Lerp(_current, _target, gameTime.GetElapsedSeconds());
-            _camera.LookAt(_current);
-            Debug.WriteLine(_camera.Center);
+            _current = Vector2.Lerp(_current, _target, gameTime.GetElapsedSeconds() * Camera2D.FOLLOW_SPEED);
+            _camera.MoveTo(_current);
         }
     }
 }

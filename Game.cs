@@ -136,8 +136,6 @@ namespace Celestia
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-
             base.Draw(gameTime);
 
             globalGUIs.ForEach((gui) => { gui.Draw(gameTime); });

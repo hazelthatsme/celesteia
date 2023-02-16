@@ -1,3 +1,4 @@
+using Celestia.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -7,12 +8,12 @@ using MonoGame.Extended.Entities.Systems;
 namespace Celestia.Screens.Systems {
     public class WorldDrawingSystem : EntityDrawSystem
     {
-        private readonly OrthographicCamera _camera;
+        private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
 
         private ComponentMapper<Chunk> chunkMapper;
 
-        public WorldDrawingSystem(OrthographicCamera camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Chunk))) {
+        public WorldDrawingSystem(Camera2D camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Chunk))) {
             _camera = camera;
             _spriteBatch = spriteBatch;
         }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Celestia.GameInput;
 using Celestia.Resources.Sprites;
 using Celestia.Screens.Components;
+using Celestia.Screens.Components.Entities.Player.Movement;
 using Celestia.Utilities.ECS;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,15 +22,18 @@ namespace Celestia.Resources.Types {
 
             Types = new List<EntityType>();
 
-            Types.Add(new EntityType(0, "Player", TextureAtlas.Create("player", Content.Load<Texture2D>("sprites/entities/player/base_sample"), 16, 24), 
+            Types.Add(new EntityType(0, "Player", TextureAtlas.Create("player", Content.Load<Texture2D>("sprites/entities/player/astronaut"), 24, 24), 
                 (world, atlas) => { new EntityBuilder(world)
                     .AddComponent(new Transform2())
-                    .AddComponent(new EntityFrames(atlas, 0, 1, 1f / 16f))
-                    .AddComponent(new InputTest(new KeyDefinition(Keys.A, Keys.D)))
+                    .AddComponent(new EntityFrames(atlas, 0, 1, ResourceManager.SPRITE_SCALING))
+                    .AddComponent(new PlayerMovement()
+                        .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))
+                        .AddVertical(new KeyDefinition(Keys.W, Keys.S))
+                    )
                     .AddComponent(new LocalPlayer())
                     .AddComponent(new CameraFollow())
                     .AddComponent(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
-                        .Set(EntityAttribute.MovementSpeed, 10f)
+                        .Set(EntityAttribute.MovementSpeed, 5f)
                     ))
                     .Build();
                 }

@@ -18,22 +18,6 @@ namespace Celestia.Utilities.ECS {
             Game = game;
         }
 
-        public Entity CreatePlayer() {
-            Texture2D playerSprites = Game.Content.Load<Texture2D>("sprites/entities/player/base_sample");
-            TextureAtlas atlas = TextureAtlas.Create("playerAtlas", playerSprites, 16, 24);
-
-            return new EntityBuilder(World)
-                .AddComponent(new Transform2())
-                .AddComponent(new Sprite(atlas.GetRegion(0)))
-                .AddComponent(new InputTest(new KeyDefinition(Keys.A, Keys.D)))
-                .AddComponent(new LocalPlayer())
-                .AddComponent(new CameraFollow())
-                .AddComponent(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
-                    .Set(EntityAttribute.MovementSpeed, 10f)
-                ))
-                .Build();
-        }
-
         public Entity CreateChunk() {
             return new EntityBuilder(World)
                 .AddComponent(new Chunk())
