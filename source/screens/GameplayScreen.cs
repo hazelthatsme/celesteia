@@ -11,6 +11,7 @@ using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.ViewportAdapters;
 using MonoGame.Extended.Sprites;
+using Celestia.Resources;
 
 namespace Celestia.Screens {
     public class GameplayScreen : GameScreen {
@@ -26,24 +27,27 @@ namespace Celestia.Screens {
         {
             base.LoadContent();
 
-            BoxingViewportAdapter viewportAdapter = new BoxingViewportAdapter(Game.Window, Game.GraphicsDevice, 800, 450);
-            Camera = new OrthographicCamera(viewportAdapter);
+            ViewportAdapter adapter = new ScalingViewportAdapter(GraphicsDevice, 10, 5);
+            Camera = new OrthographicCamera(adapter);
             Camera.Zoom = 5f;
 
             _world = new WorldBuilder()
+                .AddSystem(new WorldDrawingSystem(Camera, Game.SpriteBatch))
                 .AddSystem(new LocalPlayerSystem())
                 .AddSystem(new CameraFollowSystem(Camera))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
+                .AddSystem(new EntityDebugSystem(Game.Content.Load<SpriteFont>("hobo"), Camera, Game.SpriteBatch))
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);
             
-            _entityFactory.CreatePlayer();
+            ResourceManager.Entities.Types.Find(x => x.EntityID == 0).Instantiate(_world);
+
+            _entityFactory.CreateChunk();
         }
 
         public override void Update(GameTime gameTime)
         {
-            Camera.LookAt(Vector2.Zero);
             _world.Update(gameTime);
         }
 

@@ -33,5 +33,11 @@ namespace Celestia.Utilities.ECS {
                 ))
                 .Build();
         }
+
+        public Entity CreateChunk() {
+            return new EntityBuilder(World)
+                .AddComponent(new Chunk())
+                .Build();
+        }
     }
 }

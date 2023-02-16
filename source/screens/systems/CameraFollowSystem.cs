@@ -45,6 +45,7 @@ namespace Celestia.Screens.Systems {
             // Move camera smoothly.
             _current = Vector2.Lerp(_current, _target, gameTime.GetElapsedSeconds());
             _camera.LookAt(_current);
+            Debug.WriteLine(_camera.Center);
         }
     }
 }

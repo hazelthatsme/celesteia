@@ -1,30 +1,25 @@
-using System.Diagnostics;
-using Celestia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Sprites;
 
 namespace Celestia.Screens.Systems {
-    public class CameraRenderSystem : EntityDrawSystem
+    public class WorldDrawingSystem : EntityDrawSystem
     {
         private readonly OrthographicCamera _camera;
         private readonly SpriteBatch _spriteBatch;
 
-        private ComponentMapper<Transform2> transformMapper;
-        private ComponentMapper<EntityFrames> entityFramesMapper;
+        private ComponentMapper<Chunk> chunkMapper;
 
-        public CameraRenderSystem(OrthographicCamera camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Transform2), typeof(EntityFrames))) {
+        public WorldDrawingSystem(OrthographicCamera camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Chunk))) {
             _camera = camera;
             _spriteBatch = spriteBatch;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            transformMapper = mapperService.GetMapper<Transform2>();
-            entityFramesMapper = mapperService.GetMapper<EntityFrames>();
+            chunkMapper = mapperService.GetMapper<Chunk>();
         }
 
         public override void Draw(GameTime gameTime)
@@ -32,10 +27,9 @@ namespace Celestia.Screens.Systems {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
             
             foreach (int entityId in ActiveEntities) {
-                Transform2 transform = transformMapper.Get(entityId);
-                EntityFrames entityFrames = entityFramesMapper.Get(entityId);
+                Chunk chunk = chunkMapper.Get(entityId);
 
-                entityFrames.Draw(0, _spriteBatch, transform.Position, Color.White);
+                chunk.Draw(gameTime, _spriteBatch);
             }
 
             _spriteBatch.End();

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Celestia.Graphics;
 using MonoGame.Extended.Screens;
 using System.Linq;
+using Celestia.Resources;
 
 namespace Celestia
 {
@@ -89,6 +90,8 @@ namespace Celestia
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+
+            ResourceManager.LoadContent(Content);
 
             // Load global GUIs.
             LoadGUI();

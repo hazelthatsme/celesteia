@@ -3,10 +3,8 @@ using System.Diagnostics;
 using Celestia.GameInput;
 using Celestia.UI;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
-using MonoGame.Extended.Input.InputListeners;
 
 namespace Celestia.GUIs {
     public class GUI {

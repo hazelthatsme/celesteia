@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using Celestia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -7,16 +5,18 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
 
-namespace Celestia.Screens.Systems {
-    public class CameraRenderSystem : EntityDrawSystem
+namespace Celestia.Screens.Systems {    
+    public class EntityDebugSystem : EntityDrawSystem
     {
         private readonly OrthographicCamera _camera;
         private readonly SpriteBatch _spriteBatch;
+        private readonly SpriteFont _font;
 
         private ComponentMapper<Transform2> transformMapper;
-        private ComponentMapper<EntityFrames> entityFramesMapper;
+        private ComponentMapper<Sprite> spriteMapper;
 
-        public CameraRenderSystem(OrthographicCamera camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Transform2), typeof(EntityFrames))) {
+        public EntityDebugSystem(SpriteFont font, OrthographicCamera camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Transform2))) {
+            _font = font;
             _camera = camera;
             _spriteBatch = spriteBatch;
         }
@@ -24,18 +24,17 @@ namespace Celestia.Screens.Systems {
         public override void Initialize(IComponentMapperService mapperService)
         {
             transformMapper = mapperService.GetMapper<Transform2>();
-            entityFramesMapper = mapperService.GetMapper<EntityFrames>();
+            spriteMapper = mapperService.GetMapper<Sprite>();
         }
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
             
             foreach (int entityId in ActiveEntities) {
                 Transform2 transform = transformMapper.Get(entityId);
-                EntityFrames entityFrames = entityFramesMapper.Get(entityId);
 
-                entityFrames.Draw(0, _spriteBatch, transform.Position, Color.White);
+                _spriteBatch.DrawString(_font, transform.Position.ToString(), transform.Position, Color.White, 0f, new Vector2(0.5f, 0.5f), 1f, SpriteEffects.None, 0f);
             }
 
             _spriteBatch.End();
