@@ -19,7 +19,6 @@ namespace Celestia.GUIs {
         }
 
         public virtual void ResolveMouseClick(Point position, MouseButton button) {
-            Debug.WriteLine(position);
             elements.FindAll(x => x.GetType() == typeof(Button)).ForEach(element => {
                 Button button = element as Button;
 
