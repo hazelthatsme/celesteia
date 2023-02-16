@@ -48,7 +48,6 @@ namespace Celestia.Screens {
 
         public override void Update(GameTime gameTime)
         {
-            DebugGUI.camCenter = Camera.Center;
             _world.Update(gameTime);
         }
 

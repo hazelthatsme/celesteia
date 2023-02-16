@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using Celestia.Resources;
+using Celestia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,15 +17,15 @@ namespace Celestia.UI {
 
         public TextAlignment textAlignment = TextAlignment.Left;
 
-        private SpriteFont spriteFont;
+        private FontType font;
 
-        public Button(Rect rect, OnClick onClick, Texture2D texture, string text, TextAlignment alignment, SpriteFont font) {
+        public Button(Rect rect, OnClick onClick, Texture2D texture, string text, TextAlignment alignment) {
             this.rect = rect;
             this.onClick = onClick;
             this.texture = texture;
             this.text = text;
             this.textAlignment = alignment;
-            this.spriteFont = font;
+            font = ResourceManager.Fonts.GetFontType("Hobo");
         }
 
         public void Click(Point position) {
@@ -36,9 +38,10 @@ namespace Celestia.UI {
             spriteBatch.Draw(GetTexture(spriteBatch), rect.ToXnaRectangle(), null, Color.White);
 
             // Credit for text alignment: https://stackoverflow.com/a/10263903
+            float targetSize = 24f;
 
             // Measure the text's size from the sprite font.
-            Vector2 size = spriteFont.MeasureString(text);
+            Vector2 size = font.Font.MeasureString(text) * font.Scale(targetSize);
             
             // Get the origin point at the center.
             Vector2 origin = 0.5f * size;
@@ -55,7 +58,7 @@ namespace Celestia.UI {
             if (textAlignment.HasFlag(TextAlignment.Bottom))
                 origin.Y -= rect.Height.Resolve() / 2f - size.Y / 2f;
 
-            spriteBatch.DrawString(spriteFont, text, rect.GetCenter(), Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.DrawString(font.Font, text, rect.GetCenter(), Color.White, 0f, origin, font.Scale(targetSize), SpriteEffects.None, 0f);
         }
 
         public Texture2D GetTexture(SpriteBatch spriteBatch) {
