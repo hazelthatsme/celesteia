@@ -37,9 +37,10 @@ namespace Celestia.Screens {
                 .AddSystem(new MainMenuRenderSystem(Camera, Game.SpriteBatch))
                 .Build();
 
-            new EntityFactory(_world, Game).CreateSkyboxPortion("stars", Color.White, 1f, -0.1f, .9f);
-            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(165,216,255), 125f / 125f, 3f, .5f);
-            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(255,165,246), 0f / 125f, -2f, .7f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("stars", Color.White, -0.1f, .9f);
+            //new EntityFactory(_world, Game).CreateSkyboxPortion("shadow", Color.White, 1f, 1f, .  8f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(255,165,246,20), -2f, .3f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(165,216,255,45), 3f, .5f);
 
             this.mainMenu = new MainMenu(Game);
             this.mainMenu.LoadContent();

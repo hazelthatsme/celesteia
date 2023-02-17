@@ -1,9 +1,11 @@
 using System.Diagnostics;
+using Celestia.GameInput;
 using Celestia.Graphics;
 using Celestia.Resources.Sprites;
 using Celestia.Screens.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -31,7 +33,7 @@ namespace Celestia.Screens.Systems.MainMenu {
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
+            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, RasterizerState.CullNone, null, _camera.GetViewMatrix());
             
             foreach (int entityId in ActiveEntities) {
                 SkyboxPortionFrames frames = framesMapper.Get(entityId);

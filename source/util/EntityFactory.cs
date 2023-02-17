@@ -23,12 +23,12 @@ namespace Celestia.Utilities.ECS {
                 .Build();
         }
 
-        public Entity CreateSkyboxPortion(string name, Color color, float alpha, float rotation, float depth)
+        public Entity CreateSkyboxPortion(string name, Color color, float rotation, float depth)
         {
             return new EntityBuilder(World)
                 .AddComponent(new Transform2())
                 .AddComponent(new MainMenuRotateZ(rotation))
-                .AddComponent(ResourceManager.Skybox.GetAsset(name).Frames.SetColor(color).SetAlpha(alpha).SetDepth(depth))
+                .AddComponent(ResourceManager.Skybox.GetAsset(name).Frames.Clone().SetColor(color).SetDepth(depth))
                 .Build();
         }
     }
