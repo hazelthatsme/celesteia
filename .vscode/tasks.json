@@ -21,7 +21,8 @@
                 "publish",
                 "${workspaceFolder}/Celesteia.csproj",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary",
+                "/p:Configuration=Release"
             ],
             "problemMatcher": "$msCompile"
         },
