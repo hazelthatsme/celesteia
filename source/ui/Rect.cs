@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace Celestia {
+namespace Celesteia.UI {
     public class Rect {
         public static Rect AbsoluteZero = new Rect(AbsoluteUnit.WithValue(0f));
         public static Rect AbsoluteOne = new Rect(AbsoluteUnit.WithValue(1f));
@@ -112,11 +112,13 @@ namespace Celestia {
 
         public float Resolve()
         {
-            switch (orientation) {
-                case ScreenSpaceOrientation.Horizontal:
-                    return value * Game.GetGameWindow().ClientBounds.Width;
-                case ScreenSpaceOrientation.Vertical:
-                    return value * Game.GetGameWindow().ClientBounds.Height;
+            if (UIReferences.gameWindow != null) {
+                switch (orientation) {
+                    case ScreenSpaceOrientation.Horizontal:
+                        return value * UIReferences.gameWindow.ClientBounds.Width;
+                    case ScreenSpaceOrientation.Vertical:
+                        return value * UIReferences.gameWindow.ClientBounds.Height;
+                }
             }
             return 0f;
         }

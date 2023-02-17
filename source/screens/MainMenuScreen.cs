@@ -1,50 +1,71 @@
 using System.Diagnostics;
-using Celestia.UI;
-using Microsoft.Xna.Framework.Content;
+using Celesteia.GUIs;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Screens;
+using Microsoft.Xna.Framework.Media;
+using Celesteia.Graphics;
+using MonoGame.Extended.Entities;
+using Celesteia.Screens.Systems.MainMenu;
+using Celesteia.Utilities.ECS;
 
-namespace Celestia.Screens {
-    public class MainMenuScreen : IScreen
+namespace Celesteia.Screens {
+    public class MainMenuScreen : GameScreen
     {
-        private Game gameRef;
-        private Menu mainMenu;
-        private SpriteFont arialBold;
+        private new Game Game => (Game) base.Game;
 
-        public MainMenuScreen(Game gameRef) {
-            this.gameRef = gameRef;
+        public MainMenuScreen(Game game) : base(game) {}
 
-            this.mainMenu = new Menu();
-        }
+        private MainMenu mainMenu;
 
-        public void Load(ContentManager contentManager)
+        private Song mainMenuTheme;
+
+        private Camera2D Camera;
+        private World _world;
+
+        public override void LoadContent()
         {
-            arialBold = contentManager.Load<SpriteFont>("ArialBold");
-            this.mainMenu.elements.Add(new Button(new Rect(
-                AbsoluteUnit.WithValue(10f),
-                AbsoluteUnit.WithValue(10f),
-                AbsoluteUnit.WithValue(200f),
-                AbsoluteUnit.WithValue(50f)
-            ),
-            (position) => { gameRef.Exit(); }, null, "Quit Game", TextAlignment.Center, arialBold));
-            return;
+            base.LoadContent();
+
+            mainMenuTheme = Game.Content.Load<Song>("music/stargaze_symphony");
+            Game.Music.PlayNow(mainMenuTheme);
+
+            Camera = new Camera2D(GraphicsDevice);
+
+            _world = new WorldBuilder()
+                .AddSystem(new MainMenuBackgroundSystem())
+                .AddSystem(new MainMenuRenderSystem(Camera, Game.SpriteBatch))
+                .Build();
+
+            new EntityFactory(_world, Game).CreateSkyboxPortion("stars", Color.White, -0.1f, .9f);
+            //new EntityFactory(_world, Game).CreateSkyboxPortion("shadow", Color.White, 1f, 1f, .  8f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(255,165,246,20), -2f, .3f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(165,216,255,45), 3f, .5f);
+
+            this.mainMenu = new MainMenu(Game);
+            this.mainMenu.LoadContent();
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
-            this.mainMenu.Draw(spriteBatch);
-            return;
+            GraphicsDevice.Clear(Color.Black);
+
+            _world.Draw(gameTime);
+            this.mainMenu.Draw(gameTime);
         }
 
-        public void Update(float deltaTime)
+        public override void Update(GameTime gameTime)
         {
-            if (!Input.MouseButtons.Equals(MouseButtonState.None)) {
-                this.mainMenu.ResolveMouseClick(Input.MousePosition, Input.MouseButtons);
-            }
-            return;
+            _world.Update(gameTime);
+            this.mainMenu.Update(gameTime);
         }
 
-        public void Dispose() {
+        public override void Dispose()
+        {
+            Debug.WriteLine("Unloading MainMenuScreen content...");
+            base.UnloadContent();
             Debug.WriteLine("Disposing MainMenuScreen...");
+            base.Dispose();
         }
     }
 }

@@ -1,137 +1,153 @@
 ﻿using System;
-using System.Diagnostics;
-using Celestia.Screens;
-using Celestia.UI;
+using Celesteia.Screens;
+using Celesteia.GameInput;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Celesteia.GUIs;
+using System.Collections.Generic;
+using Celesteia.Graphics;
+using MonoGame.Extended.Screens;
+using System.Linq;
+using Celesteia.Resources;
+using MonoGame.Extended.Screens.Transitions;
 
-namespace Celestia
+namespace Celesteia
 {
     public class Game : Microsoft.Xna.Framework.Game
     {
-        /* BEGINNING OF EXPERIMENTAL INSTANCE-BASED CONTROLS. */
-        /* Maybe do this a little more neatly? */
-        private static Game instance;
+        public static bool DebugMode { get; private set; }
+        
+        private readonly List<string> cmdArgs;
 
-        public static GameWindow GetGameWindow() { return instance.Window; }
-
-        public static SpriteBatch GetSpriteBatch() { return instance._spriteBatch; }
-
-        /* END OF EXPERIMENTAL STUFF. */
+        private double maximumFramerate = 144;
 
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-        private GameWindow _window;
+        private GraphicsController GraphicsController;
+        public SpriteBatch SpriteBatch;
 
-        private bool _isFullScreen = false;
-        private bool _isBorderless = true;
-        private int _windowedWidth = 0;
-        private int _windowedHeight = 0;
+        private List<GUI> globalGUIs;
 
-        private Menu[] activeMenus;
-
-        private IScreen _screen;
+        private readonly ScreenManager _screenManager;
+        public readonly MusicManager Music;
 
         public Game()
         {
+            // Graphics setup.
             _graphics = new GraphicsDeviceManager(this);
-            _window = Window;
+            GraphicsController = new GraphicsController(this, _graphics);
 
+            // Load command line arguments into list.
+            cmdArgs = Environment.GetCommandLineArgs().ToList();
+
+            // Declare root of content management.
             Content.RootDirectory = "Content";
+
+            // Make sure mouse is visible.
             IsMouseVisible = true;
+            
+            // Load the screen manager.
+            _screenManager = new ScreenManager();
+            Components.Add(_screenManager);
 
-            // Allow game window to be resized.
-            Window.AllowUserResizing = true;
-        }
-
-        public void ToggleFullScreen() {
-            _isFullScreen = !_isFullScreen;
-            ApplyFullscreenChange();
-        }
-
-        public void ApplyFullscreenChange() {
-            if (_isFullScreen) GoFullScreen();
-            else LeaveFullScreen();
-        }
-
-        private void ApplyHardwareMode() {
-            _graphics.HardwareModeSwitch = !_isBorderless;
-            _graphics.ApplyChanges();
-        }
-
-        private void GoFullScreen() {
-            _windowedWidth = Window.ClientBounds.Width;
-            _windowedHeight = Window.ClientBounds.Height;
-
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            _graphics.IsFullScreen = true;
-
-            ApplyHardwareMode();
-        }
-
-        private void LeaveFullScreen() {
-            _graphics.PreferredBackBufferWidth = _windowedWidth;
-            _graphics.PreferredBackBufferHeight = _windowedHeight;
-            _graphics.IsFullScreen = false;
-            _graphics.ApplyChanges();
+            Music = new MusicManager(this);
+            Components.Add(Music);
         }
 
         protected override void Initialize()
         {
-            instance = this;
+            // Automatically enable debug mode when running a debug build.
+            #if DEBUG
+                DebugMode = true;
+            #endif
 
-            _screen = new SplashScreen(this);
-            activeMenus = new Menu[16];
+            // Set up graphics and window (eventually from settings).
+            SetupGraphicsAndWindow();
 
-            Window.Title = "Celestia";
+            // Initialize input management.
+            Input.Initialize();
 
-            //_graphics.PreferMultiSampling = false;
-            if (!_isFullScreen) ToggleFullScreen();
-            _graphics.ApplyChanges();
-
+            // Run XNA native initialization logic.
             base.Initialize();
+        }
+
+        private void SetupGraphicsAndWindow() {
+            GraphicsController.VSync = true;
+            GraphicsController.FullScreen = FullscreenMode.Windowed;
+            GraphicsController.Resolution = Window.ClientBounds;
+            GraphicsController.Apply();
+            
+            // Disable slowdown on window focus loss.
+            InactiveSleepTime = new TimeSpan(0);
+
+            // Set maximum framerate to avoid resource soaking.
+            IsFixedTimeStep = true;
+            TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
+
+            // Allow game window to be resized, and set the title.
+            Window.AllowUserResizing = true;
+            Window.Title = "Celesteia";
+
+            // Make sure the UI knows what game window to refer to for screen space calculations.
+            UIReferences.gameWindow = Window;
         }
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // Load the splash screen.
-            LoadScreen(new SplashScreen(this));
+            ResourceManager.LoadContent(Content);
+
+            // Load global GUIs.
+            LoadGUI();
+
+            // Load the splash screen if it's a release build, load the game directly if it's a debug build.
+            if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this));
+            else LoadScreen(new SplashScreen(this));
         }
 
-        public void LoadScreen(IScreen screen) {
-            _screen?.Dispose();
+        private void LoadGUI() {
+            globalGUIs = new List<GUI>();
 
-            _screen = screen;
-            _screen.Load(Content);
+            globalGUIs.Add(new DebugGUI(this));
+
+            // Load each global GUI.
+            globalGUIs.ForEach((gui) => { gui.LoadContent(); });
+        }
+
+        public void LoadScreen(GameScreen screen, Transition transition) {
+            _screenManager.LoadScreen(screen, transition);
+        }
+
+        public void LoadScreen(GameScreen screen) {
+            _screenManager.LoadScreen(screen);
         }
 
         protected override void Update(GameTime gameTime)
         {
+            // Update the input.
             Input.Update();
 
-            if (Input.GetKeyDown(Keys.F11)) ToggleFullScreen();
+            // Update each global GUI.
+            globalGUIs.ForEach((gui) => { gui.Update(gameTime); });
 
-            _screen.Update((float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f));
+            // If F3 is pressed, toggle Debug Mode.
+            if (KeyboardWrapper.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
+
+            // If F11 is pressed, toggle Fullscreen.
+            if (KeyboardWrapper.GetKeyDown(Keys.F11)) {
+                GraphicsController.ToggleFullScreen();
+                GraphicsController.Apply();
+            }
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-
-            // Draw the screen's content.
-            _screen.Draw(_spriteBatch);
-
-            _spriteBatch.End();
-
             base.Draw(gameTime);
+
+            globalGUIs.ForEach((gui) => { gui.Draw(gameTime); });
         }
     }
 }

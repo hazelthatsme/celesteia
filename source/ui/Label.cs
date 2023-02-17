@@ -1,16 +1,12 @@
-using Celesteia.Resources;
 using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.UI {
-    public class Button : IElement {
+    public class Label : IElement {
         private Rect rect = Rect.AbsoluteZero;
 
-        public delegate void OnClick(Point position);
-        private OnClick onClick = null;
-
-        private Texture2D texture;
+        private Texture2D background;
 
         public string text = "";
 
@@ -18,26 +14,23 @@ namespace Celesteia.UI {
 
         private FontType font;
 
-        public Button(Rect rect, OnClick onClick, Texture2D texture, string text, TextAlignment alignment) {
+        public Label(Rect rect, Texture2D background, string text, TextAlignment alignment, FontType font) {
             this.rect = rect;
-            this.onClick = onClick;
-            this.texture = texture;
+            this.background = background;
             this.text = text;
             this.textAlignment = alignment;
-            font = ResourceManager.Fonts.GetFontType("Hobo");
+            this.font = font;
         }
 
-        public void Click(Point position) {
-            onClick?.Invoke(position);
-        }
+        public Label(Rect rect, string text, TextAlignment alignment, FontType font) : this(rect, null, text, alignment, font) {}
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // Draw the button's texture.
-            spriteBatch.Draw(GetTexture(spriteBatch), rect.ToXnaRectangle(), null, Color.White);
+            // Draw the label's background, if present.
+            if (background != null) spriteBatch.Draw(GetTexture(spriteBatch), rect.ToXnaRectangle(), null, Color.White);
 
             // Credit for text alignment: https://stackoverflow.com/a/10263903
-            float targetSize = 24f;
+            float targetSize = 12f;
 
             // Measure the text's size from the sprite font.
             Vector2 size = font.Font.MeasureString(text);
@@ -61,16 +54,7 @@ namespace Celesteia.UI {
         }
 
         public Texture2D GetTexture(SpriteBatch spriteBatch) {
-            if (this.texture == null) {
-                this.texture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                this.texture.SetData(new[] { Color.Gray });
-            }
-
-            return this.texture;
-        }
-
-        public void SetOnClick(OnClick onClick) {
-            this.onClick = onClick;
+            return this.background;
         }
 
         public Rect GetRect()
@@ -78,9 +62,9 @@ namespace Celesteia.UI {
             return this.rect;
         }
 
-        public void SetTexture(Texture2D texture)
+        public void SetTexture(Texture2D background)
         {
-            this.texture = texture;
+            this.background = background;
         }
 
         public void SetRect(Rect rect)

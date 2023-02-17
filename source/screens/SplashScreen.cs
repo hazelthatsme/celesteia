@@ -1,31 +1,33 @@
 using System;
 using System.Diagnostics;
-using Celestia.UI;
+using Celesteia.GameInput;
+using Celesteia.UI;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Screens;
 
-namespace Celestia.Screens {
-    public class SplashScreen : IScreen {
-        private Game gameRef;
+namespace Celesteia.Screens {
+    public class SplashScreen : GameScreen {
+        private new Game Game => (Game) base.Game;
 
-        SpriteFont arialBold;
         Texture2D leafalLogo;
+        SoundEffect splashSound;
+        
         Image backgroundImage;
         Image logoElement;
         Rect logoRect;
 
         private float logoRatio;
 
-        public SplashScreen(Game gameRef) {
-            this.gameRef = gameRef;
-        }
+        public SplashScreen(Game game) : base(game) {}
 
-        public void Load(ContentManager contentManager)
+        public override void LoadContent()
         {
-            arialBold = contentManager.Load<SpriteFont>("ArialBold");
-            leafalLogo = contentManager.Load<Texture2D>("branding/leafal/TextLogo");
+            base.LoadContent();
+
+            leafalLogo = Game.Content.Load<Texture2D>("branding/leafal/leafal_text_logo");
+            splashSound = Game.Content.Load<SoundEffect>("branding/leafal/splash");
 
             logoRatio = leafalLogo.Height / (float) leafalLogo.Width;
 
@@ -43,24 +45,25 @@ namespace Celestia.Screens {
                 new ScreenSpaceUnit(logoRatio * 0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal)
             );
             logoElement = new Image(logoRect, leafalLogo, Color.White, 1f);
+
+            splashSound.Play(0.5f, 0f, 0f);
         }
         
         private float timeElapsed = 0f;
-        private float fadeInTime = 1.5f;
-        private float fadeOutTime = 1.5f;
-        private float duration = 5f;
+        private float fadeInTime = 1.25f;
+        private float fadeOutTime = 0.75f;
+        private float duration = 6f;
         private float endTimeout = 1f;
         private float progress = 0f;
         private Color color = Color.White;
 
-        public void Update(float deltaTime) {
-            if (progress >= 1f || (Input.GetAnyKey() && !Input.GetKeyHeld(Keys.F11))) {
-                gameRef.LoadScreen(new MainMenuScreen(gameRef));
+        public override void Update(GameTime gameTime) {
+            if (progress >= 1f || Input.GetAny()) {
+                Game.LoadScreen(new MainMenuScreen(Game), new MonoGame.Extended.Screens.Transitions.FadeTransition(GraphicsDevice, Color.Black));
                 return;
             }
 
-
-            timeElapsed += deltaTime;
+            timeElapsed += (float) (gameTime.ElapsedGameTime.TotalMilliseconds / 1000f);
             float alpha = 1f;
             if (timeElapsed <= fadeInTime) alpha = Math.Min(timeElapsed / fadeInTime, 1f);
             if (duration - fadeOutTime <= timeElapsed) alpha = Math.Max((duration - timeElapsed) / fadeOutTime, 0f);
@@ -83,17 +86,26 @@ namespace Celestia.Screens {
             logoElement.SetRect(r);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
-            backgroundImage.Draw(spriteBatch);
+            GraphicsDevice.Clear(Color.Black);
+
+            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp);
+
+            backgroundImage.Draw(Game.SpriteBatch);
             
             logoElement.color = color;
-            logoElement.Draw(spriteBatch);
+            logoElement.Draw(Game.SpriteBatch);
+
+            Game.SpriteBatch.End();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            Debug.WriteLine("Unloading SplashScreen content...");
+            base.UnloadContent();
             Debug.WriteLine("Disposing SplashScreen...");
+            base.Dispose();
         }
     }
 }
