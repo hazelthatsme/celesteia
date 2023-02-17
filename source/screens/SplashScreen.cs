@@ -50,16 +50,16 @@ namespace Celestia.Screens {
         }
         
         private float timeElapsed = 0f;
-        private float fadeInTime = 0.25f;
+        private float fadeInTime = 1.25f;
         private float fadeOutTime = 0.75f;
-        private float duration = 3f;
+        private float duration = 6f;
         private float endTimeout = 1f;
         private float progress = 0f;
         private Color color = Color.White;
 
         public override void Update(GameTime gameTime) {
             if (progress >= 1f || Input.GetAny()) {
-                Game.LoadScreen(new MainMenuScreen(Game));
+                Game.LoadScreen(new MainMenuScreen(Game), new MonoGame.Extended.Screens.Transitions.FadeTransition(GraphicsDevice, Color.Black));
                 return;
             }
 
@@ -89,7 +89,8 @@ namespace Celestia.Screens {
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.AnisotropicWrap);
+
+            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.AnisotropicWrap);
 
             backgroundImage.Draw(Game.SpriteBatch);
             

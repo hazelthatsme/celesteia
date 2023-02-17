@@ -29,6 +29,8 @@ namespace Celestia.Screens {
         {
             base.LoadContent();
 
+            Game.Music.PlayNow(null);
+
             Camera = new Camera2D(GraphicsDevice);
 
             _world = new WorldBuilder()

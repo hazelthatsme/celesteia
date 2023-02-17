@@ -10,6 +10,7 @@ using Celestia.Graphics;
 using MonoGame.Extended.Screens;
 using System.Linq;
 using Celestia.Resources;
+using MonoGame.Extended.Screens.Transitions;
 
 namespace Celestia
 {
@@ -28,6 +29,7 @@ namespace Celestia
         private List<GUI> globalGUIs;
 
         private readonly ScreenManager _screenManager;
+        public readonly MusicManager Music;
 
         public Game()
         {
@@ -47,6 +49,9 @@ namespace Celestia
             // Load the screen manager.
             _screenManager = new ScreenManager();
             Components.Add(_screenManager);
+
+            Music = new MusicManager(this);
+            Components.Add(Music);
         }
 
         protected override void Initialize()
@@ -108,6 +113,10 @@ namespace Celestia
 
             // Load each global GUI.
             globalGUIs.ForEach((gui) => { gui.LoadContent(); });
+        }
+
+        public void LoadScreen(GameScreen screen, Transition transition) {
+            _screenManager.LoadScreen(screen, transition);
         }
 
         public void LoadScreen(GameScreen screen) {

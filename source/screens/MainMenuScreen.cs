@@ -25,9 +25,7 @@ namespace Celestia.Screens {
 
             mainMenuTheme = Game.Content.Load<Song>("music/stargaze_symphony");
 
-            MediaPlayer.IsRepeating = true;
-            MediaPlayer.Volume = 0.1f;
-            MediaPlayer.Play(mainMenuTheme);
+            Game.Music.PlayNow(mainMenuTheme);
 
             this.mainMenu = new MainMenu(Game);
             this.mainMenu.LoadContent();
