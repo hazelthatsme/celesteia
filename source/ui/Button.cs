@@ -1,9 +1,9 @@
-using Celestia.Resources;
-using Celestia.Resources.Types;
+using Celesteia.Resources;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.UI {
+namespace Celesteia.UI {
     public class Button : IElement {
         private Rect rect = Rect.AbsoluteZero;
 

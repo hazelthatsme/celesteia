@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celestia.Resources.Sprites;
+using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celestia.Resources.Collections {
+namespace Celesteia.Resources.Collections {
     public class SkyboxAssets {        
         private List<SkyboxAsset> Assets;
 

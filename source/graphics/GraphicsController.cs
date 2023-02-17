@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.Graphics {
+namespace Celesteia.Graphics {
     public class GraphicsController {
         private readonly GraphicsDeviceManager manager;
         private readonly Game game;

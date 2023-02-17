@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Celestia.GameInput;
+using Celesteia.GameInput;
 
-namespace Celestia.Screens.Components.Entities.Player.Movement {
+namespace Celesteia.Screens.Components.Entities.Player.Movement {
     public class PlayerMovement {
         public List<IInputDefinition> Horizontal;
         public List<IInputDefinition> Vertical;

@@ -1,12 +1,12 @@
 using System.Diagnostics;
-using Celestia.Resources;
-using Celestia.Resources.Types;
-using Celestia.UI;
+using Celesteia.Resources;
+using Celesteia.Resources.Types;
+using Celesteia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.GUIs {
+namespace Celesteia.GUIs {
     public class DebugGUI : GUI {
         private new Game Game => (Game) base.Game;
         public DebugGUI(Game game) : base(game) {}

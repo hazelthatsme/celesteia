@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celestia.Resources.Types;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celestia.Resources.Sprites {
+namespace Celesteia.Resources.Sprites {
     public class EntityFrames {
         private readonly Vector2 _scaling;
 

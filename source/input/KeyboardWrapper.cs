@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 
-namespace Celestia.GameInput {
+namespace Celesteia.GameInput {
     public class KeyboardWrapper {
         private static KeyboardStateExtended state;
 

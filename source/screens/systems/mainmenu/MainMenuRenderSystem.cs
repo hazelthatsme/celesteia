@@ -1,8 +1,8 @@
 using System.Diagnostics;
-using Celestia.GameInput;
-using Celestia.Graphics;
-using Celestia.Resources.Sprites;
-using Celestia.Screens.Components;
+using Celesteia.GameInput;
+using Celesteia.Graphics;
+using Celesteia.Resources.Sprites;
+using Celesteia.Screens.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,7 +11,7 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
 
-namespace Celestia.Screens.Systems.MainMenu {
+namespace Celesteia.Screens.Systems.MainMenu {
     public class MainMenuRenderSystem : EntityDrawSystem
     {
         private ComponentMapper<Transform2> transformMapper;

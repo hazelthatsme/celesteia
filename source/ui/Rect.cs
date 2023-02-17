@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace Celestia.UI {
+namespace Celesteia.UI {
     public class Rect {
         public static Rect AbsoluteZero = new Rect(AbsoluteUnit.WithValue(0f));
         public static Rect AbsoluteOne = new Rect(AbsoluteUnit.WithValue(1f));

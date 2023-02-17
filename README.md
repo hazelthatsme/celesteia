@@ -1,4 +1,4 @@
-![Celestia Banner](/img/banner.jpg)
+![Celesteia Banner](/img/banner.jpg)
 
-# Celestia
-This repository contains the source code for Celestia.
+# Celesteia
+This repository contains the source code for Celesteia.

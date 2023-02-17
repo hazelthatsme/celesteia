@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Celestia.Screens.Components {
+namespace Celesteia.Screens.Components {
     public class EntityAttributes {
         public EntityAttributeMap Attributes;
 

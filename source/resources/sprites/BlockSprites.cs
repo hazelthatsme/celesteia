@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Celestia.Resources.Types;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celestia.Resources.Sprites {
+namespace Celesteia.Resources.Sprites {
     public class BlockFrames {
         private readonly int _size;
         private readonly Vector2 _scaling;

@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.UI {
+namespace Celesteia.UI {
     public interface IElement {
         // Get the containing rect of the element.
         Rect GetRect();

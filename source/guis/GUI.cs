@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celestia.GameInput;
-using Celestia.UI;
+using Celesteia.GameInput;
+using Celesteia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
 
-namespace Celestia.GUIs {
+namespace Celesteia.GUIs {
     public class GUI {
         public Game Game;
 

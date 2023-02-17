@@ -1,13 +1,13 @@
 using System.Diagnostics;
-using Celestia.Screens.Systems;
+using Celesteia.Screens.Systems;
 using Microsoft.Xna.Framework;
-using Celestia.Utilities.ECS;
+using Celesteia.Utilities.ECS;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
-using Celestia.Resources;
-using Celestia.Graphics;
+using Celesteia.Resources;
+using Celesteia.Graphics;
 
-namespace Celestia.Screens {
+namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
         private new Game Game => (Game) base.Game;
 

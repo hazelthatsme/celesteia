@@ -1,8 +1,8 @@
-using Celestia.Resources.Types;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.UI {
+namespace Celesteia.UI {
     public class Label : IElement {
         private Rect rect = Rect.AbsoluteZero;
 

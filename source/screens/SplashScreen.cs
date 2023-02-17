@@ -1,13 +1,13 @@
 using System;
 using System.Diagnostics;
-using Celestia.GameInput;
-using Celestia.UI;
+using Celesteia.GameInput;
+using Celesteia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 
-namespace Celestia.Screens {
+namespace Celesteia.Screens {
     public class SplashScreen : GameScreen {
         private new Game Game => (Game) base.Game;
 

@@ -1,7 +1,7 @@
 using System;
 using MonoGame.Extended.Entities;
 
-namespace Celestia.Utilities.ECS {
+namespace Celesteia.Utilities.ECS {
     public class EntityBuilder : IDisposable {
         private Entity entity;
 

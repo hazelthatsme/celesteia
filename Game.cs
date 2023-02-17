@@ -1,18 +1,18 @@
 ﻿using System;
-using Celestia.Screens;
-using Celestia.GameInput;
+using Celesteia.Screens;
+using Celesteia.GameInput;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Celestia.GUIs;
+using Celesteia.GUIs;
 using System.Collections.Generic;
-using Celestia.Graphics;
+using Celesteia.Graphics;
 using MonoGame.Extended.Screens;
 using System.Linq;
-using Celestia.Resources;
+using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
 
-namespace Celestia
+namespace Celesteia
 {
     public class Game : Microsoft.Xna.Framework.Game
     {
@@ -86,7 +86,7 @@ namespace Celestia
 
             // Allow game window to be resized, and set the title.
             Window.AllowUserResizing = true;
-            Window.Title = "Celestia";
+            Window.Title = "Celesteia";
 
             // Make sure the UI knows what game window to refer to for screen space calculations.
             UIReferences.gameWindow = Window;

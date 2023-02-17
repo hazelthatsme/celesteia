@@ -1,9 +1,9 @@
 using System.Diagnostics;
-using Celestia.Resources;
+using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.Graphics {
+namespace Celesteia.Graphics {
     public class Camera2D {
         public const float FOLLOW_SPEED = 5f;
 

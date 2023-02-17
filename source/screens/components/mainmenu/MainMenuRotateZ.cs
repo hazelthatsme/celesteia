@@ -1,4 +1,4 @@
-namespace Celestia.Screens.Systems.MainMenu {
+namespace Celesteia.Screens.Systems.MainMenu {
     public class MainMenuRotateZ {
         public float Magnitude { get { return _magnitude; } }
         public float _magnitude = 1f;

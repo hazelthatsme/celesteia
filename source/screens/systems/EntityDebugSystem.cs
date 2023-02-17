@@ -1,4 +1,4 @@
-using Celestia.Graphics;
+using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -6,7 +6,7 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
 
-namespace Celestia.Screens.Systems {    
+namespace Celesteia.Screens.Systems {    
     public class EntityDebugSystem : EntityDrawSystem
     {
         private readonly Camera2D _camera;

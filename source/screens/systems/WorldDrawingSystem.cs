@@ -1,10 +1,10 @@
-using Celestia.Graphics;
+using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
-namespace Celestia.Screens.Systems {
+namespace Celesteia.Screens.Systems {
     public class WorldDrawingSystem : EntityDrawSystem
     {
         private readonly Camera2D _camera;

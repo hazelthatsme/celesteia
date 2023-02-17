@@ -1,11 +1,11 @@
 using System.Diagnostics;
-using Celestia.Resources.Collections;
-using Celestia.Resources.Sprites;
-using Celestia.Resources.Types;
+using Celesteia.Resources.Collections;
+using Celesteia.Resources.Sprites;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.Resources {
+namespace Celesteia.Resources {
     public static class ResourceManager {
         public static BlockTypes Blocks = new BlockTypes();
         public static EntityTypes Entities = new EntityTypes();

@@ -1,10 +1,10 @@
-using Celestia.Screens;
-using Celestia.UI;
+using Celesteia.Screens;
+using Celesteia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.GUIs {
+namespace Celesteia.GUIs {
     public class MainMenu : GUI {
         private new Game Game => (Game) base.Game;
         public MainMenu(Game game) : base(game) {}
@@ -12,7 +12,7 @@ namespace Celestia.GUIs {
         private Texture2D logo;
 
         public override void LoadContent() {
-            logo = Game.Content.Load<Texture2D>("celestia/logo");
+            logo = Game.Content.Load<Texture2D>("celesteia/logo");
 
             float logoRatio = logo.Height / (float) logo.Width;
 

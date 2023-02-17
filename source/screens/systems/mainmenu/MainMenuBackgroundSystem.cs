@@ -1,11 +1,11 @@
-using Celestia.Graphics;
-using Celestia.Screens.Components;
+using Celesteia.Graphics;
+using Celesteia.Screens.Components;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
-namespace Celestia.Screens.Systems.MainMenu {
+namespace Celesteia.Screens.Systems.MainMenu {
     public class MainMenuBackgroundSystem : EntityUpdateSystem
     {
         private ComponentMapper<Transform2> transformMapper;

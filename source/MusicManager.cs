@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 
-namespace Celestia {
+namespace Celesteia {
     public class MusicManager : GameComponent {
         private new Game Game => (Game) base.Game;
 

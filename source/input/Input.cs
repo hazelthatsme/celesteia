@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input.InputListeners;
 
-namespace Celestia.GameInput {
+namespace Celesteia.GameInput {
     public static class Input {
         public static GamepadWrapper Gamepad { get; private set; }
 

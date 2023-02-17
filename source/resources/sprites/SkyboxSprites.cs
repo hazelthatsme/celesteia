@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Celestia.Resources.Types;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 using System.Diagnostics;
 
-namespace Celestia.Resources.Sprites {
+namespace Celesteia.Resources.Sprites {
     public class SkyboxPortionFrames {
         private readonly Vector2 _scaling;
 

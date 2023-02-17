@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Celestia
+namespace Celesteia
 {
     public static class Program
     {

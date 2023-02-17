@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celestia.GameInput;
-using Celestia.Resources.Sprites;
-using Celestia.Screens.Components;
-using Celestia.Screens.Components.Entities.Player.Movement;
-using Celestia.Utilities.ECS;
+using Celesteia.GameInput;
+using Celesteia.Resources.Sprites;
+using Celesteia.Screens.Components;
+using Celesteia.Screens.Components.Entities.Player.Movement;
+using Celesteia.Utilities.ECS;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,7 +13,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celestia.Resources.Types {
+namespace Celesteia.Resources.Types {
     public class EntityTypes {
         public List<EntityType> Types;
 

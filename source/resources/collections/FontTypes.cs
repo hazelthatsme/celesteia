@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celestia.Resources.Sprites;
+using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celestia.Resources.Types {
+namespace Celesteia.Resources.Types {
     public abstract class FontProperties {
         public const int STANDARD_SIZE = 12;
     }

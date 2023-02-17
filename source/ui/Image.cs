@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celestia.UI {
+namespace Celesteia.UI {
     public class Image : IElement
     {
         private Rect rect;

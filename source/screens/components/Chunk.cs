@@ -1,10 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Celestia.Resources;
+using Celesteia.Resources;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Sprites;
 
-namespace Celestia.Screens.Systems {
+namespace Celesteia.Screens.Systems {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
 
