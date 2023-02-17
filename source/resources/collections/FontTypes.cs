@@ -7,7 +7,7 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Celestia.Resources.Types {
     public abstract class FontProperties {
-        public const int STANDARD_SIZE = 24;
+        public const int STANDARD_SIZE = 12;
     }
 
     public class FontTypes {        

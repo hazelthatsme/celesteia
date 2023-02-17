@@ -21,14 +21,19 @@ namespace Celestia.GUIs {
         public override void LoadContent() {
             debugFont = ResourceManager.Fonts.GetFontType("Hobo");
 
-            fpsLabel = new Label(
+            elements.Add(new Label(
                 new Rect(AbsoluteUnit.WithValue(10), AbsoluteUnit.WithValue(10), AbsoluteUnit.WithValue(200), AbsoluteUnit.WithValue(50)),
+                "Celesteia",
+                TextAlignment.Top | TextAlignment.Left,
+                debugFont
+            ));
+
+            elements.Add(fpsLabel = new Label(
+                new Rect(AbsoluteUnit.WithValue(10), AbsoluteUnit.WithValue(27), AbsoluteUnit.WithValue(200), AbsoluteUnit.WithValue(50)),
                 "",
                 TextAlignment.Top | TextAlignment.Left,
                 debugFont
-            );
-
-            elements.Add(fpsLabel);
+            ));
         }
 
         public override void Update(GameTime gameTime) {

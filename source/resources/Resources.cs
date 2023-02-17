@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Celestia.Resources.Collections;
 using Celestia.Resources.Sprites;
 using Celestia.Resources.Types;
 using Microsoft.Xna.Framework.Content;
@@ -9,6 +10,7 @@ namespace Celestia.Resources {
         public static BlockTypes Blocks = new BlockTypes();
         public static EntityTypes Entities = new EntityTypes();
         public static FontTypes Fonts = new FontTypes();
+        public static SkyboxAssets Skybox = new SkyboxAssets();
 
         public const float SPRITE_SCALING = 0.125f;
         public const float INVERSE_SPRITE_SCALING = 8f;
@@ -17,6 +19,7 @@ namespace Celestia.Resources {
             Blocks.LoadContent(content);
             Entities.LoadContent(content);
             Fonts.LoadContent(content);
+            Skybox.LoadContent(content);
         }
     }
 }

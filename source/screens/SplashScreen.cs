@@ -90,7 +90,7 @@ namespace Celestia.Screens {
         {
             GraphicsDevice.Clear(Color.Black);
 
-            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.AnisotropicWrap);
+            Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp);
 
             backgroundImage.Draw(Game.SpriteBatch);
             

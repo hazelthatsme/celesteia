@@ -40,7 +40,7 @@ namespace Celestia.UI {
             float targetSize = 24f;
 
             // Measure the text's size from the sprite font.
-            Vector2 size = font.Font.MeasureString(text) * font.Scale(targetSize);
+            Vector2 size = font.Font.MeasureString(text);
             
             // Get the origin point at the center.
             Vector2 origin = 0.5f * size;

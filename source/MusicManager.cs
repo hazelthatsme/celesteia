@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 
@@ -42,7 +43,7 @@ namespace Celestia {
         public void PlayNow(Song song, bool repeat = true) {
             MediaPlayer.IsRepeating = repeat;
 
-            _elapsedTransitionTime = 0f;
+            _elapsedTransitionTime = MediaPlayer.State == MediaState.Playing ? 0f : 1f;
             _transitionComplete = false;
             _nextUp = song;
         }

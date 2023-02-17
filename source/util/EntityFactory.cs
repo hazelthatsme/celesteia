@@ -1,4 +1,10 @@
+using System;
+using Celestia.Resources;
+using Celestia.Resources.Sprites;
 using Celestia.Screens.Systems;
+using Celestia.Screens.Systems.MainMenu;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 
 namespace Celestia.Utilities.ECS {
@@ -14,6 +20,15 @@ namespace Celestia.Utilities.ECS {
         public Entity CreateChunk() {
             return new EntityBuilder(World)
                 .AddComponent(new Chunk())
+                .Build();
+        }
+
+        public Entity CreateSkyboxPortion(string name, Color color, float alpha, float rotation, float depth)
+        {
+            return new EntityBuilder(World)
+                .AddComponent(new Transform2())
+                .AddComponent(new MainMenuRotateZ(rotation))
+                .AddComponent(ResourceManager.Skybox.GetAsset(name).Frames.SetColor(color).SetAlpha(alpha).SetDepth(depth))
                 .Build();
         }
     }

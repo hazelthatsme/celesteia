@@ -4,25 +4,42 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 using Microsoft.Xna.Framework.Media;
+using Celestia.Graphics;
+using MonoGame.Extended.Entities;
+using Celestia.Screens.Systems.MainMenu;
+using Celestia.Utilities.ECS;
 
 namespace Celestia.Screens {
     public class MainMenuScreen : GameScreen
     {
         private new Game Game => (Game) base.Game;
 
+        public MainMenuScreen(Game game) : base(game) {}
+
         private MainMenu mainMenu;
 
         private Song mainMenuTheme;
 
-        public MainMenuScreen(Game game) : base(game) {}
+        private Camera2D Camera;
+        private World _world;
 
         public override void LoadContent()
         {
             base.LoadContent();
 
             mainMenuTheme = Game.Content.Load<Song>("music/stargaze_symphony");
-
             Game.Music.PlayNow(mainMenuTheme);
+
+            Camera = new Camera2D(GraphicsDevice);
+
+            _world = new WorldBuilder()
+                .AddSystem(new MainMenuBackgroundSystem())
+                .AddSystem(new MainMenuRenderSystem(Camera, Game.SpriteBatch))
+                .Build();
+
+            new EntityFactory(_world, Game).CreateSkyboxPortion("stars", Color.White, 1f, -0.1f, .9f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(165,216,255), 125f / 125f, 3f, .5f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(255,165,246), 0f / 125f, -2f, .7f);
 
             this.mainMenu = new MainMenu(Game);
             this.mainMenu.LoadContent();
@@ -31,11 +48,14 @@ namespace Celestia.Screens {
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+
+            _world.Draw(gameTime);
             this.mainMenu.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)
         {
+            _world.Update(gameTime);
             this.mainMenu.Update(gameTime);
         }
 

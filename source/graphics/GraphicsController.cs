@@ -12,7 +12,7 @@ namespace Celestia.Graphics {
         private bool _verticalRetrace;
         private Rectangle _resolution = new Rectangle(0, 0, 1280, 720);
         private Rectangle _lastBounds;
-        private bool _multiSampling = true;
+        private bool _multiSampling = false;
 
         public FullscreenMode FullScreen {
             get { return _screenMode; }

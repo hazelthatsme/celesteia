@@ -30,10 +30,10 @@ namespace Celestia.UI {
             if (background != null) spriteBatch.Draw(GetTexture(spriteBatch), rect.ToXnaRectangle(), null, Color.White);
 
             // Credit for text alignment: https://stackoverflow.com/a/10263903
-            float targetSize = 24f;
+            float targetSize = 12f;
 
             // Measure the text's size from the sprite font.
-            Vector2 size = font.Font.MeasureString(text) * font.Scale(targetSize);
+            Vector2 size = font.Font.MeasureString(text);
             
             // Get the origin point at the center.
             Vector2 origin = 0.5f * size;
