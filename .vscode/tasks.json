@@ -20,9 +20,12 @@
             "args": [
                 "publish",
                 "${workspaceFolder}/Celesteia.csproj",
+                "/p:PublishReadyToRun=false",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
-                "/p:Configuration=Release"
+                "/p:Configuration=Release",
+                "-r",
+                "win-x64"
             ],
             "problemMatcher": "$msCompile"
         },
