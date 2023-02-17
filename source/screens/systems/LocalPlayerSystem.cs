@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using Celestia.GameInput;
 using Celestia.Screens.Components;
 using Celestia.Screens.Components.Entities.Player.Movement;
 using Microsoft.Xna.Framework;

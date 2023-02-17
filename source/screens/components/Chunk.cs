@@ -1,11 +1,8 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Celestia.Resources;
-using System.Diagnostics;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Sprites;
-using Celestia.Resources.Sprites;
 
 namespace Celestia.Screens.Systems {
     public class Chunk {

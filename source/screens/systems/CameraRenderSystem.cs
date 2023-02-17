@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Celestia.Graphics;
 using Celestia.Resources.Sprites;
 using Microsoft.Xna.Framework;
@@ -6,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Sprites;
 
 namespace Celestia.Screens.Systems {
     public class CameraRenderSystem : EntityDrawSystem

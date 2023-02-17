@@ -10,8 +10,9 @@ namespace Celestia.Graphics {
         private FullscreenMode _screenMode;
         private bool _useBorderless = false;
         private bool _verticalRetrace;
-        private Rectangle _resolution;
-        private Rectangle lastBounds;
+        private Rectangle _resolution = new Rectangle(0, 0, 1280, 720);
+        private Rectangle _lastBounds;
+        private bool _multiSampling = true;
 
         public FullscreenMode FullScreen {
             get { return _screenMode; }
@@ -29,7 +30,12 @@ namespace Celestia.Graphics {
 
         public Rectangle Resolution {
             get { return _resolution; }
-            set { lastBounds = _resolution = value; }
+            set { _lastBounds = _resolution = value; }
+        }
+
+        public bool MSAA {
+            get { return _multiSampling; }
+            set { _multiSampling = value; }
         }
 
         public GraphicsController(Game _game, GraphicsDeviceManager _manager) {
@@ -38,15 +44,16 @@ namespace Celestia.Graphics {
         }
 
         private void ResolveResolution() {
-            if (!IsFullScreen) _resolution = lastBounds;
+            if (!IsFullScreen) _resolution = _lastBounds;
             else {
-                lastBounds = game.Window.ClientBounds;
+                _lastBounds = game.Window.ClientBounds;
                 _resolution = new Rectangle(0, 0, manager.GraphicsDevice.Adapter.CurrentDisplayMode.Width, manager.GraphicsDevice.Adapter.CurrentDisplayMode.Height);
             }
         }
 
         public void Apply() {
             game.Window.AllowUserResizing = true;
+            manager.PreferMultiSampling = _multiSampling;
             manager.PreferredBackBufferWidth = _resolution.Width;
             manager.PreferredBackBufferHeight = _resolution.Height;
             manager.PreferredBackBufferFormat = SurfaceFormat.Color;

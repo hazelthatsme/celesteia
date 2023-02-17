@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Celestia.Resources;
 using Celestia.Resources.Types;
 using Microsoft.Xna.Framework;

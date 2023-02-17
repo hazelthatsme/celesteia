@@ -1,9 +1,6 @@
 using System.Diagnostics;
-using Celestia.GameInput;
-using Celestia.UI;
 using Celestia.GUIs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 using Microsoft.Xna.Framework.Media;

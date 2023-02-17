@@ -1,12 +1,5 @@
-using Celestia.GameInput;
-using Celestia.Screens.Components;
 using Celestia.Screens.Systems;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 using MonoGame.Extended.Entities;
-using MonoGame.Extended.Sprites;
-using MonoGame.Extended.TextureAtlases;
 
 namespace Celestia.Utilities.ECS {
     public class EntityFactory {

@@ -1,19 +1,11 @@
-using System;
 using System.Diagnostics;
 using Celestia.Screens.Systems;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Celestia.Utilities.ECS;
-using MonoGame.Extended;
 using MonoGame.Extended.Entities;
-using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Screens;
-using MonoGame.Extended.ViewportAdapters;
-using MonoGame.Extended.Sprites;
 using Celestia.Resources;
 using Celestia.Graphics;
-using Celestia.GUIs;
 
 namespace Celestia.Screens {
     public class GameplayScreen : GameScreen {
@@ -38,7 +30,6 @@ namespace Celestia.Screens {
                 .AddSystem(new LocalPlayerSystem())
                 .AddSystem(new CameraFollowSystem(Camera))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
-                //.AddSystem(new EntityDebugSystem(Game.Content.Load<SpriteFont>("hobo"), Camera, Game.SpriteBatch))
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);
