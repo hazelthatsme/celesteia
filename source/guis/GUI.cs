@@ -38,6 +38,8 @@ namespace Celesteia.GUIs {
 
         // Draw all elements.
         public virtual void Draw(GameTime gameTime) {
+            if (!Game.GUIEnabled) return;
+            
             Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap, null, null, null);
 
             elements.ForEach(element => {

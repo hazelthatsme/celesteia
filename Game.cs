@@ -26,6 +26,8 @@ namespace Celesteia
         private GraphicsController GraphicsController;
         public SpriteBatch SpriteBatch;
 
+        private bool _guiEnabled = true;
+        public bool GUIEnabled { get => _guiEnabled; private set { _guiEnabled = value; } }
         private List<GUI> globalGUIs;
 
         private readonly ScreenManager _screenManager;
@@ -130,6 +132,9 @@ namespace Celesteia
 
             // Update each global GUI.
             globalGUIs.ForEach((gui) => { gui.Update(gameTime); });
+
+            // If Scroll Lock is pressed, toggle GUIs.
+            if (KeyboardWrapper.GetKeyDown(Keys.Scroll)) GUIEnabled = !GUIEnabled;
 
             // If F3 is pressed, toggle Debug Mode.
             if (KeyboardWrapper.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
