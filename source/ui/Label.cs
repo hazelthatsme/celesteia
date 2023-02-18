@@ -29,28 +29,7 @@ namespace Celesteia.UI {
             // Draw the label's background, if present.
             if (background != null) spriteBatch.Draw(GetTexture(spriteBatch), rect.ToXnaRectangle(), null, Color.White);
 
-            // Credit for text alignment: https://stackoverflow.com/a/10263903
-            float targetSize = 12f;
-
-            // Measure the text's size from the sprite font.
-            Vector2 size = font.Font.MeasureString(text);
-            
-            // Get the origin point at the center.
-            Vector2 origin = 0.5f * size;
-
-            if (textAlignment.HasFlag(TextAlignment.Left))
-                origin.X += rect.Width.Resolve() / 2f - size.X / 2f;
-
-            if (textAlignment.HasFlag(TextAlignment.Right))
-                origin.X -= rect.Width.Resolve() / 2f - size.X / 2f;
-
-            if (textAlignment.HasFlag(TextAlignment.Top))
-                origin.Y += rect.Height.Resolve() / 2f - size.Y / 2f;
-
-            if (textAlignment.HasFlag(TextAlignment.Bottom))
-                origin.Y -= rect.Height.Resolve() / 2f - size.Y / 2f;
-
-            spriteBatch.DrawString(font.Font, text, rect.GetCenter(), Color.White, 0f, origin, font.Scale(targetSize), SpriteEffects.None, 0f);
+            TextUtilities.DrawAlignedText(spriteBatch, font, text, textAlignment, rect, 12f);
         }
 
         public Texture2D GetTexture(SpriteBatch spriteBatch) {
@@ -71,5 +50,8 @@ namespace Celesteia.UI {
         {
             this.rect = rect;
         }
+
+        public void OnMouseIn() {}
+        public void OnMouseOut() {}
     }
 }

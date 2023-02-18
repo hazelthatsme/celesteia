@@ -39,8 +39,8 @@ namespace Celesteia.Screens {
 
             new EntityFactory(_world, Game).CreateSkyboxPortion("stars", Color.White, -0.1f, .9f);
             new EntityFactory(_world, Game).CreateSkyboxPortion("shadow", Color.Black, 5f, .7f);
-            new EntityFactory(_world, Game).CreateSkyboxPortion("shadow", Color.Black, 3f, .7f);
-            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(165,216,255,85), 3f, .5f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("shadow", Color.Black, 3f, .6f);
+            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(165,216,255,45), 3f, .5f);
             new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(255,165,246,45), -2f, .3f);
 
             this.mainMenu = new MainMenu(Game);

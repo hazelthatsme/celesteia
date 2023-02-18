@@ -7,6 +7,12 @@ namespace Celesteia.UI {
 
         // Set the containing rect of the element.
         void SetRect(Rect rect);
+        
+        // Called when the mouse position is within the element's containing rect.
+        void OnMouseIn();
+        
+        // Called when the mouse position is within the element's containing rect.
+        void OnMouseOut();
 
         // Draw the element.
         void Draw(SpriteBatch spriteBatch);

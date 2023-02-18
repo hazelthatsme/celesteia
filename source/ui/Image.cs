@@ -52,15 +52,13 @@ namespace Celesteia.UI {
             return this.texture;
         }
 
-        public void SetRect(Rect rect)
-        {
-            this.rect = rect;
-        }
+        public void SetRect(Rect rect) => this.rect = rect;
 
-        public void SetTexture(Texture2D texture)
-        {
-            this.texture = texture;
-        }
+        public void SetTexture(Texture2D texture) => this.texture = texture;
+
+        public void OnMouseIn() { }
+
+        public void OnMouseOut() { }
     }
 
     public enum ImageFitMode {

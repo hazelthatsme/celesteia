@@ -5,26 +5,39 @@ using Celesteia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
+using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.GUIs {
     public class GUI {
         public Game Game;
 
-        public List<IElement> elements = new List<IElement>();
+        public List<IElement> Elements = new List<IElement>();
+
+        private Point _mousePosition;
 
         public GUI(Game Game) {
             this.Game = Game;
         }
 
-        public virtual void ResolveMouseClick(Point position, MouseButton button) {
+        public virtual void ResolveMouseClick(MouseButton button) {
             if (!Game.GUIEnabled) return;
-            
-            elements.FindAll(x => x.GetType() == typeof(Button)).ForEach(element => {
-                Button button = element as Button;
 
-                if (button.GetRect().Contains(position)) {
-                    button.Click(position);
+            Elements.FindAll(x => x is IClickableElement).ForEach(element => {
+                IClickableElement clickable = element as IClickableElement;
+
+                if (clickable.GetRect().Contains(_mousePosition)) {
+                    clickable.OnClick(_mousePosition);
                 }
+            });
+        }
+
+        public virtual void ResolveMouseOver() {
+            if (!Game.GUIEnabled) return;
+
+            Elements.ForEach(element => {
+                if (element.GetRect().Contains(_mousePosition)) {
+                    element.OnMouseIn();
+                } else element.OnMouseOut();
             });
         }
 
@@ -33,9 +46,13 @@ namespace Celesteia.GUIs {
         }
 
         public virtual void Update(GameTime gameTime) {
+            _mousePosition = MouseWrapper.GetPosition();
+
             if (MouseWrapper.GetMouseDown(MouseButton.Left)) {
-                ResolveMouseClick(MouseWrapper.GetPosition(), MouseButton.Left);
+                ResolveMouseClick(MouseButton.Left);
             }
+
+            ResolveMouseOver();
         }
 
         // Draw all elements.
@@ -44,7 +61,7 @@ namespace Celesteia.GUIs {
             
             Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap, null, null, null);
 
-            elements.ForEach(element => {
+            Elements.ForEach(element => {
                 element.Draw(Game.SpriteBatch);
             });
 
