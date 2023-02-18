@@ -17,6 +17,8 @@ namespace Celesteia.GUIs {
         }
 
         public virtual void ResolveMouseClick(Point position, MouseButton button) {
+            if (!Game.GUIEnabled) return;
+            
             elements.FindAll(x => x.GetType() == typeof(Button)).ForEach(element => {
                 Button button = element as Button;
 
