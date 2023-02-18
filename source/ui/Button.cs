@@ -10,6 +10,7 @@ namespace Celesteia.UI {
         private Rect _rect = Rect.AbsoluteZero;
 
         private ButtonColorGroup _colorGroup = new ButtonColorGroup(Color.White);
+        private Color ButtonColor = Color.White;
 
         public delegate void ClickEvent(Point position);
         private ClickEvent _onClick = null;
@@ -70,8 +71,8 @@ namespace Celesteia.UI {
             return this;
         }
 
-        public Button SetColorGroup(ButtonColorGroup colorGroup) {
-            _colorGroup = colorGroup;
+        public Button SetColorGroup(ButtonColorGroup ButtonColorGroup) {
+            _colorGroup = ButtonColorGroup;
             return this;
         }
 
@@ -79,11 +80,22 @@ namespace Celesteia.UI {
             _onClick?.Invoke(position);
         }
 
+        // https://gamedev.stackexchange.com/a/118255
+        private float _colorAmount = 0.0f;
+        public void Update(GameTime gameTime) {
+            _colorAmount += (float)gameTime.ElapsedGameTime.TotalSeconds / 30f;
+
+            if (_colorAmount > 1.0f)
+                _colorAmount = 0.0f;
+
+            ButtonColor = Color.Lerp(ButtonColor, GetTargetColor(), _colorAmount);
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             // Draw the button's texture.
             if (_patches != null) DrawPatched(spriteBatch, _rect.ToXnaRectangle());
-            else spriteBatch.Draw(GetTexture(spriteBatch), _rect.ToXnaRectangle(), null, GetColor());
+            else spriteBatch.Draw(GetTexture(spriteBatch), _rect.ToXnaRectangle(), null, ButtonColor);
 
             TextUtilities.DrawAlignedText(spriteBatch, _font, _text, _textAlignment, _rect, 24f);
         }
@@ -96,39 +108,39 @@ namespace Celesteia.UI {
             y = r.Y;
             {
                 // Top left
-                spriteBatch.Draw(_patches.GetRegion(0), new Rectangle(r.X, y, _scaledPatchSize, _scaledPatchSize), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(0), new Rectangle(r.X, y, _scaledPatchSize, _scaledPatchSize), ButtonColor);
 
                 // Top center
-                spriteBatch.Draw(_patches.GetRegion(1), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), _scaledPatchSize), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(1), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), _scaledPatchSize), ButtonColor);
 
                 // Top right
-                spriteBatch.Draw(_patches.GetRegion(2), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, _scaledPatchSize), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(2), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, _scaledPatchSize), ButtonColor);
             }
 
             // Center
             y = r.Y + _scaledPatchSize;
             {
                 // Left center
-                spriteBatch.Draw(_patches.GetRegion(3), new Rectangle(r.X, y, _scaledPatchSize, r.Height - (2 * _scaledPatchSize)), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(3), new Rectangle(r.X, y, _scaledPatchSize, r.Height - (2 * _scaledPatchSize)), ButtonColor);
 
                 // Center
-                spriteBatch.Draw(_patches.GetRegion(4), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), r.Height - (2 * _scaledPatchSize)), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(4), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), r.Height - (2 * _scaledPatchSize)), ButtonColor);
 
                 // Right center
-                spriteBatch.Draw(_patches.GetRegion(5), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, r.Height - (2 * _scaledPatchSize)), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(5), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, r.Height - (2 * _scaledPatchSize)), ButtonColor);
             }
 
             // Bottom
             y = r.Y + r.Height - _scaledPatchSize;
             {
                 // Bottom left
-                spriteBatch.Draw(_patches.GetRegion(6), new Rectangle(r.X, y, _scaledPatchSize, _scaledPatchSize), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(6), new Rectangle(r.X, y, _scaledPatchSize, _scaledPatchSize), ButtonColor);
 
                 // Bottom center
-                spriteBatch.Draw(_patches.GetRegion(7), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), _scaledPatchSize), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(7), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), _scaledPatchSize), ButtonColor);
 
                 // Bottom right
-                spriteBatch.Draw(_patches.GetRegion(8), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, _scaledPatchSize), GetColor());
+                spriteBatch.Draw(_patches.GetRegion(8), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, _scaledPatchSize), ButtonColor);
             }
         }
 
@@ -141,7 +153,7 @@ namespace Celesteia.UI {
             return _texture;
         }
 
-        public Color GetColor() {
+        public Color GetTargetColor() {
             return _isEnabled ? (_mouseOver ? _colorGroup.Hover : _colorGroup.Normal) : _colorGroup.Disabled;
         }
 

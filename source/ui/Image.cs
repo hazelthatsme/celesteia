@@ -28,6 +28,10 @@ namespace Celesteia.UI {
 
         public Image(Rect rect, Color color) : this (rect, null, color, 0f) {}
 
+        public void Update(GameTime gameTime) {
+
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             Texture2D sampledTexture = GetTexture(spriteBatch);

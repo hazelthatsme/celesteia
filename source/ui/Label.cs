@@ -24,6 +24,10 @@ namespace Celesteia.UI {
 
         public Label(Rect rect, string text, TextAlignment alignment, FontType font) : this(rect, null, text, alignment, font) {}
 
+        public void Update(GameTime gameTime) {
+
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             // Draw the label's background, if present.

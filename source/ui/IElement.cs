@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.UI {
@@ -13,6 +14,9 @@ namespace Celesteia.UI {
         
         // Called when the mouse position is within the element's containing rect.
         void OnMouseOut();
+
+        // Update the element.
+        void Update(GameTime gameTime);
 
         // Draw the element.
         void Draw(SpriteBatch spriteBatch);

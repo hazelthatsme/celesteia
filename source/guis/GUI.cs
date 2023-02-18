@@ -46,6 +46,10 @@ namespace Celesteia.GUIs {
         }
 
         public virtual void Update(GameTime gameTime) {
+            Elements.ForEach(element => {
+                element.Update(gameTime);
+            });
+
             _mousePosition = MouseWrapper.GetPosition();
 
             if (MouseWrapper.GetMouseDown(MouseButton.Left)) {
