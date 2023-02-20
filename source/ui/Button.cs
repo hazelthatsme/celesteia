@@ -7,7 +7,6 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.UI {
     public class Button : IClickableElement {
-
         // Interface implementations.
         public Rect GetRect() => _rect;
         public void SetRect(Rect rect) => _rect = rect;
@@ -58,6 +57,11 @@ namespace Celesteia.UI {
 
         public Button(Rect rect) {
             _rect = rect;
+        }
+        
+        public Button SetNewRect(Rect rect) {
+            _rect = rect;
+            return this;
         }
 
         public Button SetPivotPoint(Vector2 pivot) {
@@ -193,8 +197,21 @@ namespace Celesteia.UI {
             return _texture;
         }
 
-        public Color GetTargetColor() {
+        private Color GetTargetColor() {
             return _isEnabled ? (_mouseOver ? _colorGroup.Hover : _colorGroup.Normal) : _colorGroup.Disabled;
+        }
+
+        public Button Clone() {
+            return new Button(GetRect())
+                .SetPivotPoint(_pivot)
+                .SetOnClick(_onClick)
+                .SetTexture(_texture)
+                .MakePatches(_patchSize)
+                .SetText(_text)
+                .SetFont(_font)
+                .SetFontSize(_fontSize)
+                .SetTextAlignment(_textAlignment)
+                .SetColorGroup(_colorGroup);
         }
     }
 

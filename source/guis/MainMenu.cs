@@ -52,61 +52,41 @@ namespace Celesteia.GUIs {
             );
 
             float buttonHeight = 56f;
-            float buttonSpacing = 20f;
-            float buttonRow(int number) => (number) * buttonHeight + buttonSpacing;
+            float buttonSpacing = 10f;
+            float buttonRow(int number) => number * (buttonHeight + buttonSpacing);
 
-            CenteredMenu.AddChild(
-                new Button(new Rect(
+            Button template = new Button(new Rect(
                     AbsoluteUnit.WithValue(0f),
                     AbsoluteUnit.WithValue(buttonRow(0)),
                     new RelativeUnit(1f, CenteredMenu.GetRect(), RelativeUnit.Orientation.Horizontal),
                     AbsoluteUnit.WithValue(56f)
                 ))
                 .SetPivotPoint(new Vector2(.5f))
-                .SetOnClick((position) => { Game.LoadScreen(new GameplayScreen(Game)); })
                 .SetTexture(buttonTexture)
                 .MakePatches(4)
-                .SetText("Start Game")
                 .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
                 .SetFontSize(24f)
                 .SetTextAlignment(TextAlignment.Center)
-                .SetColorGroup(new ButtonColorGroup(Color.White, Color.Black, Color.Violet, Color.DarkViolet))
+                .SetColorGroup(new ButtonColorGroup(Color.White, Color.Black, Color.Violet, Color.DarkViolet));
+
+            CenteredMenu.AddChild(
+                template.Clone()
+                    .SetOnClick((position) => { Game.LoadScreen(new GameplayScreen(Game)); })
+                    .SetText("Start Game")
             );
 
             CenteredMenu.AddChild(
-                new Button(new Rect(
-                    AbsoluteUnit.WithValue(0f),
-                    AbsoluteUnit.WithValue(buttonRow(1)),
-                    new RelativeUnit(1f, CenteredMenu.GetRect(), RelativeUnit.Orientation.Horizontal),
-                    AbsoluteUnit.WithValue(56f)
-                ))
-                .SetPivotPoint(new Vector2(.5f))
-                //.SetOnClick((position) => { Game.Exit(); })
-                .SetTexture(buttonTexture)
-                .MakePatches(4)
-                .SetText("Options")
-                .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
-                .SetFontSize(24f)
-                .SetTextAlignment(TextAlignment.Center)
-                .SetColorGroup(new ButtonColorGroup(Color.White, Color.Black, Color.Violet, Color.DarkViolet))
+                template.Clone()
+                    .SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(buttonRow(1))))
+                    .SetText("Options")
             );
 
             CenteredMenu.AddChild(
-                new Button(new Rect(
-                    AbsoluteUnit.WithValue(0f),
-                    AbsoluteUnit.WithValue(buttonRow(2)),
-                    new RelativeUnit(1f, CenteredMenu.GetRect(), RelativeUnit.Orientation.Horizontal),
-                    AbsoluteUnit.WithValue(56f)
-                ))
-                .SetPivotPoint(new Vector2(.5f))
-                .SetOnClick((position) => { Game.Exit(); })
-                .SetTexture(buttonTexture)
-                .MakePatches(4)
-                .SetText("Quit Game")
-                .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
-                .SetFontSize(24f)
-                .SetTextAlignment(TextAlignment.Center)
-                .SetColorGroup(new ButtonColorGroup(Color.White, Color.Black, Color.Red, Color.DarkRed))
+                template.Clone()
+                    .SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(buttonRow(2))))
+                    .SetOnClick((position) => { Game.Exit(); })
+                    .SetText("Quit Game")
+                    .SetColorGroup(new ButtonColorGroup(Color.White, Color.Black, Color.Red, Color.DarkRed))
             );
 
             base.LoadContent();
