@@ -7,6 +7,33 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.UI {
     public class Button : IClickableElement {
+
+        // Interface implementations.
+        public Rect GetRect() => _rect;
+        public void SetRect(Rect rect) => _rect = rect;
+        public void OnMouseIn() => _mouseOver = true;
+        public void OnMouseOut() => _mouseOver = false;
+        private IContainer _parent;
+        public IContainer GetParent() => _parent;
+        public void SetParent(IContainer parent) => _parent = parent;
+        private Vector2 _pivot;
+        public Vector2 GetPivot() => _pivot;
+        public void SetPivot(Vector2 pivot) => _pivot = pivot;
+
+        public Rectangle GetRectangle() {
+            Rectangle r = GetRect().ResolveRectangle();
+
+            if (GetParent() != null) {
+                r.X += GetParent().GetRectangle().X;
+                r.Y += GetParent().GetRectangle().Y;
+            }
+
+            r.X -= (int)Math.Round(_pivot.X * r.Width);
+            r.Y -= (int)Math.Round(_pivot.Y * r.Height);
+            
+            return r;
+        }
+        
         private Rect _rect = Rect.AbsoluteZero;
 
         private ButtonColorGroup _colorGroup = new ButtonColorGroup(Color.White);
@@ -31,6 +58,11 @@ namespace Celesteia.UI {
 
         public Button(Rect rect) {
             _rect = rect;
+        }
+
+        public Button SetPivotPoint(Vector2 pivot) {
+            _pivot = pivot;
+            return this;
         }
 
         public Button SetOnClick(ClickEvent onClick) {
@@ -82,22 +114,30 @@ namespace Celesteia.UI {
 
         // https://gamedev.stackexchange.com/a/118255
         private float _colorAmount = 0.0f;
+        private bool _prevMouseOver = false;
         public void Update(GameTime gameTime) {
-            _colorAmount += (float)gameTime.ElapsedGameTime.TotalSeconds / 30f;
+            if (_prevMouseOver != _mouseOver) _colorAmount = 0.0f;
+
+            _colorAmount += (float)gameTime.ElapsedGameTime.TotalSeconds / 0.5f;
 
             if (_colorAmount > 1.0f)
                 _colorAmount = 0.0f;
 
             ButtonColor = Color.Lerp(ButtonColor, GetTargetColor(), _colorAmount);
+
+            _prevMouseOver = _mouseOver;
         }
 
+        Rectangle r;
         public void Draw(SpriteBatch spriteBatch)
         {
-            // Draw the button's texture.
-            if (_patches != null) DrawPatched(spriteBatch, _rect.ToXnaRectangle());
-            else spriteBatch.Draw(GetTexture(spriteBatch), _rect.ToXnaRectangle(), null, ButtonColor);
+            r = GetRectangle();
 
-            TextUtilities.DrawAlignedText(spriteBatch, _font, _text, _textAlignment, _rect, 24f);
+            // Draw the button's texture.
+            if (_patches != null) DrawPatched(spriteBatch, r);
+            else spriteBatch.Draw(GetTexture(spriteBatch), r, null, ButtonColor);
+
+            TextUtilities.DrawAlignedText(spriteBatch, _font, _text, _textAlignment, r, 24f);
         }
 
         private int _scaledPatchSize => _patchSize * UIReferences.Scaling;
@@ -156,12 +196,6 @@ namespace Celesteia.UI {
         public Color GetTargetColor() {
             return _isEnabled ? (_mouseOver ? _colorGroup.Hover : _colorGroup.Normal) : _colorGroup.Disabled;
         }
-
-        // Interface implementations.
-        public Rect GetRect() => _rect;
-        public void SetRect(Rect rect) => _rect = rect;
-        public void OnMouseIn() => _mouseOver = true;
-        public void OnMouseOut() => _mouseOver = false;
     }
 
     public struct ButtonColorGroup {

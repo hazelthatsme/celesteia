@@ -36,7 +36,9 @@ namespace Celesteia.Screens {
                 new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
                 new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
                 new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
-            ), null, Color.Black, 0f);
+            ))
+                .SetTexture(null)
+                .SetColor(Color.Black);
 
             logoRect = new Rect(
                 new ScreenSpaceUnit(0.25f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
@@ -44,7 +46,7 @@ namespace Celesteia.Screens {
                 new ScreenSpaceUnit(0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
                 new ScreenSpaceUnit(logoRatio * 0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal)
             );
-            logoElement = new Image(logoRect, leafalLogo, Color.White, 1f);
+            logoElement = new Image(logoRect).SetTexture(leafalLogo).SetColor(Color.White);
 
             splashSound.Play(0.5f, 0f, 0f);
         }
@@ -94,7 +96,7 @@ namespace Celesteia.Screens {
 
             backgroundImage.Draw(Game.SpriteBatch);
             
-            logoElement.color = color;
+            logoElement.SetColor(color);
             logoElement.Draw(Game.SpriteBatch);
 
             Game.SpriteBatch.End();

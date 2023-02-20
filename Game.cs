@@ -26,8 +26,7 @@ namespace Celesteia
         private GraphicsController GraphicsController;
         public SpriteBatch SpriteBatch;
 
-        private bool _guiEnabled = true;
-        public bool GUIEnabled { get => _guiEnabled; private set { _guiEnabled = value; } }
+        public static bool GUIEnabled = true;
         private List<GUI> globalGUIs;
 
         private readonly ScreenManager _screenManager;

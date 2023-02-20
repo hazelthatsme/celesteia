@@ -1,68 +1,76 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.UI {
-    public class Image : IElement
-    {
-        private Rect rect;
-        private Texture2D texture;
-        public Color color;
-        public float depth;
-        public ImageFitMode imageFitMode;
+    public class Image : IElement {
+        private IContainer _parent;
+        public IContainer GetParent() => _parent;
+        public void SetParent(IContainer parent) => _parent = parent;
+        public Rect GetRect() => _rect;
+        public void SetRect(Rect rect) => _rect = rect;
+        public void OnMouseIn() { }
+        public void OnMouseOut() { }
+        private Vector2 _pivot;
+        public Vector2 GetPivot() => _pivot;
+        public void SetPivot(Vector2 pivot) => _pivot = pivot;
 
-        public Image(Rect rect, Texture2D texture, Color color, float depth, ImageFitMode imageFitMode) {
-            this.rect = rect;
-            this.texture = texture;
-            this.color = color;
-            this.depth = depth;
-            this.imageFitMode = imageFitMode;
+        public Rectangle GetRectangle() {
+            Rectangle r = GetRect().ResolveRectangle();
+
+            if (GetParent() != null) {
+                r.X += GetParent().GetRectangle().X;
+                r.Y += GetParent().GetRectangle().Y;
+            }
+
+            r.X -= (int)Math.Round(_pivot.X * r.Width);
+            r.Y -= (int)Math.Round(_pivot.Y * r.Height);
+            
+            return r;
+        }
+        
+        private Rect _rect;
+        private Texture2D _texture;
+        public Color _color;
+
+        public Image(Rect rect) {
+            _rect = rect;
         }
 
-        public Image(Rect rect, Texture2D texture, Color color, float depth) : this (rect, texture, color, depth, ImageFitMode.Fill) {}
-
-        public Image(Rect rect, Texture2D texture, float depth) : this (rect, texture, Color.White, depth) {}
-
-        public Image(Rect rect, Texture2D texture, Color color) : this (rect, texture, color, 0f) {}
-
-        public Image(Rect rect, Texture2D texture) : this (rect, texture, Color.White, 0f) {}
-
-        public Image(Rect rect, Color color) : this (rect, null, color, 0f) {}
-
-        public void Update(GameTime gameTime) {
-
+        public Image SetTexture(Texture2D texture) {
+            _texture = texture;
+            return this;
         }
+
+        public Image SetColor(Color color) {
+            _color = color;
+            return this;
+        }
+
+        public Image SetPivotPoint(Vector2 pivot) {
+            _pivot = pivot;
+            return this;
+        }
+
+        public void Update(GameTime gameTime) { }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Texture2D sampledTexture = GetTexture(spriteBatch);
-            spriteBatch.Draw(sampledTexture, rect.ToXnaRectangle(), color);
-        }
-
-        public Rect GetRect()
-        {
-            return this.rect;
+            spriteBatch.Draw(GetTexture(spriteBatch), GetRectangle(), _color);
         }
 
         public Texture2D GetTexture(SpriteBatch spriteBatch)
         {
-            if (this.texture == null) {
+            if (_texture == null) {
                 // Make a new texture.
-                this.texture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                _texture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
 
-                // Set the default texture to a configured color if present, otherwise it's black.
-                this.texture.SetData(new[] { Color.Black });
+                // Set the default texture to one gray pixel.
+                _texture.SetData(new[] { Color.Gray });
             }
 
-            return this.texture;
+            return _texture;
         }
-
-        public void SetRect(Rect rect) => this.rect = rect;
-
-        public void SetTexture(Texture2D texture) => this.texture = texture;
-
-        public void OnMouseIn() { }
-
-        public void OnMouseOut() { }
     }
 
     public enum ImageFitMode {

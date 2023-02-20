@@ -5,6 +5,12 @@ namespace Celesteia.UI {
     public class Rect {
         public static Rect AbsoluteZero = new Rect(AbsoluteUnit.WithValue(0f));
         public static Rect AbsoluteOne = new Rect(AbsoluteUnit.WithValue(1f));
+        public static Rect ScreenFull = new Rect(
+            new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
+            new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
+            new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
+            new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
+        );
 
         public IInterfaceUnit X { get; private set; }
         public IInterfaceUnit Y { get; private set; }
@@ -41,7 +47,7 @@ namespace Celesteia.UI {
             return $"{X.Resolve().ToString("0.00")} {Y.Resolve().ToString("0.00")} {Width.Resolve().ToString("0.00")} {Height.Resolve().ToString("0.00")}";
         }
 
-        public virtual Rectangle ToXnaRectangle()
+        public virtual Rectangle ResolveRectangle()
         {
             float[] resolved = this.Resolve();
             return new Rectangle(
@@ -92,7 +98,7 @@ namespace Celesteia.UI {
         }
     }
 
-    public class ScreenSpaceUnit : IInterfaceUnit
+    public struct ScreenSpaceUnit : IInterfaceUnit
     {
         public float value { get; private set; }
         public ScreenSpaceOrientation orientation { get; private set; }
@@ -124,6 +130,44 @@ namespace Celesteia.UI {
         }
 
         public enum ScreenSpaceOrientation {
+            Horizontal, Vertical
+        }
+    }
+
+    public struct RelativeUnit : IInterfaceUnit
+    {
+        public float value { get; private set; }
+        public Rect parent { get; private set; }
+        public Orientation orientation { get; private set; }
+
+        public RelativeUnit(float value, Rect parent, Orientation orientation) {
+            this.value = value;
+            this.parent = parent;
+            this.orientation = orientation;
+        }
+
+        public void SetValue(float value) {
+            this.value = value;
+        }
+
+        public void SetOrientation(Orientation orientation) {
+            this.orientation = orientation;
+        }
+
+        public float Resolve()
+        {
+            if (parent != null) {
+                switch (orientation) {
+                    case Orientation.Horizontal:
+                        return value * parent.Resolve()[2];
+                    case Orientation.Vertical:
+                        return value * parent.Resolve()[3];
+                }
+            }
+            return 0f;
+        }
+
+        public enum Orientation {
             Horizontal, Vertical
         }
     }
