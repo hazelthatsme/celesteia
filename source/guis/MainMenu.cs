@@ -1,6 +1,7 @@
 using Celesteia.Resources;
 using Celesteia.Screens;
 using Celesteia.UI;
+using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -64,9 +65,11 @@ namespace Celesteia.GUIs {
                 .SetPivotPoint(new Vector2(.5f))
                 .SetTexture(buttonTexture)
                 .MakePatches(4)
-                .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
-                .SetFontSize(24f)
-                .SetTextAlignment(TextAlignment.Center)
+                .SetTextProperties(new TextProperties()
+                    .SetColor(Color.White)
+                    .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
+                    .SetFontSize(24f)
+                    .SetTextAlignment(TextAlignment.Center))
                 .SetColorGroup(new ButtonColorGroup(Color.White, Color.Black, Color.Violet, Color.DarkViolet));
 
             CenteredMenu.AddChild(

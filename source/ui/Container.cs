@@ -6,32 +6,12 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
 
 namespace Celesteia.UI {
-    public class Container : IContainer
+    public class Container : Element, IContainer
     {
-        private Rect _rect;
-
         private List<IElement> Children;
-        private IContainer Parent;
-        private Vector2 _pivot;
-        public Vector2 GetPivot() => _pivot;
-        public void SetPivot(Vector2 pivot) => _pivot = pivot;
-
-        public Rectangle GetRectangle() {
-            Rectangle r = GetRect().ResolveRectangle();
-
-            if (GetParent() != null) {
-                r.X += GetParent().GetRectangle().X;
-                r.Y += GetParent().GetRectangle().Y;
-            }
-
-            r.X -= (int)Math.Round(_pivot.X * r.Width);
-            r.Y -= (int)Math.Round(_pivot.Y * r.Height);
-            
-            return r;
-        }
 
         public Container(Rect rect) {
-            _rect = rect;
+            SetRect(rect);
             Children = new List<IElement>();
         }
 
@@ -42,23 +22,14 @@ namespace Celesteia.UI {
 
         public List<IElement> GetChildren() => Children;
 
-        public void SetParent(IContainer container) {
-            Parent = container;
-        }
-
-        public IContainer GetParent()
-        {
-            return Parent;
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             Children.ForEach(element => element.Draw(spriteBatch));
         }
 
         private Point _mousePosition;
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             Children.ForEach(element => element.Update(gameTime));
 
@@ -74,8 +45,8 @@ namespace Celesteia.UI {
         }
 
         public void ResolveMouseClick(MouseButton button) {
-            Children.FindAll(x => x is IClickableElement).ForEach(element => {
-                IClickableElement clickable = element as IClickableElement;
+            Children.FindAll(x => x is IClickable).ForEach(element => {
+                IClickable clickable = element as IClickable;
 
                 if (clickable.GetRectangle().Contains(_mousePosition)) {
                     clickable.OnClick(_mousePosition);
@@ -90,12 +61,5 @@ namespace Celesteia.UI {
                 } else element.OnMouseOut();
             });
         }
-
-        public Rect GetRect() => _rect;
-
-        public void SetRect(Rect rect) => _rect = rect;
-
-        public void OnMouseIn() {}
-        public void OnMouseOut() {}
     }
 }

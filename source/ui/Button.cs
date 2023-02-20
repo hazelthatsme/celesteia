@@ -1,78 +1,72 @@
 using System;
 using Celesteia.Resources;
 using Celesteia.Resources.Types;
+using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.UI {
-    public class Button : IClickableElement {
-        // Interface implementations.
-        public Rect GetRect() => _rect;
-        public void SetRect(Rect rect) => _rect = rect;
-        public void OnMouseIn() => _mouseOver = true;
-        public void OnMouseOut() => _mouseOver = false;
-        private IContainer _parent;
-        public IContainer GetParent() => _parent;
-        public void SetParent(IContainer parent) => _parent = parent;
-        private Vector2 _pivot;
-        public Vector2 GetPivot() => _pivot;
-        public void SetPivot(Vector2 pivot) => _pivot = pivot;
-
-        public Rectangle GetRectangle() {
-            Rectangle r = GetRect().ResolveRectangle();
-
-            if (GetParent() != null) {
-                r.X += GetParent().GetRectangle().X;
-                r.Y += GetParent().GetRectangle().Y;
-            }
-
-            r.X -= (int)Math.Round(_pivot.X * r.Width);
-            r.Y -= (int)Math.Round(_pivot.Y * r.Height);
-            
-            return r;
-        }
-        
-        private Rect _rect = Rect.AbsoluteZero;
-
-        private ButtonColorGroup _colorGroup = new ButtonColorGroup(Color.White);
-        private Color ButtonColor = Color.White;
-
-        public delegate void ClickEvent(Point position);
-        private ClickEvent _onClick = null;
-
-        private bool _isEnabled = true;
-
-        private bool _mouseOver;
-
-        private Texture2D _texture;
-
-        private string _text = "";
-        private TextAlignment _textAlignment = TextAlignment.Left;
-        private FontType _font;
-        private float _fontSize;
-
-        private TextureAtlas _patches;
-        private int _patchSize;
-
+    public class Button : Element, IClickable {
         public Button(Rect rect) {
-            _rect = rect;
+            SetRect(rect);
         }
         
         public Button SetNewRect(Rect rect) {
-            _rect = rect;
+            SetRect(rect);
             return this;
         }
 
         public Button SetPivotPoint(Vector2 pivot) {
-            _pivot = pivot;
+            SetPivot(pivot);
             return this;
         }
+
+        // TEXT PROPERTIES
+
+        private TextProperties _text;
+
+        public Button SetTextProperties(TextProperties text) {
+            _text = text;
+            return this;
+        }
+
+        public Button SetText(string text) {
+            _text.SetText(text);
+            return this;
+        }
+
+        // COLOR PROPERTIES
+
+        private ButtonColorGroup _colorGroup = new ButtonColorGroup(Color.White);
+        private Color ButtonColor = Color.White;
+        private bool ButtonEnabled = true;
+
+        public Button SetColorGroup(ButtonColorGroup colorGroup) {
+            _colorGroup = colorGroup;
+            return this;
+        }
+
+        public Button SetButtonEnabled(bool enabled) {
+            ButtonEnabled = enabled;
+            return this;
+        }
+
+        // CLICKING PROPERTIES
+
+        public delegate void ClickEvent(Point position);
+        private ClickEvent _onClick = null;
 
         public Button SetOnClick(ClickEvent onClick) {
             _onClick = onClick;
             return this;
         }
+
+        // DRAWING PROPERTIES
+
+        private Texture2D _texture;
+        private TextureAtlas _patches;
+        private int _patchSize;
 
         public Button SetTexture(Texture2D texture) {
             _texture = texture;
@@ -87,30 +81,7 @@ namespace Celesteia.UI {
             return this;
         }
 
-        public Button SetFont(FontType font) {
-            _font = font;
-            return this;
-        }
-
-        public Button SetText(string text) {
-            _text = text;
-            return this;
-        }
-        
-        public Button SetFontSize(float fontSize) {
-            _fontSize = fontSize;
-            return this;
-        }
-
-        public Button SetTextAlignment(TextAlignment textAlignment) {
-            _textAlignment = textAlignment;
-            return this;
-        }
-
-        public Button SetColorGroup(ButtonColorGroup ButtonColorGroup) {
-            _colorGroup = ButtonColorGroup;
-            return this;
-        }
+        // Functions
 
         public void OnClick(Point position) {
             _onClick?.Invoke(position);
@@ -119,8 +90,8 @@ namespace Celesteia.UI {
         // https://gamedev.stackexchange.com/a/118255
         private float _colorAmount = 0.0f;
         private bool _prevMouseOver = false;
-        public void Update(GameTime gameTime) {
-            if (_prevMouseOver != _mouseOver) _colorAmount = 0.0f;
+        public override void Update(GameTime gameTime) {
+            if (_prevMouseOver != GetMouseOver()) _colorAmount = 0.0f;
 
             _colorAmount += (float)gameTime.ElapsedGameTime.TotalSeconds / 0.5f;
 
@@ -129,11 +100,11 @@ namespace Celesteia.UI {
 
             ButtonColor = Color.Lerp(ButtonColor, GetTargetColor(), _colorAmount);
 
-            _prevMouseOver = _mouseOver;
+            _prevMouseOver = GetMouseOver();
         }
 
         Rectangle r;
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             r = GetRectangle();
 
@@ -141,7 +112,7 @@ namespace Celesteia.UI {
             if (_patches != null) DrawPatched(spriteBatch, r);
             else spriteBatch.Draw(GetTexture(spriteBatch), r, null, ButtonColor);
 
-            TextUtilities.DrawAlignedText(spriteBatch, _font, _text, _textAlignment, r, 24f);
+            TextUtilities.DrawAlignedText(spriteBatch, _text.GetFont(), _text.GetText(), _text.GetColor(), _text.GetAlignment(), r, 24f);
         }
 
         private int _scaledPatchSize => _patchSize * UIReferences.Scaling;
@@ -198,19 +169,16 @@ namespace Celesteia.UI {
         }
 
         private Color GetTargetColor() {
-            return _isEnabled ? (_mouseOver ? _colorGroup.Hover : _colorGroup.Normal) : _colorGroup.Disabled;
+            return ButtonEnabled ? (GetMouseOver() ? _colorGroup.Hover : _colorGroup.Normal) : _colorGroup.Disabled;
         }
 
         public Button Clone() {
             return new Button(GetRect())
-                .SetPivotPoint(_pivot)
+                .SetPivotPoint(GetPivot())
                 .SetOnClick(_onClick)
                 .SetTexture(_texture)
                 .MakePatches(_patchSize)
-                .SetText(_text)
-                .SetFont(_font)
-                .SetFontSize(_fontSize)
-                .SetTextAlignment(_textAlignment)
+                .SetTextProperties(_text)
                 .SetColorGroup(_colorGroup);
         }
     }

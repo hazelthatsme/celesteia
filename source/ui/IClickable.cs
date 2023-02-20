@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.UI {
-    public interface IClickableElement : IElement {
+    public interface IClickable : IElement {
         void OnClick(Point position);
     }
 }

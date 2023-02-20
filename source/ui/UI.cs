@@ -10,7 +10,7 @@ namespace Celesteia {
     }
 
     public static class TextUtilities {
-        public static void DrawAlignedText(SpriteBatch spriteBatch, FontType font, string text, TextAlignment textAlignment, Rectangle rect, float targetSize) {
+        public static void DrawAlignedText(SpriteBatch spriteBatch, FontType font, string text, Color color, TextAlignment textAlignment, Rectangle rect, float targetSize) {
             // Credit for text alignment: https://stackoverflow.com/a/10263903
 
             // Measure the text's size from the sprite font.
@@ -31,7 +31,7 @@ namespace Celesteia {
             if (textAlignment.HasFlag(TextAlignment.Bottom))
                 origin.Y -= rect.Height / 2f - size.Y / 2f;
 
-            spriteBatch.DrawString(font.Font, text, new Vector2(rect.Center.X, rect.Center.Y), Color.White, 0f, origin, font.Scale(targetSize), SpriteEffects.None, 0f);
+            spriteBatch.DrawString(font.Font, text, new Vector2(rect.Center.X, rect.Center.Y), color, 0f, origin, font.Scale(targetSize), SpriteEffects.None, 0f);
         }
     }
 }

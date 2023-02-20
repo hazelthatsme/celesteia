@@ -1,74 +1,59 @@
 using System;
 using Celesteia.Resources.Types;
+using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.UI {
-    public class Label : IElement {
-        private IContainer _parent;
-        public IContainer GetParent() => _parent;
-        public void SetParent(IContainer parent) => _parent = parent;
-        public Rect GetRect() => _rect;
-        public void SetRect(Rect rect) => _rect = rect;
-        public void OnMouseIn() { }
-        public void OnMouseOut() { }
-        private Vector2 _pivot;
-        public Vector2 GetPivot() => _pivot;
-        public void SetPivot(Vector2 pivot) => _pivot = pivot;
+    public class Label : Element {
+        private Texture2D _background;
+        private TextProperties _text;
 
-        public Rectangle GetRectangle() {
-            Rectangle r = GetRect().ResolveRectangle();
-
-            if (GetParent() != null) {
-                r.X += GetParent().GetRectangle().X;
-                r.Y += GetParent().GetRectangle().Y;
-            }
-
-            r.X -= (int)Math.Round(_pivot.X * r.Width);
-            r.Y -= (int)Math.Round(_pivot.Y * r.Height);
-            
-            return r;
+        public Label(Rect rect) {
+            SetRect(rect);
+        }
+        
+        public Label SetNewRect(Rect rect) {
+            SetRect(rect);
+            return this;
         }
 
-        private Rect _rect;
-
-        private Texture2D background;
-
-        public string text = "";
-
-        public TextAlignment textAlignment = TextAlignment.Left;
-
-        private FontType font;
-
-        public Label(Rect rect, Texture2D background, string text, TextAlignment alignment, FontType font) {
-            _rect = rect;
-            this.background = background;
-            this.text = text;
-            this.textAlignment = alignment;
-            this.font = font;
+        public Label SetPivotPoint(Vector2 pivot) {
+            SetPivot(pivot);
+            return this;
         }
 
-        public Label(Rect rect, string text, TextAlignment alignment, FontType font) : this(rect, null, text, alignment, font) {}
-
-        public void Update(GameTime gameTime) {
-
+        public Label SetBackground(Texture2D background) {
+            SetTexture(background);
+            return this;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public Label SetText(string text) {
+            _text.SetText(text);
+            return this;
+        }
+
+        public Label SetTextProperties(TextProperties text) {
+            _text = text;
+            return this;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
         {
             // Draw the label's background, if present.
-            if (background != null) spriteBatch.Draw(GetTexture(spriteBatch), GetRectangle(), null, Color.White);
+            if (_background != null) spriteBatch.Draw(GetTexture(), GetRectangle(), null, Color.White);
 
-            TextUtilities.DrawAlignedText(spriteBatch, font, text, textAlignment, GetRectangle(), 12f);
+            TextUtilities.DrawAlignedText(spriteBatch, _text.GetFont(), _text.GetText(), _text.GetColor(), _text.GetAlignment(), GetRectangle(), _text.GetFontSize());
         }
 
-        public Texture2D GetTexture(SpriteBatch spriteBatch) {
-            return this.background;
-        }
+        public Texture2D GetTexture() => _background;
+        public void SetTexture(Texture2D background) => _background = background;
 
-        public void SetTexture(Texture2D background)
-        {
-            this.background = background;
+        public Label Clone() {
+            return new Label(GetRect())
+                .SetPivotPoint(GetPivot())
+                .SetBackground(GetTexture())
+                .SetTextProperties(_text);
         }
     }
 }

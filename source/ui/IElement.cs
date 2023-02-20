@@ -4,6 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.UI {
     public interface IElement {
+        // Is the element enabled? 
+        bool GetEnabled();
+
+        // Set whether the element is enabled.
+        bool SetEnabled(bool value);
+
         // Get the containing rect of the element.
         Rect GetRect();
 
