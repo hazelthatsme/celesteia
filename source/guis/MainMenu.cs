@@ -74,7 +74,10 @@ namespace Celesteia.GUIs {
 
             CenteredMenu.AddChild(
                 template.Clone()
-                    .SetOnClick((position) => { Game.LoadScreen(new GameplayScreen(Game)); })
+                    .SetOnMouseUp((button, position) => { Game.LoadScreen(
+                        new GameplayScreen(Game), 
+                        new MonoGame.Extended.Screens.Transitions.FadeTransition(Game.GraphicsDevice, Color.Black)
+                    ); })
                     .SetText("Start Game")
             );
 
@@ -87,7 +90,7 @@ namespace Celesteia.GUIs {
             CenteredMenu.AddChild(
                 template.Clone()
                     .SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(buttonRow(2))))
-                    .SetOnClick((position) => { Game.Exit(); })
+                    .SetOnMouseUp((button, position) => { Game.Exit(); })
                     .SetText("Quit Game")
                     .SetColorGroup(new ButtonColorGroup(Color.White, Color.Black, Color.Red, Color.DarkRed))
             );

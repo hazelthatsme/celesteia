@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Celesteia.GameInput;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,19 +38,28 @@ namespace Celesteia.UI {
 
             _mousePosition = MouseWrapper.GetPosition();
 
-            if (MouseWrapper.GetMouseDown(MouseButton.Left)) {
-                ResolveMouseClick(MouseButton.Left);
-            }
+            if (MouseWrapper.GetMouseDown(MouseButton.Left)) ResolveMouseDown(MouseButton.Left);
+            if (MouseWrapper.GetMouseUp(MouseButton.Left)) ResolveMouseUp(MouseButton.Left);
 
             ResolveMouseOver();
         }
 
-        public void ResolveMouseClick(MouseButton button) {
+        public void ResolveMouseDown(MouseButton button) {
             Children.FindAll(x => x is IClickable).ForEach(element => {
                 IClickable clickable = element as IClickable;
 
                 if (clickable.GetRectangle().Contains(_mousePosition)) {
-                    clickable.OnClick(_mousePosition);
+                    clickable.OnMouseDown(button, _mousePosition);
+                }
+            });
+        }
+
+        public void ResolveMouseUp(MouseButton button) {
+            Children.FindAll(x => x is IClickable).ForEach(element => {
+                IClickable clickable = element as IClickable;
+
+                if (clickable.GetRectangle().Contains(_mousePosition)) {
+                    clickable.OnMouseUp(button, _mousePosition);
                 }
             });
         }

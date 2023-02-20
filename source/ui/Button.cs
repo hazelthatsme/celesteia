@@ -4,10 +4,11 @@ using Celesteia.Resources.Types;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Input;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.UI {
-    public class Button : Element, IClickable {
+    public class Button : Clickable {
         public Button(Rect rect) {
             SetRect(rect);
         }
@@ -54,11 +55,17 @@ namespace Celesteia.UI {
 
         // CLICKING PROPERTIES
 
-        public delegate void ClickEvent(Point position);
-        private ClickEvent _onClick = null;
+        public delegate void ClickEvent(MouseButton buttons, Point position);
+        private ClickEvent _onMouseDown = null;
+        private ClickEvent _onMouseUp = null;
 
-        public Button SetOnClick(ClickEvent onClick) {
-            _onClick = onClick;
+        public Button SetOnMouseDown(ClickEvent func) {
+            _onMouseDown = func;
+            return this;
+        }
+
+        public Button SetOnMouseUp(ClickEvent func) {
+            _onMouseUp = func;
             return this;
         }
 
@@ -83,15 +90,22 @@ namespace Celesteia.UI {
 
         // Functions
 
-        public void OnClick(Point position) {
-            _onClick?.Invoke(position);
+        public override void OnMouseDown(MouseButton button, Point position) {
+            base.OnMouseDown(button, position);
+            _onMouseDown?.Invoke(button, position);
+        }
+
+        public override void OnMouseUp(MouseButton button, Point position) {
+            base.OnMouseUp(button, position);
+            _onMouseUp?.Invoke(button, position);
         }
 
         // https://gamedev.stackexchange.com/a/118255
         private float _colorAmount = 0.0f;
         private bool _prevMouseOver = false;
+        private bool _prevClicked = false;
         public override void Update(GameTime gameTime) {
-            if (_prevMouseOver != GetMouseOver()) _colorAmount = 0.0f;
+            if (_prevMouseOver != GetMouseOver() || _prevClicked != GetClicked()) _colorAmount = 0.0f;
 
             _colorAmount += (float)gameTime.ElapsedGameTime.TotalSeconds / 0.5f;
 
@@ -101,6 +115,7 @@ namespace Celesteia.UI {
             ButtonColor = Color.Lerp(ButtonColor, GetTargetColor(), _colorAmount);
 
             _prevMouseOver = GetMouseOver();
+            _prevClicked = GetClicked();
         }
 
         Rectangle r;
@@ -169,13 +184,14 @@ namespace Celesteia.UI {
         }
 
         private Color GetTargetColor() {
-            return ButtonEnabled ? (GetMouseOver() ? _colorGroup.Hover : _colorGroup.Normal) : _colorGroup.Disabled;
+            return ButtonEnabled ? (GetMouseOver() ? (GetClicked() ? _colorGroup.Active : _colorGroup.Hover) : _colorGroup.Normal) : _colorGroup.Disabled;
         }
 
         public Button Clone() {
             return new Button(GetRect())
                 .SetPivotPoint(GetPivot())
-                .SetOnClick(_onClick)
+                .SetOnMouseDown(_onMouseDown)
+                .SetOnMouseUp(_onMouseUp)
                 .SetTexture(_texture)
                 .MakePatches(_patchSize)
                 .SetTextProperties(_text)

@@ -4,26 +4,28 @@ using MonoGame.Extended.Input;
 
 namespace Celesteia.GameInput {
     public class MouseWrapper {
-        private static MouseStateExtended state;
+        private static MouseStateExtended _prev;
+        private static MouseStateExtended _curr;
 
         public static void Update() {
-            state = MouseExtended.GetState();
+            _prev = _curr;
+            _curr = MouseExtended.GetState();
         }
 
         public static bool GetMouseDown(MouseButton button) {
-            return state.WasButtonJustUp(button);
+            return _prev.IsButtonUp(button) && _curr.IsButtonDown(button);
         }
 
         public static bool GetMouseUp(MouseButton button) {
-            return state.WasButtonJustDown(button);
+            return _prev.IsButtonDown(button) && _curr.IsButtonUp(button);
         }
 
         public static bool GetMouseHeld(MouseButton button) {
-            return state.IsButtonDown(button);
+            return _curr.IsButtonDown(button);
         }
 
         public static Point GetPosition() {
-            return state.Position;
+            return _curr.Position;
         }
     }
 }
