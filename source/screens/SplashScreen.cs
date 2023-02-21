@@ -1,7 +1,8 @@
 using System;
 using System.Diagnostics;
-using Celesteia.GameInput;
+using Celesteia.Game.Input;
 using Celesteia.UI;
+using Celesteia.UI.Elements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,18 +10,15 @@ using MonoGame.Extended.Screens;
 
 namespace Celesteia.Screens {
     public class SplashScreen : GameScreen {
-        private new Game Game => (Game) base.Game;
+        private new GameInstance Game => (GameInstance) base.Game;
+        public SplashScreen(GameInstance game) : base(game) {}
 
-        Texture2D leafalLogo;
-        SoundEffect splashSound;
-        
-        Image backgroundImage;
-        Image logoElement;
-        Rect logoRect;
+        private Texture2D leafalLogo;
+        private SoundEffect splashSound;
+        private Image logoElement;
+        private Rect logoRect;
 
         private float logoRatio;
-
-        public SplashScreen(Game game) : base(game) {}
 
         public override void LoadContent()
         {
@@ -31,20 +29,13 @@ namespace Celesteia.Screens {
 
             logoRatio = leafalLogo.Height / (float) leafalLogo.Width;
 
-            backgroundImage = new Image(new Rect(
-                new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
-                new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
-                new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
-                new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
-            ), null, Color.Black, 0f);
-
             logoRect = new Rect(
                 new ScreenSpaceUnit(0.25f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
                 new ScreenSpaceUnit(0.5f - (logoRatio / 2f), ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
                 new ScreenSpaceUnit(0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
                 new ScreenSpaceUnit(logoRatio * 0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal)
             );
-            logoElement = new Image(logoRect, leafalLogo, Color.White, 1f);
+            logoElement = new Image(logoRect).SetTexture(leafalLogo).SetColor(Color.White);
 
             splashSound.Play(0.5f, 0f, 0f);
         }
@@ -91,10 +82,8 @@ namespace Celesteia.Screens {
             GraphicsDevice.Clear(Color.Black);
 
             Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp);
-
-            backgroundImage.Draw(Game.SpriteBatch);
             
-            logoElement.color = color;
+            logoElement.SetColor(color);
             logoElement.Draw(Game.SpriteBatch);
 
             Game.SpriteBatch.End();

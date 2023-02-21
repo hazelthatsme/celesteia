@@ -1,9 +1,6 @@
-using System.Diagnostics;
 using Celesteia.Resources.Collections;
-using Celesteia.Resources.Sprites;
-using Celesteia.Resources.Types;
+using Celesteia.Resources.Collections;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.Resources {
     public static class ResourceManager {

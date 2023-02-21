@@ -1,21 +1,24 @@
 using System.Diagnostics;
-using Celesteia.Screens.Systems;
+using Celesteia.Game.Systems;
 using Microsoft.Xna.Framework;
-using Celesteia.Utilities.ECS;
+using Celesteia.Game.ECS;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using Celesteia.Resources;
 using Celesteia.Graphics;
+using Celesteia.Game.Worlds;
+using Celesteia.Game.Worlds.Generators;
 
 namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
-        private new Game Game => (Game) base.Game;
+        private new GameInstance Game => (GameInstance) base.Game;
 
-        public GameplayScreen(Game game) : base(game) {}
+        public GameplayScreen(GameInstance game) : base(game) {}
 
         private Camera2D Camera;
         private World _world;
         private EntityFactory _entityFactory;
+        private GameWorld _gameWorld;
 
         public override void LoadContent()
         {
@@ -25,18 +28,21 @@ namespace Celesteia.Screens {
 
             Camera = new Camera2D(GraphicsDevice);
 
+            _gameWorld = new GameWorld(2, 1);
+            _gameWorld.SetGenerator(new TerranWorldGenerator(_gameWorld));
+            _gameWorld.Generate();
+
             _world = new WorldBuilder()
-                .AddSystem(new WorldDrawingSystem(Camera, Game.SpriteBatch))
+                .AddSystem(new GameWorldSystem(Camera, Game.SpriteBatch, _gameWorld))
                 .AddSystem(new LocalPlayerSystem())
                 .AddSystem(new CameraFollowSystem(Camera))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
+                .AddSystem(new CameraZoomSystem(Camera))
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);
             
             ResourceManager.Entities.Types.Find(x => x.EntityID == 0).Instantiate(_world);
-
-            _entityFactory.CreateChunk();
         }
 
         public override void Update(GameTime gameTime)

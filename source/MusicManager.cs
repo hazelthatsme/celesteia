@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Celesteia {
     public class MusicManager : GameComponent {
-        private new Game Game => (Game) base.Game;
+        private new GameInstance Game => (GameInstance) base.Game;
 
         private float SetVolume = 0.1f;
         private float _volume;
@@ -14,7 +14,7 @@ namespace Celesteia {
         private float _transitionDuration = 2f;
         private bool _transitionComplete = false;
 
-        public MusicManager(Game Game) : base(Game) {}
+        public MusicManager(GameInstance Game) : base(Game) {}
 
         public override void Update(GameTime gameTime)
         {

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celesteia.Resources.Types {
+namespace Celesteia.Resources.Collections {
     public abstract class BlockSpriteProperties {
         public const int SIZE = 8; 
     }
@@ -25,6 +25,12 @@ namespace Celesteia.Resources.Types {
             );
 
             Types.Add(new BlockType(0, "Stone", atlas, 2, 1));
+
+            Types.Add(new BlockType(1, "Soil", atlas, 1, 1));
+
+            Types.Add(new BlockType(2, "Grown Soil", atlas, 0, 1));
+
+            Types.Add(new BlockType(3, "Deepstone", atlas, 3, 1));
         }
 
         public BlockType GetBlock(byte id) {

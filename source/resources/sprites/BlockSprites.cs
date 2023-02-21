@@ -1,5 +1,6 @@
+using System;
 using System.Collections.Generic;
-using Celesteia.Resources.Types;
+using Celesteia.Resources.Collections;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
@@ -17,7 +18,7 @@ namespace Celesteia.Resources.Sprites {
 
             _frames = new TextureRegion2D[frameCount];
             for (int i = 0; i < frameCount; i++) 
-                _frames[i] = atlas.GetRegion(startIndex + frameCount);
+                _frames[i] = atlas.GetRegion(startIndex + i);
         }
 
         public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color) {
