@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.GameInput;
+using Celesteia.Game.Input;
 using Celesteia.UI;
 using Celesteia.UI.Elements;
 using Microsoft.Xna.Framework;

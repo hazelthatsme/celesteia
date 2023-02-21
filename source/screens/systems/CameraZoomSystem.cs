@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-using Celesteia.GameInput;
+using Celesteia.Game.Input;
 using Celesteia.Graphics;
 using Celesteia.Resources;
 using Celesteia.Screens.Components;

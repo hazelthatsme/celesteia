@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Media;
 using Celesteia.Graphics;
 using MonoGame.Extended.Entities;
 using Celesteia.Screens.Systems.MainMenu;
-using Celesteia.Utilities.ECS;
+using Celesteia.Game.ECS;
 
 namespace Celesteia.Screens {
     public class MainMenuScreen : GameScreen
@@ -20,7 +20,8 @@ namespace Celesteia.Screens {
         private Song mainMenuTheme;
 
         private Camera2D Camera;
-        private MonoGame.Extended.Entities.World _world;
+        private World _world;
+        private EntityFactory _entityFactory;
 
         public override void LoadContent()
         {
@@ -36,11 +37,13 @@ namespace Celesteia.Screens {
                 .AddSystem(new MainMenuRenderSystem(Camera, Game.SpriteBatch))
                 .Build();
 
-            new EntityFactory(_world, Game).CreateSkyboxPortion("stars", Color.White, -0.1f, .9f);
-            new EntityFactory(_world, Game).CreateSkyboxPortion("shadow", Color.Black, 5f, .7f);
-            new EntityFactory(_world, Game).CreateSkyboxPortion("shadow", Color.Black, 3f, .6f);
-            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(165,216,255,45), 3f, .5f);
-            new EntityFactory(_world, Game).CreateSkyboxPortion("nebula", new Color(255,165,246,45), -2f, .3f);
+            _entityFactory = new EntityFactory(_world, Game);
+
+            _entityFactory.CreateSkyboxPortion("stars", Color.White, -0.1f, .9f);
+            _entityFactory.CreateSkyboxPortion("shadow", Color.Black, 5f, .7f);
+            _entityFactory.CreateSkyboxPortion("shadow", Color.Black, 3f, .6f);
+            _entityFactory.CreateSkyboxPortion("nebula", new Color(165,216,255,45), 3f, .5f);
+            _entityFactory.CreateSkyboxPortion("nebula", new Color(255,165,246,45), -2f, .3f);
 
             this.mainMenu = new MainMenu(Game);
             this.mainMenu.LoadContent();

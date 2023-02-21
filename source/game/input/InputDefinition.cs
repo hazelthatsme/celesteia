@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Input;
 
-namespace Celesteia.GameInput {
+namespace Celesteia.Game.Input {
     public interface IInputDefinition {
         float Test();
     }

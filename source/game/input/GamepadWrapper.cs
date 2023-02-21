@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Celesteia.GameInput {
+namespace Celesteia.Game.Input {
     public class GamepadWrapper {
         private PlayerIndex index = PlayerIndex.One;
 

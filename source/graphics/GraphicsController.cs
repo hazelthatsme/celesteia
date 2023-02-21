@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Celesteia.Graphics {
     public class GraphicsController {
         private readonly GraphicsDeviceManager manager;
-        private readonly Game game;
+        private readonly GameInstance game;
 
         private FullscreenMode _screenMode;
         private bool _useBorderless = false;
@@ -38,7 +38,7 @@ namespace Celesteia.Graphics {
             set { _multiSampling = value; }
         }
 
-        public GraphicsController(Game _game, GraphicsDeviceManager _manager) {
+        public GraphicsController(GameInstance _game, GraphicsDeviceManager _manager) {
             game = _game;
             manager = _manager;
         }

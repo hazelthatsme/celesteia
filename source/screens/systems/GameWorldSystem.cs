@@ -1,5 +1,6 @@
+using Celesteia.Game;
+using Celesteia.Game.World;
 using Celesteia.Graphics;
-using Celesteia.Screens.Components.Game;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
@@ -20,7 +21,7 @@ namespace Celesteia.Screens.Systems {
             _gameWorld = world;
         }
 
-        public void Initialize(MonoGame.Extended.Entities.World world) {}
+        public void Initialize(World world) {}
 
         private ChunkVector _prevChunkPos = new ChunkVector(int.MinValue, int.MinValue);
         public void Update(GameTime gameTime) {

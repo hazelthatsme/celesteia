@@ -5,10 +5,9 @@ using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Sprites;
 using Celesteia.Graphics;
 using System;
-using System.Diagnostics;
-using Celesteia.World;
+using Celesteia.Game.World.Generators;
 
-namespace Celesteia.Screens.Systems {
+namespace Celesteia.Game {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
 

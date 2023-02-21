@@ -38,12 +38,12 @@ namespace Celesteia.Graphics {
         public void MoveTo(Vector2 vector2) {
             _center = vector2;
         }
-        
+
+        private float ScaledZoom => _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
         public Matrix GetViewMatrix() {
             _transform = Matrix.CreateTranslation(new Vector3(-_center.X, -_center.Y, 0)) * 
-                Matrix.CreateRotationZ(Rotation) * 
-                Matrix.CreateScale(ResourceManager.INVERSE_SPRITE_SCALING, ResourceManager.INVERSE_SPRITE_SCALING, 1f) *
-                Matrix.CreateScale(Zoom, Zoom, 1f) * 
+                Matrix.CreateRotationZ(Rotation) *
+                Matrix.CreateScale(ScaledZoom, ScaledZoom, 1f) * 
                 Matrix.CreateTranslation((int)Math.Round(ViewportWidth / 2f), (int)Math.Round(ViewportHeight / 2f), 0f);
 
             return _transform;

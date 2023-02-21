@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Celesteia.Game.World.Generators;
 using Celesteia.Graphics;
-using Celesteia.Screens.Systems;
-using Celesteia.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celesteia.Screens.Components.Game {
+namespace Celesteia.Game.World {
     public class GameWorld : IDisposable {
         public Chunk[,] chunkMap;
 

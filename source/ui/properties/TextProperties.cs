@@ -1,4 +1,4 @@
-using Celesteia.Resources.Types;
+using Celesteia.Resources.Collections;
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.UI.Properties {

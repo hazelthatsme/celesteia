@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Celesteia.GameInput;
+using Celesteia.Game.Input;
 
 namespace Celesteia.Screens.Components.Entities.Player.Movement {
     public class PlayerMovement {

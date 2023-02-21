@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celesteia.Resources.Types {
+namespace Celesteia.Resources.Collections {
     public abstract class FontProperties {
         public const int STANDARD_SIZE = 12;
     }

@@ -1,4 +1,4 @@
-using Celesteia.Resources.Types;
+using Celesteia.Resources.Collections;
 using Celesteia.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

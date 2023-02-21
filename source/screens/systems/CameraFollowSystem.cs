@@ -11,7 +11,6 @@ namespace Celesteia.Screens.Systems {
     public class CameraFollowSystem : EntityUpdateSystem
     {
         private readonly Camera2D _camera;
-        private Vector2 _current;
         private Vector2 _target;
 
         private ComponentMapper<Transform2> transformMapper;

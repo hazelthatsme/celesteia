@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.GameInput;
+using Celesteia.Game.ECS;
+using Celesteia.Game.Input;
 using Celesteia.Resources.Sprites;
 using Celesteia.Screens.Components;
 using Celesteia.Screens.Components.Entities.Player.Movement;
-using Celesteia.Utilities.ECS;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,7 +13,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celesteia.Resources.Types {
+namespace Celesteia.Resources.Collections {
     public class EntityTypes {
         public List<EntityType> Types;
 
@@ -47,9 +47,9 @@ namespace Celesteia.Resources.Types {
         public readonly byte EntityID;
         public readonly string EntityName;
         public readonly TextureAtlas Atlas;
-        private readonly Action<MonoGame.Extended.Entities.World, TextureAtlas> InstantiateAction;
+        private readonly Action<World, TextureAtlas> InstantiateAction;
 
-        public EntityType(byte id, string name, TextureAtlas atlas, Action<MonoGame.Extended.Entities.World, TextureAtlas> instantiate) {
+        public EntityType(byte id, string name, TextureAtlas atlas, Action<World, TextureAtlas> instantiate) {
             EntityID = id;
             EntityName = name;
             Atlas = atlas;
@@ -58,7 +58,7 @@ namespace Celesteia.Resources.Types {
             Debug.WriteLine($"  Entity '{name}' loaded.");
         }
 
-        public void Instantiate(MonoGame.Extended.Entities.World world) {
+        public void Instantiate(World world) {
             InstantiateAction.Invoke(world, Atlas);
         }
     }

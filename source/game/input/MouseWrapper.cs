@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Input;
 
-namespace Celesteia.GameInput {
+namespace Celesteia.Game.Input {
     public class MouseWrapper {
         private static MouseStateExtended _prev;
         private static MouseStateExtended _curr;

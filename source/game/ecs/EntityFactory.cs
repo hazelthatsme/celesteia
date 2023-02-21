@@ -1,18 +1,15 @@
-using System;
 using Celesteia.Resources;
-using Celesteia.Resources.Sprites;
-using Celesteia.Screens.Systems;
 using Celesteia.Screens.Systems.MainMenu;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 
-namespace Celesteia.Utilities.ECS {
+namespace Celesteia.Game.ECS {
     public class EntityFactory {
         private readonly MonoGame.Extended.Entities.World World;
-        private readonly Game Game;
+        private readonly GameInstance Game;
 
-        public EntityFactory(MonoGame.Extended.Entities.World world, Game game) {
+        public EntityFactory(MonoGame.Extended.Entities.World world, GameInstance game) {
             World = world;
             Game = game;
         }
