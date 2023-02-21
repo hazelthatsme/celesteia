@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.Resources.Collections {
     public abstract class FontProperties {

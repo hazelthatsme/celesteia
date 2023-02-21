@@ -6,7 +6,7 @@ using MonoGame.Extended.Screens;
 using Microsoft.Xna.Framework.Media;
 using Celesteia.Graphics;
 using MonoGame.Extended.Entities;
-using Celesteia.Screens.Systems.MainMenu;
+using Celesteia.Game.ECS.Systems.MainMenu;
 using Celesteia.Game.ECS;
 
 namespace Celesteia.Screens {

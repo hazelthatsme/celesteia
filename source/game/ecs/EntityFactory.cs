@@ -1,8 +1,9 @@
 using Celesteia.Resources;
-using Celesteia.Screens.Systems.MainMenu;
+using Celesteia.Game.ECS.Systems.MainMenu;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
+using Celesteia.Game.Skybox;
 
 namespace Celesteia.Game.ECS {
     public class EntityFactory {
@@ -18,7 +19,7 @@ namespace Celesteia.Game.ECS {
         {
             return new EntityBuilder(World)
                 .AddComponent(new Transform2(Vector2.Zero, 0F, new Vector2(3f, 3f)))
-                .AddComponent(new MainMenuRotateZ(rotation))
+                .AddComponent(new SkyboxRotateZ(rotation))
                 .AddComponent(ResourceManager.Skybox.GetAsset(name).Frames.Clone().SetColor(color).SetDepth(depth))
                 .Build();
         }

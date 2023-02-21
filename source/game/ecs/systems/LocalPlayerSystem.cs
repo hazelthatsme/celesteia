@@ -1,11 +1,11 @@
-using Celesteia.Screens.Components;
-using Celesteia.Screens.Components.Entities.Player.Movement;
+using Celesteia.Game.Entities;
+using Celesteia.Game.Entities.Player;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
-namespace Celesteia.Screens.Systems {
+namespace Celesteia.Game.ECS.Systems {
     public class LocalPlayerSystem : EntityUpdateSystem
     {
         private ComponentMapper<Transform2> transformMapper;
