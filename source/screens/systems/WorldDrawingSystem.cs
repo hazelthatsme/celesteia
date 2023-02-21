@@ -29,7 +29,7 @@ namespace Celesteia.Screens.Systems {
             foreach (int entityId in ActiveEntities) {
                 Chunk chunk = chunkMapper.Get(entityId);
 
-                chunk.Draw(gameTime, _spriteBatch);
+                chunk.Draw(gameTime, _spriteBatch, _camera);
             }
 
             _spriteBatch.End();

@@ -41,17 +41,7 @@ namespace Celesteia.Screens.Systems {
             calculatedCenter /= cumulativeWeight;
 
             _target = calculatedCenter;
-
-            // Move camera smoothly.
-            //_current = Vector2.Lerp(_current, _target, gameTime.GetElapsedSeconds() * Camera2D.FOLLOW_SPEED);
-            _camera.MoveTo(GetDrawingPosition(_target));
-        }
-
-        public Vector2 GetDrawingPosition(Vector2 position) {
-            return new Vector2(
-                (float)Math.Round(position.X * ResourceManager.INVERSE_SPRITE_SCALING) / ResourceManager.INVERSE_SPRITE_SCALING,
-                (float)Math.Round(position.Y * ResourceManager.INVERSE_SPRITE_SCALING) / ResourceManager.INVERSE_SPRITE_SCALING
-            );
+            _camera.MoveTo(_camera.GetDrawingPosition(_target));
         }
     }
 }

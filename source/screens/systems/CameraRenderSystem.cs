@@ -36,17 +36,10 @@ namespace Celesteia.Screens.Systems {
                 Transform2 transform = transformMapper.Get(entityId);
                 EntityFrames entityFrames = entityFramesMapper.Get(entityId);
 
-                entityFrames.Draw(0, _spriteBatch, GetDrawingPosition(transform.Position), Color.White);
+                entityFrames.Draw(0, _spriteBatch, _camera.GetDrawingPosition(transform.Position), Color.White);
             }
 
             _spriteBatch.End();
-        }
-
-        public Vector2 GetDrawingPosition(Vector2 position) {
-            return new Vector2(
-                (float)Math.Round(position.X * ResourceManager.INVERSE_SPRITE_SCALING) / ResourceManager.INVERSE_SPRITE_SCALING,
-                (float)Math.Round(position.Y * ResourceManager.INVERSE_SPRITE_SCALING) / ResourceManager.INVERSE_SPRITE_SCALING
-            );
         }
     }
 }

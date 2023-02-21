@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
@@ -17,7 +18,7 @@ namespace Celesteia.Resources.Sprites {
 
             _frames = new TextureRegion2D[frameCount];
             for (int i = 0; i < frameCount; i++) 
-                _frames[i] = atlas.GetRegion(startIndex + frameCount);
+                _frames[i] = atlas.GetRegion(startIndex + i);
         }
 
         public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color) {

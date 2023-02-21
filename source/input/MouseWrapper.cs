@@ -27,5 +27,10 @@ namespace Celesteia.GameInput {
         public static Point GetPosition() {
             return _curr.Position;
         }
+
+        public static int GetScrollDelta() {
+            int delta = _curr.ScrollWheelValue - _prev.ScrollWheelValue;
+            return delta == 0 ? 0 : (delta < 0 ? -1 : 1);
+        }
     }
 }

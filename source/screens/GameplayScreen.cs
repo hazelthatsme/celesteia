@@ -30,6 +30,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new LocalPlayerSystem())
                 .AddSystem(new CameraFollowSystem(Camera))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
+                .AddSystem(new CameraZoomSystem(Camera))
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Celesteia.Resources;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Sprites;
+using Celesteia.Graphics;
 
 namespace Celesteia.Screens.Systems {
     public class Chunk {
@@ -16,12 +17,12 @@ namespace Celesteia.Screens.Systems {
         }
 
         Vector2 v;
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 v.X = i;
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     v.Y = j;
-                    ResourceManager.Blocks.GetBlock(tiles[i, j]).Frames.Draw(0, spriteBatch, Position.Resolve() + v, Color.White);
+                    ResourceManager.Blocks.GetBlock(tiles[i, j]).Frames.Draw(0, spriteBatch, camera.GetDrawingPosition(Position.Resolve() + v), Color.White);
                 }
             }
         }

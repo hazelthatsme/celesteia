@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Celesteia.Resources;
 using Microsoft.Xna.Framework;
@@ -7,7 +8,7 @@ namespace Celesteia.Graphics {
     public class Camera2D {
         public const float FOLLOW_SPEED = 5f;
 
-        private float _zoom = 1f;
+        private int _zoom = 1;
         private Matrix _transform;
         private Vector2 _center = Vector2.Zero;
         private float _rotation;
@@ -24,9 +25,9 @@ namespace Celesteia.Graphics {
             get { return _center; }
         }
 
-        public float Zoom {
-            get { return _zoom * 2f * ResourceManager.INVERSE_SPRITE_SCALING; }
-            set { _zoom = value <= 0.1f ? 0.1f : value; }
+        public int Zoom {
+            get { return _zoom; }
+            set { _zoom = MathHelper.Clamp(value, 1, 8); }
         }
 
         public float Rotation {
@@ -41,10 +42,18 @@ namespace Celesteia.Graphics {
         public Matrix GetViewMatrix() {
             _transform = Matrix.CreateTranslation(new Vector3(-_center.X, -_center.Y, 0)) * 
                 Matrix.CreateRotationZ(Rotation) * 
+                Matrix.CreateScale(ResourceManager.INVERSE_SPRITE_SCALING, ResourceManager.INVERSE_SPRITE_SCALING, 1f) *
                 Matrix.CreateScale(Zoom, Zoom, 1f) * 
-                Matrix.CreateTranslation(ViewportWidth / 2f, ViewportHeight / 2f, 0f);
+                Matrix.CreateTranslation((int)Math.Round(ViewportWidth / 2f), (int)Math.Round(ViewportHeight / 2f), 0f);
 
             return _transform;
+        }
+
+        public Vector2 GetDrawingPosition(Vector2 position) {
+            return new Vector2(
+                (int)Math.Round(position.X * ResourceManager.INVERSE_SPRITE_SCALING * _zoom) / (ResourceManager.INVERSE_SPRITE_SCALING * _zoom),
+                (int)Math.Round(position.Y * ResourceManager.INVERSE_SPRITE_SCALING * _zoom) / (ResourceManager.INVERSE_SPRITE_SCALING * _zoom)
+            );
         }
     }
 }
