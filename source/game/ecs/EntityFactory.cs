@@ -1,5 +1,5 @@
 using Celesteia.Resources;
-using Celesteia.Game.ECS.Systems.MainMenu;
+using Celesteia.Game.Systems.MainMenu;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;

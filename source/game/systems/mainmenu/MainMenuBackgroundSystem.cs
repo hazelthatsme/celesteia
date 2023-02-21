@@ -4,7 +4,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
-namespace Celesteia.Game.ECS.Systems.MainMenu {
+namespace Celesteia.Game.Systems.MainMenu {
     public class MainMenuBackgroundSystem : EntityUpdateSystem
     {
         private ComponentMapper<Transform2> transformMapper;

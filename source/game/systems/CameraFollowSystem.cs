@@ -1,11 +1,11 @@
-using Celesteia.Game.Entities;
+using Celesteia.Game.Components;
 using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
-namespace Celesteia.Game.ECS.Systems {
+namespace Celesteia.Game.Systems {
     public class CameraFollowSystem : EntityUpdateSystem
     {
         private readonly Camera2D _camera;

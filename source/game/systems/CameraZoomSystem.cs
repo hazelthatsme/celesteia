@@ -3,7 +3,7 @@ using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities.Systems;
 
-namespace Celesteia.Game.ECS.Systems {
+namespace Celesteia.Game.Systems {
     public class CameraZoomSystem : UpdateSystem 
     {
         private readonly Camera2D _camera;

@@ -6,7 +6,7 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
 
-namespace Celesteia.Game.ECS.Systems {    
+namespace Celesteia.Game.Systems {    
     public class EntityDebugSystem : EntityDrawSystem
     {
         private readonly Camera2D _camera;

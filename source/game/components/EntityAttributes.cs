@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Celesteia.Game.Entities {
+namespace Celesteia.Game.Components {
     public class EntityAttributes {
         public EntityAttributeMap Attributes;
 

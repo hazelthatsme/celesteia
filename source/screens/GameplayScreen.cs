@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using Celesteia.Game.ECS.Systems;
+using Celesteia.Game.Systems;
 using Microsoft.Xna.Framework;
 using Celesteia.Game.ECS;
 using MonoGame.Extended.Entities;

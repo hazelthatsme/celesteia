@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Celesteia.Game.Input;
 
-namespace Celesteia.Game.Entities.Player {
+namespace Celesteia.Game.Components.Player {
     public class PlayerMovement {
         public List<IInputDefinition> Horizontal;
         public List<IInputDefinition> Vertical;

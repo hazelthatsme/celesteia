@@ -13,12 +13,10 @@ namespace Celesteia.Screens {
         private new GameInstance Game => (GameInstance) base.Game;
         public SplashScreen(GameInstance game) : base(game) {}
 
-        Texture2D leafalLogo;
-        SoundEffect splashSound;
-        
-        Image backgroundImage;
-        Image logoElement;
-        Rect logoRect;
+        private Texture2D leafalLogo;
+        private SoundEffect splashSound;
+        private Image logoElement;
+        private Rect logoRect;
 
         private float logoRatio;
 
@@ -30,15 +28,6 @@ namespace Celesteia.Screens {
             splashSound = Game.Content.Load<SoundEffect>("branding/leafal/splash");
 
             logoRatio = leafalLogo.Height / (float) leafalLogo.Width;
-
-            backgroundImage = new Image(new Rect(
-                new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
-                new ScreenSpaceUnit(0f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
-                new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
-                new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
-            ))
-                .SetTexture(null)
-                .SetColor(Color.Black);
 
             logoRect = new Rect(
                 new ScreenSpaceUnit(0.25f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
@@ -93,8 +82,6 @@ namespace Celesteia.Screens {
             GraphicsDevice.Clear(Color.Black);
 
             Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp);
-
-            backgroundImage.Draw(Game.SpriteBatch);
             
             logoElement.SetColor(color);
             logoElement.Draw(Game.SpriteBatch);

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
-namespace Celesteia.Game.ECS.Systems {
+namespace Celesteia.Game.Systems {
     public class GameWorldSystem : IUpdateSystem, IDrawSystem
     {
         private readonly Camera2D _camera;
