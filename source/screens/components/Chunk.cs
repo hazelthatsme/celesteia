@@ -4,16 +4,37 @@ using Celesteia.Resources;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Sprites;
 using Celesteia.Graphics;
+using System;
+using System.Diagnostics;
+using Celesteia.World;
 
 namespace Celesteia.Screens.Systems {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
 
         public ChunkVector Position;
-        public byte[,] tiles;
+        private byte[,] tiles;
 
-        public Chunk() {
+        public Chunk(ChunkVector vector) {
+            Position = vector;
             tiles = new byte[CHUNK_SIZE, CHUNK_SIZE];
+        }
+
+        private int trueX, trueY;
+        public void Generate(IWorldGenerator generator) {
+            for (int i = 0; i < CHUNK_SIZE; i++) {
+                trueX = (Position.X * CHUNK_SIZE) + i;
+                for (int j = 0; j < CHUNK_SIZE; j++) {
+                    trueY = (Position.Y * CHUNK_SIZE) + j;
+                    tiles[i, j] = generator.GetNaturalBlock(trueX, trueY);
+                }
+            }
+        }
+
+        private bool _enabled = false;
+        public bool Enabled {
+            get => _enabled;
+            set => _enabled = value;
         }
 
         Vector2 v;
@@ -22,7 +43,7 @@ namespace Celesteia.Screens.Systems {
                 v.X = i;
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     v.Y = j;
-                    ResourceManager.Blocks.GetBlock(tiles[i, j]).Frames.Draw(0, spriteBatch, camera.GetDrawingPosition(Position.Resolve() + v), Color.White);
+                    ResourceManager.Blocks.GetBlock(tiles[i, j]).Frames.Draw(0, spriteBatch, camera.GetDrawingPosition(Position.Resolve() + v), Color.Gray);
                 }
             }
         }
@@ -55,8 +76,33 @@ namespace Celesteia.Screens.Systems {
         public int X;
         public int Y;
 
+        public ChunkVector(int x, int y) {
+            X = x;
+            Y = y;
+        }
+
+        public static ChunkVector FromVector2(Vector2 vector)
+        {
+            return new ChunkVector(
+                (int)Math.Floor(vector.X / Chunk.CHUNK_SIZE),
+                (int)Math.Floor(vector.Y / Chunk.CHUNK_SIZE)
+            );
+        }
+
         public Vector2 Resolve() {
             return new Vector2(X * Chunk.CHUNK_SIZE, Y * Chunk.CHUNK_SIZE);
+        }
+
+        public static int Distance(ChunkVector a, ChunkVector b) {
+            return MathHelper.Max(Math.Abs(b.X - a.X), Math.Abs(b.Y - a.Y));
+        }
+
+        public static bool operator ==(ChunkVector a, ChunkVector b) {
+            return a.X == b.X && a.Y == b.Y;
+        }
+
+        public static bool operator !=(ChunkVector a, ChunkVector b) {
+            return a.X != b.X || a.Y != b.Y;
         }
     }
 }

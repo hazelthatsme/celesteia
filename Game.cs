@@ -14,7 +14,7 @@ using MonoGame.Extended.Screens.Transitions;
 
 namespace Celesteia
 {
-    public class Game : Microsoft.Xna.Framework.Game
+    public class GameInstance : Microsoft.Xna.Framework.Game
     {
         public static bool DebugMode { get; private set; }
         
@@ -26,13 +26,12 @@ namespace Celesteia
         private GraphicsController GraphicsController;
         public SpriteBatch SpriteBatch;
 
-        public static bool GUIEnabled = true;
         private List<GUI> globalGUIs;
 
         private readonly ScreenManager _screenManager;
         public readonly MusicManager Music;
 
-        public Game()
+        public GameInstance()
         {
             // Graphics setup.
             _graphics = new GraphicsDeviceManager(this);
@@ -133,7 +132,7 @@ namespace Celesteia
             globalGUIs.ForEach((gui) => { gui.Update(gameTime); });
 
             // If Scroll Lock is pressed, toggle GUIs.
-            if (KeyboardWrapper.GetKeyDown(Keys.Scroll)) GUIEnabled = !GUIEnabled;
+            if (KeyboardWrapper.GetKeyDown(Keys.Scroll)) UIReferences.GUIEnabled = !UIReferences.GUIEnabled;
 
             // If F3 is pressed, toggle Debug Mode.
             if (KeyboardWrapper.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;

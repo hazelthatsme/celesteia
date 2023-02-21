@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celesteia.UI {
+namespace Celesteia.UI.Elements {
     public class Button : Clickable {
         public Button(Rect rect) {
             SetRect(rect);

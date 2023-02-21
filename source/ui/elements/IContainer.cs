@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Celesteia.UI {
+namespace Celesteia.UI.Elements {
     public interface IContainer : IElement {
         // Get the element's children.
         List<IElement> GetChildren();

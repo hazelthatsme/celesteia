@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Input;
 
-namespace Celesteia.UI {
+namespace Celesteia.UI.Elements {
     public class Clickable : Element, IClickable
     {
         private bool _clicked;

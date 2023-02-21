@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celesteia.UI {
+namespace Celesteia.UI.Elements {
     public class Element : IElement
     {
         private bool _enabled;

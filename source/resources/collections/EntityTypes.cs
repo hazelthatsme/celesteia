@@ -47,9 +47,9 @@ namespace Celesteia.Resources.Types {
         public readonly byte EntityID;
         public readonly string EntityName;
         public readonly TextureAtlas Atlas;
-        private readonly Action<World, TextureAtlas> InstantiateAction;
+        private readonly Action<MonoGame.Extended.Entities.World, TextureAtlas> InstantiateAction;
 
-        public EntityType(byte id, string name, TextureAtlas atlas, Action<World, TextureAtlas> instantiate) {
+        public EntityType(byte id, string name, TextureAtlas atlas, Action<MonoGame.Extended.Entities.World, TextureAtlas> instantiate) {
             EntityID = id;
             EntityName = name;
             Atlas = atlas;
@@ -58,7 +58,7 @@ namespace Celesteia.Resources.Types {
             Debug.WriteLine($"  Entity '{name}' loaded.");
         }
 
-        public void Instantiate(World world) {
+        public void Instantiate(MonoGame.Extended.Entities.World world) {
             InstantiateAction.Invoke(world, Atlas);
         }
     }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.GameInput;
 using Celesteia.UI;
+using Celesteia.UI.Elements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
@@ -9,11 +10,11 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.GUIs {
     public class GUI {
-        public Game Game;
+        public GameInstance Game;
 
         public IContainer Root;
 
-        public GUI(Game Game, Rect rect) {
+        public GUI(GameInstance Game, Rect rect) {
             this.Game = Game;
             this.Root = new Container(rect);
         }
@@ -31,7 +32,7 @@ namespace Celesteia.GUIs {
             
             Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap, null, null, null);
 
-            if (Game.GUIEnabled) Root.Draw(Game.SpriteBatch);
+            if (UIReferences.GUIEnabled) Root.Draw(Game.SpriteBatch);
 
             Game.SpriteBatch.End();
         }

@@ -1,16 +1,13 @@
-using System.Diagnostics;
 using Celesteia.Resources;
-using Celesteia.Resources.Types;
 using Celesteia.UI;
+using Celesteia.UI.Elements;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.GUIs {
     public class DebugGUI : GUI {
-        private new Game Game => (Game) base.Game;
-        public DebugGUI(Game game) : base(game, Rect.ScreenFull) {}
+        private new GameInstance Game => (GameInstance) base.Game;
+        public DebugGUI(GameInstance game) : base(game, Rect.ScreenFull) {}
 
         private double fps;
         private double lastUpdate;
@@ -51,7 +48,7 @@ namespace Celesteia.GUIs {
 
         public override void Draw(GameTime gameTime)
         {
-            if (Game.DebugMode) base.Draw(gameTime);
+            if (GameInstance.DebugMode) base.Draw(gameTime);
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celesteia.UI {
+namespace Celesteia.UI.Elements {
     public class Image : Element {
         private Texture2D _texture;
         public Color _color;

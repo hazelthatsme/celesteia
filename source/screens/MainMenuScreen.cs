@@ -12,16 +12,15 @@ using Celesteia.Utilities.ECS;
 namespace Celesteia.Screens {
     public class MainMenuScreen : GameScreen
     {
-        private new Game Game => (Game) base.Game;
-
-        public MainMenuScreen(Game game) : base(game) {}
+        private new GameInstance Game => (GameInstance) base.Game;
+        public MainMenuScreen(GameInstance game) : base(game) {}
 
         private MainMenu mainMenu;
 
         private Song mainMenuTheme;
 
         private Camera2D Camera;
-        private World _world;
+        private MonoGame.Extended.Entities.World _world;
 
         public override void LoadContent()
         {

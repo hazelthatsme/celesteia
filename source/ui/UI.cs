@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Celesteia {
     public static class UIReferences {
         public static GameWindow gameWindow;
+        public static bool GUIEnabled = true;
         public static int Scaling = 3;
     }
 

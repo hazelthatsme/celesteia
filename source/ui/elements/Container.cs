@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
 
-namespace Celesteia.UI {
+namespace Celesteia.UI.Elements {
     public class Container : Element, IContainer
     {
         private List<IElement> Children;
@@ -34,7 +34,7 @@ namespace Celesteia.UI {
         {
             Children.ForEach(element => element.Update(gameTime));
 
-            if (!Game.GUIEnabled) return;
+            if (!UIReferences.GUIEnabled) return;
 
             _mousePosition = MouseWrapper.GetPosition();
 

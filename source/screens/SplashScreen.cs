@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using Celesteia.GameInput;
 using Celesteia.UI;
+using Celesteia.UI.Elements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +10,8 @@ using MonoGame.Extended.Screens;
 
 namespace Celesteia.Screens {
     public class SplashScreen : GameScreen {
-        private new Game Game => (Game) base.Game;
+        private new GameInstance Game => (GameInstance) base.Game;
+        public SplashScreen(Game game) : base(game) {}
 
         Texture2D leafalLogo;
         SoundEffect splashSound;
@@ -19,8 +21,6 @@ namespace Celesteia.Screens {
         Rect logoRect;
 
         private float logoRatio;
-
-        public SplashScreen(Game game) : base(game) {}
 
         public override void LoadContent()
         {

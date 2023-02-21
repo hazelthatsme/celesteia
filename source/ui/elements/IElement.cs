@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celesteia.UI {
+namespace Celesteia.UI.Elements {
     public interface IElement {
         // Is the element enabled? 
         bool GetEnabled();

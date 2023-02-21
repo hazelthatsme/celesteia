@@ -38,7 +38,7 @@ namespace Celesteia.Graphics {
         public void MoveTo(Vector2 vector2) {
             _center = vector2;
         }
-
+        
         public Matrix GetViewMatrix() {
             _transform = Matrix.CreateTranslation(new Vector3(-_center.X, -_center.Y, 0)) * 
                 Matrix.CreateRotationZ(Rotation) * 

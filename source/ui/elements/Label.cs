@@ -4,7 +4,7 @@ using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celesteia.UI {
+namespace Celesteia.UI.Elements {
     public class Label : Element {
         private Texture2D _background;
         private TextProperties _text;

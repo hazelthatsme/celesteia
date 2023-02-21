@@ -1,15 +1,14 @@
 using Celesteia.Resources;
 using Celesteia.Screens;
 using Celesteia.UI;
+using Celesteia.UI.Elements;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.GUIs {
     public class MainMenu : GUI {
-        private new Game Game => (Game) base.Game;
-        public MainMenu(Game game) : base(game, Rect.ScreenFull) {}
+        public MainMenu(GameInstance game) : base(game, Rect.ScreenFull) {}
 
         private Texture2D logo;
         private Texture2D buttonTexture;
