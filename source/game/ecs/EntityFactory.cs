@@ -6,10 +6,10 @@ using MonoGame.Extended.Entities;
 
 namespace Celesteia.Game.ECS {
     public class EntityFactory {
-        private readonly MonoGame.Extended.Entities.World World;
+        private readonly World World;
         private readonly GameInstance Game;
 
-        public EntityFactory(MonoGame.Extended.Entities.World world, GameInstance game) {
+        public EntityFactory(World world, GameInstance game) {
             World = world;
             Game = game;
         }

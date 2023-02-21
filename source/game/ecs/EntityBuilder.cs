@@ -5,7 +5,7 @@ namespace Celesteia.Game.ECS {
     public class EntityBuilder : IDisposable {
         private Entity entity;
 
-        public EntityBuilder(MonoGame.Extended.Entities.World _world) {
+        public EntityBuilder(World _world) {
             entity = _world.CreateEntity();
         }
 

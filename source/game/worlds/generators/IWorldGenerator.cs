@@ -1,4 +1,4 @@
-namespace Celesteia.Game.World.Generators {
+namespace Celesteia.Game.Worlds.Generators {
     public interface IWorldGenerator {
         // Get the world.
         public GameWorld GetWorld();

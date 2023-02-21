@@ -1,4 +1,4 @@
-namespace Celesteia.Game.World.Generators {
+namespace Celesteia.Game.Worlds.Generators {
     public class TerranWorldGenerator : IWorldGenerator {
         private GameWorld _world;
         public GameWorld GetWorld() => _world;

@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Celesteia.Game.World.Generators;
+using Celesteia.Game.Worlds.Generators;
 using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celesteia.Game.World {
+namespace Celesteia.Game.Worlds {
     public class GameWorld : IDisposable {
         public Chunk[,] chunkMap;
 
@@ -69,8 +68,6 @@ namespace Celesteia.Game.World {
 
             int minY = Math.Max(0, vector.Y - renderDistance);
             int maxY = Math.Min(_height - 1, vector.Y + renderDistance);
-
-            Debug.WriteLine($"{minX} - {maxX}, {minY} - {maxY}");
             
             for (int i = minX; i <= maxX; i++) {
                 _v.X = i;
@@ -93,7 +90,6 @@ namespace Celesteia.Game.World {
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            Debug.WriteLine(activeChunks.Count);
             activeChunks.ForEach(v => DrawChunk(v, gameTime, spriteBatch, camera));
         }
 

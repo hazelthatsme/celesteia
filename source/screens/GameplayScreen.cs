@@ -6,8 +6,8 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using Celesteia.Resources;
 using Celesteia.Graphics;
-using Celesteia.Game.World;
-using Celesteia.Game.World.Generators;
+using Celesteia.Game.Worlds;
+using Celesteia.Game.Worlds.Generators;
 
 namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
