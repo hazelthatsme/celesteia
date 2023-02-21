@@ -15,8 +15,15 @@ namespace Celesteia.Screens.Systems {
             tiles = new byte[CHUNK_SIZE, CHUNK_SIZE];
         }
 
+        Vector2 v;
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-            ResourceManager.Blocks.GetBlock(tiles[0, 0]).Frames.Draw(0, spriteBatch, Position.Resolve(), Color.White);
+            for (int i = 0; i < CHUNK_SIZE; i++) {
+                v.X = i;
+                for (int j = 0; j < CHUNK_SIZE; j++) {
+                    v.Y = j;
+                    ResourceManager.Blocks.GetBlock(tiles[i, j]).Frames.Draw(0, spriteBatch, Position.Resolve() + v, Color.White);
+                }
+            }
         }
 
         public static void DrawTile(

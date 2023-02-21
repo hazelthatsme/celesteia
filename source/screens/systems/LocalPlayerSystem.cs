@@ -26,10 +26,15 @@ namespace Celesteia.Screens.Systems {
             foreach (int entityId in ActiveEntities) {
                 PlayerMovement input = movementMapper.Get(entityId);
                 EntityAttributes.EntityAttributeMap attributes = attributesMapper.Get(entityId).Attributes;
-                transformMapper.Get(entityId).Position += new Vector2(
+
+                Vector2 movement = new Vector2(
                     input.TestHorizontal(),
                     input.TestVertical()
-                ) * attributes.Get(EntityAttribute.MovementSpeed) * (gameTime.ElapsedGameTime.Milliseconds / 1000f);
+                );
+                movement *= attributes.Get(EntityAttribute.MovementSpeed);
+                movement *= (gameTime.ElapsedGameTime.Milliseconds / 1000f);
+
+                transformMapper.Get(entityId).Position += movement;
             }
         }
     }

@@ -25,7 +25,7 @@ namespace Celesteia.Graphics {
         }
 
         public float Zoom {
-            get { return _zoom * 3f * ResourceManager.INVERSE_SPRITE_SCALING; }
+            get { return _zoom * 2f * ResourceManager.INVERSE_SPRITE_SCALING; }
             set { _zoom = value <= 0.1f ? 0.1f : value; }
         }
 
