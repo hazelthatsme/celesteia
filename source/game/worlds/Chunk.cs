@@ -4,6 +4,7 @@ using Celesteia.Resources;
 using Celesteia.Graphics;
 using System;
 using Celesteia.Game.Worlds.Generators;
+using Celesteia.Resources.Sprites;
 
 namespace Celesteia.Game.Worlds {
     public class Chunk {
@@ -56,7 +57,8 @@ namespace Celesteia.Game.Worlds {
                 v.X = i;
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     v.Y = j;
-                    ResourceManager.Blocks.GetBlock(tileMap[i, j]).Frames.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.Gray);
+                    BlockFrames frames = ResourceManager.Blocks.GetBlock(tileMap[i, j]).Frames;
+                    frames.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White);
                 }
             }
         }

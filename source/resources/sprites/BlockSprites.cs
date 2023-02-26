@@ -12,7 +12,11 @@ namespace Celesteia.Resources.Sprites {
 
         private TextureRegion2D[] _frames;
 
+        private bool _doDraw;
+
         public BlockFrames(TextureAtlas atlas, int size, int startIndex, int frameCount) {
+            _doDraw = frameCount > 0;
+
             _size = size;
             _scaling = new Vector2(ResourceManager.SPRITE_SCALING);
 
@@ -22,6 +26,8 @@ namespace Celesteia.Resources.Sprites {
         }
 
         public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color) {
+            if (!_doDraw) return;
+
             spriteBatch.Draw(_frames[index % _frames.Length], position, color, 0f, Vector2.Zero, _scaling, SpriteEffects.None, 0f, null);
         }
     }

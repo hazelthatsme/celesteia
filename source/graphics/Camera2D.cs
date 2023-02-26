@@ -8,7 +8,7 @@ namespace Celesteia.Graphics {
     public class Camera2D {
         public const float FOLLOW_SPEED = 5f;
 
-        private int _zoom = 1;
+        private int _zoom = 3;
         private Matrix _transform;
         private Vector2 _center = Vector2.Zero;
         private float _rotation;
