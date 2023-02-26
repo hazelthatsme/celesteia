@@ -6,6 +6,11 @@ using MonoGame.Extended.Entities;
 using Celesteia.Game.Skybox;
 
 namespace Celesteia.Game.ECS {
+    /*
+        Contains various commonly used prefabrications for entities.
+        Many of the functions were moved to EntityTypes.
+    */
+
     public class EntityFactory {
         private readonly World World;
         private readonly GameInstance Game;

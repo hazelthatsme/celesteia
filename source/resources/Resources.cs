@@ -1,5 +1,4 @@
 using Celesteia.Resources.Collections;
-using Celesteia.Resources.Collections;
 using Microsoft.Xna.Framework.Content;
 
 namespace Celesteia.Resources {
