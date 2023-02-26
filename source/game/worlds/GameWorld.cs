@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
 using Celesteia.Game.Worlds.Generators;
-using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.Game.Worlds {
     public class GameWorld : IDisposable {
-        public Chunk[,] chunkMap;
-
-        private List<ChunkVector> activeChunks = new List<ChunkVector>();
-        private Queue<ChunkVector> toDeactivate = new Queue<ChunkVector>();
+        private Chunk[,] chunkMap;
 
         private int _width;
         public int GetWidth() => _width;
@@ -32,69 +26,48 @@ namespace Celesteia.Game.Worlds {
         }
 
         private ChunkVector _gv;
+        private Chunk _c;
         public void Generate() {
-            Chunk chunk;
-
             for (int i = 0; i < _width; i++) {
                 _gv.X = i;
                 for (int j = 0; j < _height; j++) {
                     _gv.Y = j;
 
-                    chunk = new Chunk(_gv);
-                    chunk.Generate(_generator);
+                    _c = new Chunk(_gv);
+                    _c.Generate(_generator);
 
-                    chunk.Enabled = false;
-                    chunkMap[i, j] = chunk;
+                    _c.Enabled = false;
+                    chunkMap[i, j] = _c;
                 }
             }
         }
 
-        private ChunkVector _dv;
-        public void DisableNextChunk() {
-            if (toDeactivate.Count > 0) {
-                _dv = toDeactivate.Dequeue();
-                SetChunkEnabled(_dv, false);
-            }
+
+        public Chunk GetChunk(ChunkVector cv) {
+            return chunkMap[cv.X, cv.Y];
         }
 
-        private List<ChunkVector> toQueue;
-        private ChunkVector _v;
-        public void UpdateChunks(ChunkVector vector, int renderDistance) {
-            toQueue = new List<ChunkVector>(activeChunks);
-            activeChunks.Clear();
-
-            int minX = Math.Max(0, vector.X - renderDistance);
-            int maxX = Math.Min(_width - 1, vector.X + renderDistance);
-
-            int minY = Math.Max(0, vector.Y - renderDistance);
-            int maxY = Math.Min(_height - 1, vector.Y + renderDistance);
-            
-            for (int i = minX; i <= maxX; i++) {
-                _v.X = i;
-                for (int j = minY; j <= maxY; j++) {
-                    _v.Y = j;
-
-                    activeChunks.Add(_v);
-                    if (toQueue.Contains(_v)) toQueue.Remove(_v);
-                }
-            }
-
-            toQueue.ForEach(v => { if (!toDeactivate.Contains(v)) toDeactivate.Enqueue(v); });
-            activeChunks.ForEach(v => SetChunkEnabled(v, true));
-
-            toQueue.Clear();
+        public void RemoveBlock(Vector2 v) {
+            RemoveBlock(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y)
+            );
         }
 
-        private void SetChunkEnabled(ChunkVector v, bool value) {
-            if (chunkMap[v.X, v.Y] != null) chunkMap[v.X, v.Y].Enabled = value;
+        public void RemoveBlock(int x, int y) {
+            ChunkVector cv = new ChunkVector(
+                x / Chunk.CHUNK_SIZE,
+                y / Chunk.CHUNK_SIZE
+            );
+
+            x %= Chunk.CHUNK_SIZE;
+            y %= Chunk.CHUNK_SIZE;
+
+            if (ChunkIsInWorld(cv)) GetChunk(cv).SetBlock(x, y, 0);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            activeChunks.ForEach(v => DrawChunk(v, gameTime, spriteBatch, camera));
-        }
-
-        private void DrawChunk(ChunkVector v, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            if (chunkMap[v.X, v.Y] != null) chunkMap[v.X, v.Y].Draw(gameTime, spriteBatch, camera);
+        public bool ChunkIsInWorld(ChunkVector cv) {
+            return (cv.X >= 0 && cv.Y >= 0 && cv.X < _width && cv.Y < _height);
         }
 
         public void Dispose() {

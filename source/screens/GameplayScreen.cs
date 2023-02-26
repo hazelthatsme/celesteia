@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Celesteia.Game.Systems;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Celesteia.Game.ECS;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
@@ -15,6 +16,7 @@ namespace Celesteia.Screens {
 
         public GameplayScreen(GameInstance game) : base(game) {}
 
+        private SpriteBatch SpriteBatch => Game.SpriteBatch;
         private Camera2D Camera;
         private World _world;
         private EntityFactory _entityFactory;
@@ -33,11 +35,12 @@ namespace Celesteia.Screens {
             _gameWorld.Generate();
 
             _world = new WorldBuilder()
-                .AddSystem(new GameWorldSystem(Camera, Game.SpriteBatch, _gameWorld))
+                .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new LocalPlayerSystem())
                 .AddSystem(new CameraFollowSystem(Camera))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
                 .AddSystem(new CameraZoomSystem(Camera))
+                .AddSystem(new MouseClickSystem(Camera, _gameWorld))
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);

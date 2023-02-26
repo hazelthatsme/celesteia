@@ -1,8 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Celesteia.Resources;
-using MonoGame.Extended.TextureAtlases;
-using MonoGame.Extended.Sprites;
 using Celesteia.Graphics;
 using System;
 using Celesteia.Game.Worlds.Generators;
@@ -10,24 +8,8 @@ using Celesteia.Game.Worlds.Generators;
 namespace Celesteia.Game.Worlds {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
-
-        public ChunkVector Position;
-        private byte[,] tiles;
-
-        public Chunk(ChunkVector vector) {
-            Position = vector;
-            tiles = new byte[CHUNK_SIZE, CHUNK_SIZE];
-        }
-
-        private int trueX, trueY;
-        public void Generate(IWorldGenerator generator) {
-            for (int i = 0; i < CHUNK_SIZE; i++) {
-                trueX = (Position.X * CHUNK_SIZE) + i;
-                for (int j = 0; j < CHUNK_SIZE; j++) {
-                    trueY = (Position.Y * CHUNK_SIZE) + j;
-                    tiles[i, j] = generator.GetNaturalBlock(trueX, trueY);
-                }
-            }
+        public static bool IsInChunk(int x, int y) {
+            return (x >= 0 && y >= 0 && y < CHUNK_SIZE && y < CHUNK_SIZE);
         }
 
         private bool _enabled = false;
@@ -36,39 +18,48 @@ namespace Celesteia.Game.Worlds {
             set => _enabled = value;
         }
 
+        private ChunkVector _position;
+        private Point _truePosition;
+        private Vector2 _truePositionVector;
+        private byte[,] tileMap;
+
+        public Chunk(ChunkVector cv) {
+            SetPosition(cv);
+            tileMap = new byte[CHUNK_SIZE, CHUNK_SIZE];
+        }
+
+        public Chunk SetPosition(ChunkVector cv) {
+            _position = cv;
+            _truePosition = cv.Resolve();
+            _truePositionVector = new Vector2(_truePosition.X, _truePosition.Y);
+
+            return this;
+        }
+
+        public void Generate(IWorldGenerator generator) {
+            for (int i = 0; i < CHUNK_SIZE; i++) {
+                for (int j = 0; j < CHUNK_SIZE; j++) {
+                    SetBlock(i, j, generator.GetNaturalBlock(_truePosition.X + i, _truePosition.Y + j));
+                }
+            }
+        }
+
+        public void SetBlock(int x, int y, byte id) {
+            if (!IsInChunk(x, y)) return;
+
+            tileMap[x, y] = id;
+        }
+
         Vector2 v;
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 v.X = i;
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     v.Y = j;
-                    ResourceManager.Blocks.GetBlock(tiles[i, j]).Frames.Draw(0, spriteBatch, camera.GetDrawingPosition(Position.Resolve() + v), Color.Gray);
+                    ResourceManager.Blocks.GetBlock(tileMap[i, j]).Frames.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.Gray);
                 }
             }
         }
-
-        public static void DrawTile(
-            SpriteBatch spriteBatch,
-            TextureRegion2D frame,
-            Vector2 position,
-            Color color,
-            float scale,
-            SpriteEffects effects
-        ) => DrawTile(spriteBatch, frame, position, color, 0f, Vector2.Zero, new Vector2(scale), effects, 0f);
-
-        public static void DrawTile(
-            SpriteBatch spriteBatch,
-            TextureRegion2D textureRegion,
-            Vector2 position,
-            Color color,
-            float rotation,
-            Vector2 origin,
-            Vector2 scale,
-            SpriteEffects effects,
-            float layerDepth,
-            Rectangle? clippingRectangle = null) {
-                spriteBatch.Draw(textureRegion, position, color, rotation, origin, scale, effects, layerDepth, clippingRectangle);
-            }
     }
 
     public struct ChunkVector {
@@ -88,8 +79,8 @@ namespace Celesteia.Game.Worlds {
             );
         }
 
-        public Vector2 Resolve() {
-            return new Vector2(X * Chunk.CHUNK_SIZE, Y * Chunk.CHUNK_SIZE);
+        public Point Resolve() {
+            return new Point(X * Chunk.CHUNK_SIZE, Y * Chunk.CHUNK_SIZE);
         }
 
         public static int Distance(ChunkVector a, ChunkVector b) {

@@ -14,6 +14,8 @@ namespace Celesteia.Graphics {
         private float _rotation;
         private GraphicsDevice _graphicsDevice;
         
+        private int ViewportX => _graphicsDevice.Viewport.X;
+        private int ViewportY => _graphicsDevice.Viewport.Y;
         private int ViewportWidth => _graphicsDevice.Viewport.Width;
         private int ViewportHeight => _graphicsDevice.Viewport.Height;
 
@@ -54,6 +56,18 @@ namespace Celesteia.Graphics {
                 (int)Math.Round(position.X * ResourceManager.INVERSE_SPRITE_SCALING * _zoom) / (ResourceManager.INVERSE_SPRITE_SCALING * _zoom),
                 (int)Math.Round(position.Y * ResourceManager.INVERSE_SPRITE_SCALING * _zoom) / (ResourceManager.INVERSE_SPRITE_SCALING * _zoom)
             );
+        }
+
+        public Vector2 ScreenToWorld(Point point) {
+            return ScreenToWorld(point.X, point.Y);
+        }
+
+        public Vector2 ScreenToWorld(float x, float y) {
+            return ScreenToWorld(new Vector2(x, y));
+        }
+        
+        public Vector2 ScreenToWorld(Vector2 screenPosition) {
+            return Vector2.Transform(screenPosition - new Vector2(ViewportX, ViewportY), Matrix.Invert(GetViewMatrix()));
         }
     }
 }
