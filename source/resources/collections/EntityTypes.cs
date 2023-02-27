@@ -15,6 +15,8 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.Resources.Collections {
     public class EntityTypes {
+        public EntityType PLAYER;
+
         public List<EntityType> Types;
 
         public void LoadContent(ContentManager Content) {
@@ -22,20 +24,28 @@ namespace Celesteia.Resources.Collections {
 
             Types = new List<EntityType>();
 
-            Types.Add(new EntityType(0, "Player", TextureAtlas.Create("player", Content.Load<Texture2D>("sprites/entities/player/astronaut"), 24, 24), 
-                (world, atlas) => { new EntityBuilder(world)
-                    .AddComponent(new Transform2())
-                    .AddComponent(new EntityFrames(atlas, 0, 1, ResourceManager.SPRITE_SCALING))
-                    .AddComponent(new PlayerMovement()
+            Types.Add(PLAYER = new EntityType(0, "Player",
+                (entity) => {
+                    entity.Attach(new Transform2());
+
+                    entity.Attach(new EntityFrames(
+                        TextureAtlas.Create("player", Content.Load<Texture2D>("sprites/entities/player/astronaut"), 24, 24),
+                        0, 1,
+                        ResourceManager.SPRITE_SCALING
+                    ));
+
+                    entity.Attach(new PlayerMovement()
                         .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))
                         .AddVertical(new KeyDefinition(Keys.W, Keys.S))
-                    )
-                    .AddComponent(new LocalPlayer())
-                    .AddComponent(new CameraFollow())
-                    .AddComponent(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
-                        .Set(EntityAttribute.MovementSpeed, 5f)
-                    ))
-                    .Build();
+                    );
+
+                    entity.Attach(new LocalPlayer());
+
+                    entity.Attach(new CameraFollow());
+
+                    entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
+                        .Set(EntityAttribute.MovementSpeed, 25f)
+                    ));
                 }
             ));
             
@@ -46,20 +56,18 @@ namespace Celesteia.Resources.Collections {
     public struct EntityType {
         public readonly byte EntityID;
         public readonly string EntityName;
-        public readonly TextureAtlas Atlas;
-        private readonly Action<World, TextureAtlas> InstantiateAction;
+        private readonly Action<Entity> InstantiateAction;
 
-        public EntityType(byte id, string name, TextureAtlas atlas, Action<World, TextureAtlas> instantiate) {
+        public EntityType(byte id, string name, Action<Entity> instantiate) {
             EntityID = id;
             EntityName = name;
-            Atlas = atlas;
             InstantiateAction = instantiate;
 
             Debug.WriteLine($"  Entity '{name}' loaded.");
         }
 
-        public void Instantiate(World world) {
-            InstantiateAction.Invoke(world, Atlas);
+        public void Instantiate(Entity entity) {
+            InstantiateAction.Invoke(entity);
         }
     }
 }

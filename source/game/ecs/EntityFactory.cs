@@ -4,6 +4,14 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using Celesteia.Game.Skybox;
+using Celesteia.Resources.Sprites;
+using Celesteia.Game.Components.Player;
+using MonoGame.Extended.TextureAtlases;
+using Microsoft.Xna.Framework.Graphics;
+using Celesteia.Game.Input;
+using Celesteia.Game.Components;
+using Microsoft.Xna.Framework.Input;
+using Celesteia.Resources.Collections;
 
 namespace Celesteia.Game.ECS {
     /*
@@ -27,6 +35,14 @@ namespace Celesteia.Game.ECS {
                 .AddComponent(new SkyboxRotateZ(rotation))
                 .AddComponent(ResourceManager.Skybox.GetAsset(name).Frames.Clone().SetColor(color).SetDepth(depth))
                 .Build();
+        }
+
+        public Entity CreateEntity(EntityType type)
+        {
+            Entity entity = World.CreateEntity();
+            type.Instantiate(entity);
+            
+            return entity;
         }
     }
 }

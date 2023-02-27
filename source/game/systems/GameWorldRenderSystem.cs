@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
-using Celesteia.Game;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
 namespace Celesteia.Game.Systems {
@@ -14,7 +11,7 @@ namespace Celesteia.Game.Systems {
         private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
-        private int _renderDistance => 15 - _camera.Zoom;
+        private int _renderDistance => MathHelper.Clamp(10 - _camera.Zoom, 1, 10);
         private GameWorld _gameWorld;
 
         public GameWorldRenderSystem(Camera2D camera, SpriteBatch spriteBatch, GameWorld world) {
@@ -22,8 +19,6 @@ namespace Celesteia.Game.Systems {
             _spriteBatch = spriteBatch;
             _gameWorld = world;
         }
-
-        public void Initialize(World world) {}
 
         private List<ChunkVector> activeChunks = new List<ChunkVector>();
         private Queue<ChunkVector> toDeactivate = new Queue<ChunkVector>();
@@ -75,13 +70,18 @@ namespace Celesteia.Game.Systems {
             toQueue.ForEach(cv => { if (!toDeactivate.Contains(cv)) toDeactivate.Enqueue(cv); });
             activeChunks.ForEach(cv => EnableChunk(cv));
 
+            System.Diagnostics.Debug.WriteLine(activeChunks.Count);
+
             toQueue.Clear();
         }
 
         private ChunkVector _prevChunkPos = new ChunkVector(int.MinValue, int.MinValue);
+        private int _prevRenderDistance = 0;
         public override void Update(GameTime gameTime) {
-            if (_prevChunkPos != _pivotChunkPos) {
+            if (_prevChunkPos != _pivotChunkPos || _prevRenderDistance != _renderDistance) {
                 UpdateChunks(_pivotChunkPos, _renderDistance);
+
+                _prevRenderDistance = _renderDistance;
                 _prevChunkPos = _pivotChunkPos;
             }
 

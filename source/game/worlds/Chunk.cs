@@ -45,6 +45,12 @@ namespace Celesteia.Game.Worlds {
             }
         }
 
+        public byte GetBlock(int x, int y) {
+            if (!IsInChunk(x, y)) return 0;
+
+            return tileMap[x, y];
+        }
+
         public void SetBlock(int x, int y, byte id) {
             if (!IsInChunk(x, y)) return;
 

@@ -3,6 +3,7 @@ using Celesteia.Game.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Celesteia.Game.ECS;
+using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using Celesteia.Resources;
@@ -30,7 +31,7 @@ namespace Celesteia.Screens {
 
             Camera = new Camera2D(GraphicsDevice);
 
-            _gameWorld = new GameWorld(2, 1);
+            _gameWorld = new GameWorld(250, 75);
             _gameWorld.SetGenerator(new TerranWorldGenerator(_gameWorld));
             _gameWorld.Generate();
 
@@ -44,8 +45,7 @@ namespace Celesteia.Screens {
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);
-            
-            ResourceManager.Entities.Types.Find(x => x.EntityID == 0).Instantiate(_world);
+            _entityFactory.CreateEntity(ResourceManager.Entities.PLAYER).Get<Transform2>().Position = _gameWorld.GetSpawnpoint();
         }
 
         public override void Update(GameTime gameTime)

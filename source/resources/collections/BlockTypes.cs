@@ -25,14 +25,12 @@ namespace Celesteia.Resources.Collections {
             );
 
             Types.Add(new BlockType(0, "Air", null, 0, 0));
-
             Types.Add(new BlockType(1, "Stone", atlas, 2, 1));
-
             Types.Add(new BlockType(2, "Soil", atlas, 1, 1));
-
             Types.Add(new BlockType(3, "Grown Soil", atlas, 0, 1));
-
             Types.Add(new BlockType(4, "Deepstone", atlas, 3, 1));
+            Types.Add(new BlockType(5, "Wooden Log", atlas, 10, 1));
+            Types.Add(new BlockType(6, "Leaves", atlas, 11, 1));
         }
 
         public BlockType GetBlock(byte id) {
