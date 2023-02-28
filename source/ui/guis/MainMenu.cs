@@ -1,3 +1,4 @@
+using Celesteia.Game.Worlds;
 using Celesteia.Resources;
 using Celesteia.Screens;
 using Celesteia.UI;
@@ -89,10 +90,13 @@ namespace Celesteia.GUIs {
                         .SetY(AbsoluteUnit.WithValue(buttonRow(0)))
                         .SetWidth(new RelativeUnit(1f, menu.GetRect(), RelativeUnit.Orientation.Horizontal))
                     )
-                    .SetOnMouseUp((button, position) => { Game.LoadScreen(
-                        new GameplayScreen(Game), 
-                        new MonoGame.Extended.Screens.Transitions.FadeTransition(Game.GraphicsDevice, Color.Black)
-                    ); })
+                    .SetOnMouseUp(async (button, position) => {
+                        GameWorld _gameWorld = await Game.Worlds.LoadNewWorld();
+                        Game.LoadScreen(
+                            new GameplayScreen(Game, _gameWorld), 
+                            new MonoGame.Extended.Screens.Transitions.FadeTransition(Game.GraphicsDevice, Color.Black)
+                        ); 
+                    })
                     .SetText("Start Game")
             );
 

@@ -16,7 +16,9 @@ namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
         private new GameInstance Game => (GameInstance) base.Game;
 
-        public GameplayScreen(GameInstance game) : base(game) {}
+        public GameplayScreen(GameInstance game, GameWorld gameWorld) : base(game) {
+            _gameWorld = gameWorld;
+        }
 
         private SpriteBatch SpriteBatch => Game.SpriteBatch;
         private Camera2D Camera;
@@ -31,10 +33,6 @@ namespace Celesteia.Screens {
             Game.Music.PlayNow(null);
 
             Camera = new Camera2D(GraphicsDevice);
-
-            _gameWorld = new GameWorld(250, 75, Game);
-            _gameWorld.SetGenerator(new TerranWorldGenerator(_gameWorld));
-            _gameWorld.Generate();
 
             _world = new WorldBuilder()
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))

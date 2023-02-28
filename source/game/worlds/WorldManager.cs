@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Celesteia.Game.Worlds.Generators;
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.Game.Worlds {
@@ -9,15 +12,23 @@ namespace Celesteia.Game.Worlds {
 
         private GameWorld _loaded;
 
-        private void LoadWorld(GameWorld gameWorld) {
+        private GameWorld LoadWorld(GameWorld gameWorld) {
             if (_loaded != null) _loaded.Dispose();
 
-            _loaded = gameWorld;
+            return _loaded = gameWorld;
         }
 
-        public void LoadNewWorld() {
-            GameWorld gameWorld = new GameWorld(250, 75, Game);
-            LoadWorld(gameWorld);
+        public async Task<GameWorld> LoadNewWorld() {
+            // Asynchronously generate the world.
+            GameWorld generatedWorld = await Task.Run<GameWorld>(() => {
+                GameWorld gameWorld = new GameWorld(250, 75, Game);
+                gameWorld.SetGenerator(new TerranWorldGenerator(gameWorld));
+                gameWorld.Generate();
+                return gameWorld;
+            });
+            Debug.WriteLine("Done generating.");
+
+            return LoadWorld(generatedWorld);
         }
     }
 }

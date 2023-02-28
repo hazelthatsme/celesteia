@@ -42,6 +42,9 @@ namespace Celesteia.Game.Worlds {
             _generator = generator;
             return this;
         }
+        public IWorldGenerator GetGenerator() {
+            return _generator;
+        }
 
         private ChunkVector _gv;
         private Chunk _c;
