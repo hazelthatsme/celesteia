@@ -54,6 +54,7 @@ namespace Celesteia.Resources.Collections {
 
                     entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
                         .Set(EntityAttribute.MovementSpeed, 5f)
+                        .Set(EntityAttribute.JumpForce, 10f)
                     ));
                 }
             ));

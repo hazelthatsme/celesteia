@@ -34,7 +34,7 @@ namespace Celesteia.Game.Systems {
                 Transform2 transform = transformMapper.Get(entityId);
                 EntityFrames entityFrames = entityFramesMapper.Get(entityId);
 
-                entityFrames.Draw(0, _spriteBatch, transform.Position, Color.White);
+                entityFrames.Draw(0, _spriteBatch, transform.Position, transform.Scale, Color.White);
             }
 
             _spriteBatch.End();

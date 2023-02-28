@@ -35,8 +35,8 @@ namespace Celesteia.Screens {
 
             _world = new WorldBuilder()
                 .AddSystem(new PhysicsGravitySystem(_gameWorld))
-                .AddSystem(new PhysicsWorldCollisionSystem(_gameWorld))
                 .AddSystem(new LocalPlayerSystem())
+                .AddSystem(new PhysicsWorldCollisionSystem(_gameWorld))
                 .AddSystem(new PhysicsSystem())
                 .AddSystem(new TargetPositionSystem())
                 .AddSystem(new CameraFollowSystem(Camera))
