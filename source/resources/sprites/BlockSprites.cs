@@ -48,8 +48,8 @@ namespace Celesteia.Resources.Sprites {
             CreateStandaloneTexture();
         }
 
-        public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color) {
-            spriteBatch.Draw(GetTexture(), position, GetTexture().Bounds, color, 0f, Vector2.Zero, _scaling, SpriteEffects.None, 0f);
+        public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color, float depth = 0f) {
+            spriteBatch.Draw(GetTexture(), position, GetTexture().Bounds, color, 0f, Vector2.Zero, _scaling, SpriteEffects.None, depth);
         }
 
         public Texture2D GetTexture() {

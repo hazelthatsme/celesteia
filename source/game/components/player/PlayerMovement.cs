@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Celesteia.Game.Input;
+using Microsoft.Xna.Framework;
 
 namespace Celesteia.Game.Components.Player {
     public class PlayerMovement {
         public List<IInputDefinition> Horizontal;
         public List<IInputDefinition> Vertical;
         public IInputDefinition Run;
+        public IInputDefinition Jump;
 
         public PlayerMovement() {
             Horizontal = new List<IInputDefinition>();
@@ -28,21 +30,31 @@ namespace Celesteia.Game.Components.Player {
             return this;
         }
 
+        public PlayerMovement SetJump(IInputDefinition def) {
+            Jump = def;
+            return this;
+        }
+
         public float TestHorizontal() {
             float val = 0f;
             Horizontal.ForEach(d => { val += d.Test(); });
-            return MathF.Min(MathF.Max(-1f, val), 1f);
+            return MathHelper.Clamp(val, -1f, 1f);
         }
 
         public float TestVertical() {
             float val = 0f;
             Vertical.ForEach(d => { val += d.Test(); });
-            return MathF.Min(MathF.Max(-1f, val), 1f);
+            return MathHelper.Clamp(val, -1f, 1f);
         }
 
         public float TestRun() {
             float val = Run.Test();
-            return MathF.Min(MathF.Max(-1f, val), 1f);
+            return MathHelper.Clamp(val, -1f, 1f);
+        }
+
+        public float TestJump() {
+            float val = Jump.Test();
+            return MathHelper.Clamp(val, -1f, 1f);
         }
     }
 }

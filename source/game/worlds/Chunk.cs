@@ -97,11 +97,11 @@ namespace Celesteia.Game.Worlds {
         }
 
         public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White, 0.4f);
         }
 
         public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.DarkGray);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.DarkGray, 0.5f);
         }
     }
 

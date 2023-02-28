@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities.Systems;
 
 namespace Celesteia.Game.Systems {
-    public class GameWorldRenderSystem : UpdateSystem, IDrawSystem
+    public class GameWorldRenderSystem : DrawSystem
     {
         private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
@@ -21,15 +21,6 @@ namespace Celesteia.Game.Systems {
         }
 
         private List<ChunkVector> activeChunks = new List<ChunkVector>();
-        private Queue<ChunkVector> toDeactivate = new Queue<ChunkVector>();
-
-        private ChunkVector _dv;
-        public void DisableNextChunk() {
-            if (toDeactivate.Count > 0) {
-                _dv = toDeactivate.Dequeue();
-                _gameWorld.GetChunk(_dv).Enabled = false;
-            }
-        }
 
         private void EnableChunk(ChunkVector cv) {
             Chunk c = _gameWorld.GetChunk(cv);
@@ -43,52 +34,8 @@ namespace Celesteia.Game.Systems {
             if (c != null) c.Enabled = false;
         }
 
-        private List<ChunkVector> toQueue;
         private ChunkVector _v;
-        public void UpdateChunks(ChunkVector vector, int renderDistance) {
-            toQueue = new List<ChunkVector>(activeChunks);
-            activeChunks.Clear();
-
-            int minX = vector.X - renderDistance;
-            int maxX = vector.X + renderDistance;
-
-            int minY = vector.Y - renderDistance;
-            int maxY = vector.Y + renderDistance;
-            
-            for (int i = minX; i <= maxX; i++) {
-                _v.X = i;
-                for (int j = minY; j <= maxY; j++) {
-                    _v.Y = j;
-
-                    if (!_gameWorld.ChunkIsInWorld(_v)) continue;
-
-                    activeChunks.Add(_v);
-                    if (toQueue.Contains(_v)) toQueue.Remove(_v);
-                }
-            }
-
-            toQueue.ForEach(cv => { if (!toDeactivate.Contains(cv)) toDeactivate.Enqueue(cv); });
-            activeChunks.ForEach(cv => EnableChunk(cv));
-
-            System.Diagnostics.Debug.WriteLine(activeChunks.Count);
-
-            toQueue.Clear();
-        }
-
-        private ChunkVector _prevChunkPos = new ChunkVector(int.MinValue, int.MinValue);
-        private int _prevRenderDistance = 0;
-        public override void Update(GameTime gameTime) {
-            if (_prevChunkPos != _pivotChunkPos || _prevRenderDistance != _renderDistance) {
-                //UpdateChunks(_pivotChunkPos, _renderDistance);
-
-                _prevRenderDistance = _renderDistance;
-                _prevChunkPos = _pivotChunkPos;
-            }
-
-            DisableNextChunk();
-        }
-
-        public void Draw(GameTime gameTime) {
+        public override void Draw(GameTime gameTime) {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
 
             int minX = _pivotChunkPos.X - _renderDistance;
@@ -105,10 +52,8 @@ namespace Celesteia.Game.Systems {
                     if (!_gameWorld.ChunkIsInWorld(_v)) continue;
                     
                     DrawChunk(_v, gameTime, _spriteBatch, _camera);
-                    //if (toQueue.Contains(_v)) toQueue.Remove(_v);
                 }
             }
-            //activeChunks.ForEach(v => DrawChunk(v, gameTime, _spriteBatch, _camera));
 
             _spriteBatch.End();
         }

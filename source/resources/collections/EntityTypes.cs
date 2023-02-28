@@ -45,6 +45,7 @@ namespace Celesteia.Resources.Collections {
                         .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))
                         .AddVertical(new KeyDefinition(Keys.W, Keys.S))
                         .SetRun(new KeyDefinition(null, Keys.LeftShift))
+                        .SetJump(new KeyDefinition(null, Keys.Space))
                     );
 
                     entity.Attach(new LocalPlayer());
