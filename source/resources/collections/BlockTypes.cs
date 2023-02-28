@@ -31,6 +31,9 @@ namespace Celesteia.Resources.Collections {
             Types.Add(new BlockType(4, "Deepstone", atlas, 3, 1));
             Types.Add(new BlockType(5, "Wooden Log", atlas, 10, 1));
             Types.Add(new BlockType(6, "Leaves", atlas, 11, 1));
+            Types.Add(new BlockType(7, "Iron Ore", atlas, 8, 1));
+            Types.Add(new BlockType(8, "Copper Ore", atlas, 7, 1));
+            Types.Add(new BlockType(9, "Coal Ore", atlas, 14, 1));
         }
 
         public BlockType GetBlock(byte id) {

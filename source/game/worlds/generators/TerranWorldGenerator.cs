@@ -15,7 +15,7 @@ namespace Celesteia.Game.Worlds.Generators {
 
         public byte GetNaturalBlock(int x, int y)
         {
-            return SecondPass(x, y, FirstPass(x, y));
+            return ThirdPass(x, y, SecondPass(x, y, FirstPass(x, y)));
         }
 
         public void GenerateStructures() {
@@ -60,12 +60,37 @@ namespace Celesteia.Game.Worlds.Generators {
 
             return value;
         }
+
+        public byte ThirdPass(int x, int y, byte prev) {
+            if (prev != 1) return prev;
+
+            byte value = prev;
+
+            float coalValue = GetOreValue(x, y, 498538f, 985898f);
+            if (coalValue > 0.9f) value = 9;
+            else {
+                float copperValue = GetOreValue(x, y, 3089279f, 579486f);
+                if (copperValue > 0.9f) value = 8;
+
+                else
+                {
+                    float ironValue = GetOreValue(x, y, 243984f, 223957f);
+                    if (ironValue > 0.9f) value = 7;
+                }
+            }
+
+            return value;
+        }
+
         private int defaultOffset => _world.GetHeightInBlocks() / 3;
         public int GetHeightValue(int x) {
             return (int)Math.Round((_noise.GetNoise(x / 1f, 0f) * 24f) + defaultOffset);
         }
         public float GetCaveValue(int x, int y) {
             return _noise.GetNoise(x / 0.6f, y / 0.4f);
+        }
+        public float GetOreValue(int x, int y, float offsetX, float offsetY) {
+            return (_noise.GetNoise((x + offsetX) * 5f, (y + offsetY) * 5f) + 1) / 2f;
         }
 
         private int blocksBetweenTrees = 5;
