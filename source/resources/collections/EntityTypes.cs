@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.TextureAtlases;
+using Celesteia.Game.Components.Physics;
 
 namespace Celesteia.Resources.Collections {
     public class EntityTypes {
@@ -28,6 +29,8 @@ namespace Celesteia.Resources.Collections {
                 (entity) => {
                     entity.Attach(new Transform2());
 
+                    entity.Attach(new TargetPosition());
+
                     entity.Attach(new EntityFrames(
                         TextureAtlas.Create("player", Content.Load<Texture2D>("sprites/entities/player/astronaut"), 24, 24),
                         0, 1,
@@ -35,6 +38,8 @@ namespace Celesteia.Resources.Collections {
                     ));
 
                     entity.Attach(new PhysicsEntity(1f, true));
+
+                    entity.Attach(new CollisionBox(1.5f, 3f));
 
                     entity.Attach(new PlayerMovement()
                         .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))

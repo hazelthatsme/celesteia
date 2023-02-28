@@ -1,7 +1,10 @@
 using System;
 using System.Diagnostics;
+using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds.Generators;
+using Celesteia.Resources;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace Celesteia.Game.Worlds {
     public class GameWorld : IDisposable {
@@ -116,6 +119,40 @@ namespace Celesteia.Game.Worlds {
 
         public bool ChunkIsInWorld(ChunkVector cv) {
             return (cv.X >= 0 && cv.Y >= 0 && cv.X < _width && cv.Y < _height);
+        }
+
+        public RectangleF? GetBlockBoundingBox(int x, int y) {
+            byte id = GetBlock(x, y);
+            RectangleF? box = ResourceManager.Blocks.GetBlock(id).GetBoundingBox();
+
+            if (!box.HasValue) return null;
+            return new RectangleF(
+                x, y,
+                box.Value.Width, box.Value.Height
+            );
+        }
+
+        public Vector2 GetIntersection(CollisionBox box) {
+            int minX = (int)Math.Floor(box.Bounds.Center.X - (box.Bounds.Width / 2f));
+            int maxX = (int)Math.Ceiling(box.Bounds.Center.X + (box.Bounds.Width / 2f));
+
+            int minY = (int)Math.Floor(box.Bounds.Center.Y - (box.Bounds.Height / 2f));
+            int maxY = (int)Math.Ceiling(box.Bounds.Center.Y + (box.Bounds.Height / 2f));
+
+            float xInter = 0f;
+            float yInter = 0f;
+
+            for (int i = minX; i <= maxX; i++)
+                for (int j = minY; j <= maxY; j++) {
+                    RectangleF? blockBox = ResourceManager.Blocks.GetBlock(GetBlock(i, j)).GetBoundingBox();
+                    if (blockBox.HasValue) {
+                        RectangleF intersection = box.Intersection(blockBox.Value);
+                        xInter = Math.Max(xInter, intersection.Width);
+                        yInter = Math.Max(yInter, intersection.Height);
+                    }
+                }
+
+            return new Vector2(xInter, yInter);
         }
 
         public Vector2 GetSpawnpoint() {

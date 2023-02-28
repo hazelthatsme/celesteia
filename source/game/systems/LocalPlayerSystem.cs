@@ -8,15 +8,15 @@ using MonoGame.Extended.Entities.Systems;
 namespace Celesteia.Game.Systems {
     public class LocalPlayerSystem : EntityUpdateSystem
     {
-        private ComponentMapper<Transform2> transformMapper;
+        private ComponentMapper<TargetPosition> targetPositionMapper;
         private ComponentMapper<EntityAttributes> attributesMapper;
         private ComponentMapper<PlayerMovement> movementMapper;
 
-        public LocalPlayerSystem() : base(Aspect.All(typeof(Transform2), typeof(PlayerMovement), typeof(LocalPlayer))) { }
+        public LocalPlayerSystem() : base(Aspect.All(typeof(TargetPosition), typeof(PlayerMovement), typeof(LocalPlayer))) { }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            transformMapper = mapperService.GetMapper<Transform2>();
+            targetPositionMapper = mapperService.GetMapper<TargetPosition>();
             attributesMapper = mapperService.GetMapper<EntityAttributes>();
             movementMapper = mapperService.GetMapper<PlayerMovement>();
         }
@@ -28,13 +28,14 @@ namespace Celesteia.Game.Systems {
                 EntityAttributes.EntityAttributeMap attributes = attributesMapper.Get(entityId).Attributes;
 
                 Vector2 movement = new Vector2(
-                    input.TestHorizontal() * (1f + (input.TestRun() * 1.5f)),
-                    0f
+                    input.TestHorizontal(),
+                    input.TestVertical() 
                 );
+                movement *= 1f + (input.TestRun() * 1.5f);
                 movement *= attributes.Get(EntityAttribute.MovementSpeed);
                 movement *= (gameTime.ElapsedGameTime.Milliseconds / 1000f);
 
-                transformMapper.Get(entityId).Position += movement;
+                targetPositionMapper.Get(entityId).Target += movement;
             }
         }
     }

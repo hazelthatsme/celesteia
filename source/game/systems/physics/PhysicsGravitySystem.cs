@@ -1,4 +1,4 @@
-using Celesteia.Game.Components;
+using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -27,6 +27,9 @@ namespace Celesteia.Game.Systems.Physics {
             foreach (int entityId in ActiveEntities) {
                 PhysicsEntity physicsEntity = physicsEntityMapper.Get(entityId);
 
+                if (physicsEntity.CollidingDown) {
+                    physicsEntity.SetVelocity(physicsEntity.Velocity.X, 0f);
+                }
                 if (!physicsEntity.Gravity) continue;
 
                 Vector2 gravity = new Vector2(0f, physicsEntity.Mass * PhysicsSystem.GRAVITY_CONSTANT);

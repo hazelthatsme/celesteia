@@ -1,11 +1,15 @@
-using Celesteia.Game.Systems.Physics;
 using Microsoft.Xna.Framework;
 
-namespace Celesteia.Game.Components {
+namespace Celesteia.Game.Components.Physics {
     public class PhysicsEntity {
         public float Mass;
 
         public bool Gravity;
+
+        public bool CollidingUp;
+        public bool CollidingLeft;
+        public bool CollidingRight;
+        public bool CollidingDown;
 
         public PhysicsEntity(float mass, bool affectedByGravity) {
             Mass = mass;
