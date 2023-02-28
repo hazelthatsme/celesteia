@@ -28,8 +28,8 @@ namespace Celesteia.Game.Systems {
                 EntityAttributes.EntityAttributeMap attributes = attributesMapper.Get(entityId).Attributes;
 
                 Vector2 movement = new Vector2(
-                    input.TestHorizontal(),
-                    input.TestVertical()
+                    input.TestHorizontal() * (1f + (input.TestRun() * 1.5f)),
+                    0f
                 );
                 movement *= attributes.Get(EntityAttribute.MovementSpeed);
                 movement *= (gameTime.ElapsedGameTime.Milliseconds / 1000f);

@@ -6,6 +6,7 @@ namespace Celesteia.Game.Components.Player {
     public class PlayerMovement {
         public List<IInputDefinition> Horizontal;
         public List<IInputDefinition> Vertical;
+        public IInputDefinition Run;
 
         public PlayerMovement() {
             Horizontal = new List<IInputDefinition>();
@@ -22,6 +23,11 @@ namespace Celesteia.Game.Components.Player {
             return this;
         }
 
+        public PlayerMovement SetRun(IInputDefinition def) {
+            Run = def;
+            return this;
+        }
+
         public float TestHorizontal() {
             float val = 0f;
             Horizontal.ForEach(d => { val += d.Test(); });
@@ -31,6 +37,11 @@ namespace Celesteia.Game.Components.Player {
         public float TestVertical() {
             float val = 0f;
             Vertical.ForEach(d => { val += d.Test(); });
+            return MathF.Min(MathF.Max(-1f, val), 1f);
+        }
+
+        public float TestRun() {
+            float val = Run.Test();
             return MathF.Min(MathF.Max(-1f, val), 1f);
         }
     }
