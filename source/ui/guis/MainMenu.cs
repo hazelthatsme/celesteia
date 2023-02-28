@@ -19,6 +19,7 @@ namespace Celesteia.GUIs {
         private IContainer NewWorldScreen;
 
         private IContainer LogoPivot;
+        private Label Progress;
 
         private Button buttonTemplate;
         private float buttonRow(int number) => number * (buttonHeight + buttonSpacing);
@@ -91,7 +92,10 @@ namespace Celesteia.GUIs {
                         .SetWidth(new RelativeUnit(1f, menu.GetRect(), RelativeUnit.Orientation.Horizontal))
                     )
                     .SetOnMouseUp(async (button, position) => {
-                        GameWorld _gameWorld = await Game.Worlds.LoadNewWorld();
+                        ShowNewWorldScreen();
+                        GameWorld _gameWorld = await Game.Worlds.LoadNewWorld((progressReport) => {
+                            Progress.SetText(progressReport);
+                        });
                         Game.LoadScreen(
                             new GameplayScreen(Game, _gameWorld), 
                             new MonoGame.Extended.Screens.Transitions.FadeTransition(Game.GraphicsDevice, Color.Black)
@@ -161,6 +165,23 @@ namespace Celesteia.GUIs {
         private void LoadNewWorldScreen() {
             Root.AddChild(NewWorldScreen = new Container(Rect.ScreenFull));
             NewWorldScreen.SetEnabled(false);
+
+            NewWorldScreen.AddChild(Progress = new Label(
+                new Rect(
+                    new ScreenSpaceUnit(.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
+                    new ScreenSpaceUnit(.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
+                    AbsoluteUnit.WithValue(200),
+                    AbsoluteUnit.WithValue(50)
+                ))
+                .SetPivotPoint(new Vector2(0.5f, 0.5f))
+                .SetTextProperties(new TextProperties()
+                    .SetColor(Color.White)
+                    .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
+                    .SetFontSize(24f)
+                    .SetTextAlignment(TextAlignment.Center)
+                )
+                .SetText("")
+            );
         }
         private void ShowNewWorldScreen() {
             MainScreen.SetEnabled(false);

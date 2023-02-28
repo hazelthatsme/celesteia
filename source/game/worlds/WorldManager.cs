@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -18,15 +19,18 @@ namespace Celesteia.Game.Worlds {
             return _loaded = gameWorld;
         }
 
-        public async Task<GameWorld> LoadNewWorld() {
+        public async Task<GameWorld> LoadNewWorld(Action<string> progressReport = null) {
             // Asynchronously generate the world.
             GameWorld generatedWorld = await Task.Run<GameWorld>(() => {
                 GameWorld gameWorld = new GameWorld(250, 75, Game);
                 gameWorld.SetGenerator(new TerranWorldGenerator(gameWorld));
+
+                if (progressReport != null) progressReport.Invoke("Generating world...");
                 gameWorld.Generate();
+                if (progressReport != null) progressReport.Invoke("World generated.");
+                
                 return gameWorld;
             });
-            Debug.WriteLine("Done generating.");
 
             return LoadWorld(generatedWorld);
         }
