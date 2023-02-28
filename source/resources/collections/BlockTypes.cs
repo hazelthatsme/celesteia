@@ -31,7 +31,7 @@ namespace Celesteia.Resources.Collections {
             Types.Add(new BlockType(3, "Grown Soil", atlas, 0).SetBoundingBox(new RectangleF(0f, 0f, 1f, 1f)));
             Types.Add(new BlockType(4, "Deepstone", atlas, 3).SetBoundingBox(new RectangleF(0f, 0f, 1f, 1f)));
             Types.Add(new BlockType(5, "Wooden Log", atlas, 10).SetBoundingBox(new RectangleF(0f, 0f, 1f, 1f)));
-            Types.Add(new BlockType(6, "Leaves", atlas, 11).SetBoundingBox(new RectangleF(0f, 0f, 1f, 1f)));
+            Types.Add(new BlockType(6, "Leaves", atlas, 11));
             Types.Add(new BlockType(7, "Iron Ore", atlas, 8).SetBoundingBox(new RectangleF(0f, 0f, 1f, 1f)));
             Types.Add(new BlockType(8, "Copper Ore", atlas, 7).SetBoundingBox(new RectangleF(0f, 0f, 1f, 1f)));
             Types.Add(new BlockType(9, "Coal Ore", atlas, 14).SetBoundingBox(new RectangleF(0f, 0f, 1f, 1f)));
