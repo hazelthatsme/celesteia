@@ -48,7 +48,9 @@ namespace Celesteia.Game.Worlds {
 
         private ChunkVector _gv;
         private Chunk _c;
-        public void Generate() {
+        public void Generate(Action<string> progressReport = null) {
+            int count = 0;
+            int total = _width * _height;
             for (int i = 0; i < _width; i++) {
                 _gv.X = i;
                 for (int j = 0; j < _height; j++) {
@@ -58,6 +60,10 @@ namespace Celesteia.Game.Worlds {
                     _c.Generate(_generator);
 
                     _c.Enabled = false;
+
+                    count++;
+                    if (progressReport != null) progressReport($"Generated {count}/{total} chunks.");
+
                     chunkMap[i, j] = _c;
                 }
             }

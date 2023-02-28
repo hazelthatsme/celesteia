@@ -25,10 +25,9 @@ namespace Celesteia.Game.Worlds {
                 GameWorld gameWorld = new GameWorld(250, 75, Game);
                 gameWorld.SetGenerator(new TerranWorldGenerator(gameWorld));
 
-                if (progressReport != null) progressReport.Invoke("Generating world...");
-                gameWorld.Generate();
+                gameWorld.Generate(progressReport);
                 if (progressReport != null) progressReport.Invoke("World generated.");
-                
+
                 return gameWorld;
             });
 
