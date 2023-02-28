@@ -21,7 +21,7 @@ namespace Celesteia.Resources.Sprites {
             _atlas = atlas;
             _start = startIndex;
             _count = frameCount;
-            _scaling = new Vector2(ResourceManager.SPRITE_SCALING);
+            _scaling = new Vector2(ResourceManager.SPRITE_SCALING) / 2f;
 
             _frames = new TextureRegion2D[frameCount];
             for (int i = 0; i < frameCount; i++) {
