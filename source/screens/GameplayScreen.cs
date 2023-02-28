@@ -31,7 +31,7 @@ namespace Celesteia.Screens {
 
             Camera = new Camera2D(GraphicsDevice);
 
-            _gameWorld = new GameWorld(250, 75);
+            _gameWorld = new GameWorld(250, 75, Game);
             _gameWorld.SetGenerator(new TerranWorldGenerator(_gameWorld));
             _gameWorld.Generate();
 

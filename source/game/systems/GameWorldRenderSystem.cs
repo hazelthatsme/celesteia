@@ -11,7 +11,7 @@ namespace Celesteia.Game.Systems {
         private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
-        private int _renderDistance => MathHelper.Clamp(10 - _camera.Zoom, 1, 10);
+        private int _renderDistance => MathHelper.Clamp(7 - _camera.Zoom, 1, 7);
         private GameWorld _gameWorld;
 
         public GameWorldRenderSystem(Camera2D camera, SpriteBatch spriteBatch, GameWorld world) {
@@ -79,7 +79,7 @@ namespace Celesteia.Game.Systems {
         private int _prevRenderDistance = 0;
         public override void Update(GameTime gameTime) {
             if (_prevChunkPos != _pivotChunkPos || _prevRenderDistance != _renderDistance) {
-                UpdateChunks(_pivotChunkPos, _renderDistance);
+                //UpdateChunks(_pivotChunkPos, _renderDistance);
 
                 _prevRenderDistance = _renderDistance;
                 _prevChunkPos = _pivotChunkPos;
@@ -91,7 +91,24 @@ namespace Celesteia.Game.Systems {
         public void Draw(GameTime gameTime) {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
 
-            activeChunks.ForEach(v => DrawChunk(v, gameTime, _spriteBatch, _camera));
+            int minX = _pivotChunkPos.X - _renderDistance;
+            int maxX = _pivotChunkPos.X + _renderDistance;
+
+            int minY = _pivotChunkPos.Y - _renderDistance;
+            int maxY = _pivotChunkPos.Y + _renderDistance;
+            
+            for (int i = minX; i <= maxX; i++) {
+                _v.X = i;
+                for (int j = minY; j <= maxY; j++) {
+                    _v.Y = j;
+
+                    if (!_gameWorld.ChunkIsInWorld(_v)) continue;
+                    
+                    DrawChunk(_v, gameTime, _spriteBatch, _camera);
+                    //if (toQueue.Contains(_v)) toQueue.Remove(_v);
+                }
+            }
+            //activeChunks.ForEach(v => DrawChunk(v, gameTime, _spriteBatch, _camera));
 
             _spriteBatch.End();
         }

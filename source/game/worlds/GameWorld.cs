@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework;
 
 namespace Celesteia.Game.Worlds {
     public class GameWorld : IDisposable {
+        private GameInstance _game;
+        private GameInstance Game => _game;
+
         private Chunk[,] chunkMap;
 
         private int _width;
@@ -18,7 +21,9 @@ namespace Celesteia.Game.Worlds {
         private int _seed;
         public int GetSeed() => _seed;
 
-        public GameWorld(int width, int height) {
+        public GameWorld(int width, int height, GameInstance game) {
+            _game = game;
+            
             _width = width;
             _height = height;
 
@@ -46,7 +51,7 @@ namespace Celesteia.Game.Worlds {
                 for (int j = 0; j < _height; j++) {
                     _gv.Y = j;
 
-                    _c = new Chunk(_gv);
+                    _c = new Chunk(_gv, Game.GraphicsDevice);
                     _c.Generate(_generator);
 
                     _c.Enabled = false;

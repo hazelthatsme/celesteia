@@ -4,6 +4,7 @@ using Celesteia.Resources;
 using Celesteia.Graphics;
 using System;
 using Celesteia.Game.Worlds.Generators;
+using Celesteia.Resources.Collections;
 using Celesteia.Resources.Sprites;
 
 namespace Celesteia.Game.Worlds {
@@ -23,10 +24,15 @@ namespace Celesteia.Game.Worlds {
         private Point _truePosition;
         private Vector2 _truePositionVector;
         private byte[,] tileMap;
+        private byte[,] wallTileMap;
 
-        public Chunk(ChunkVector cv) {
+        private GraphicsDevice _graphicsDevice;
+
+        public Chunk(ChunkVector cv, GraphicsDevice graphicsDevice) {
             SetPosition(cv);
+            _graphicsDevice = graphicsDevice;
             tileMap = new byte[CHUNK_SIZE, CHUNK_SIZE];
+            wallTileMap = new byte[CHUNK_SIZE, CHUNK_SIZE];
         }
 
         public Chunk SetPosition(ChunkVector cv) {
@@ -40,7 +46,9 @@ namespace Celesteia.Game.Worlds {
         public void Generate(IWorldGenerator generator) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 for (int j = 0; j < CHUNK_SIZE; j++) {
-                    SetBlock(i, j, generator.GetNaturalBlock(_truePosition.X + i, _truePosition.Y + j));
+                    byte[] natural = generator.GetNaturalBlocks(_truePosition.X + i, _truePosition.Y + j);
+                    SetBlock(i, j, natural[0]);
+                    SetWallBlock(i, j, natural[1]);
                 }
             }
         }
@@ -57,16 +65,43 @@ namespace Celesteia.Game.Worlds {
             tileMap[x, y] = id;
         }
 
+        public byte GetWallBlock(int x, int y) {
+            if (!IsInChunk(x, y)) return 0;
+
+            return wallTileMap[x, y];
+        }
+
+        public void SetWallBlock(int x, int y, byte id) {
+            if (!IsInChunk(x, y)) return;
+
+            wallTileMap[x, y] = id;
+        }
+
         Vector2 v;
+        BlockFrame frame;
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 v.X = i;
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     v.Y = j;
-                    BlockFrames frames = ResourceManager.Blocks.GetBlock(tileMap[i, j]).Frames;
-                    frames.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White);
+                    if (tileMap[i, j] == 0) {           // If the tile here is empty, draw the wall instead.
+                        frame = ResourceManager.Blocks.GetBlock(wallTileMap[i, j]).Frames.GetFrame(0);
+                        if (frame != null) DrawWallTile(i, j, frame, spriteBatch, camera);
+                    }
+                    else {                              // If there is a tile that isn't empty, draw the tile.
+                        frame = ResourceManager.Blocks.GetBlock(tileMap[i, j]).Frames.GetFrame(0);
+                        if (frame != null) DrawTile(i, j, frame, spriteBatch, camera);
+                    }
                 }
             }
+        }
+
+        public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White);
+        }
+
+        public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.DarkGray);
         }
     }
 

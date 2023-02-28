@@ -47,11 +47,11 @@ namespace Celesteia.Resources.Collections {
         public readonly BlockFrames Frames;
 
         public BlockType(byte id, string name, TextureAtlas atlas, int frameStart, int frameCount) {
+            Debug.WriteLine($"  Loading block '{name}'...");
+
             BlockID = id;
             Name = name;
             Frames = new BlockFrames(atlas, BlockSpriteProperties.SIZE, frameStart, frameCount);
-
-            Debug.WriteLine($"  Block '{name}' loaded.");
         }
 
         public BlockType(byte id, string name, TextureAtlas atlas, int frame) : this (id, name, atlas, frame, 1) {}

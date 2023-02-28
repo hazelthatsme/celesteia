@@ -13,7 +13,7 @@ namespace Celesteia.Game.Worlds.Generators {
             _noise = new FastNoiseLite(world.GetSeed());
         }
 
-        public byte GetNaturalBlock(int x, int y)
+        public byte[] GetNaturalBlocks(int x, int y)
         {
             return ThirdPass(x, y, SecondPass(x, y, FirstPass(x, y)));
         }
@@ -34,52 +34,55 @@ namespace Celesteia.Game.Worlds.Generators {
             return spawn;
         }
 
-        public byte FirstPass(int x, int y) {
-            byte value = 0;
+        public byte[] FirstPass(int x, int y) {
+            byte[] values = new byte[2];
+
+            values[0] = 0;
+            values[1] = 0;
 
             int h = GetHeightValue(x);
 
             if (_world.GetHeightInBlocks() - y <= h) {
-                if (_world.GetHeightInBlocks() - y == h) value = 3;
-                else if (_world.GetHeightInBlocks() - y >= h - 3) value = 2;
-                else value = 1;
+                if (_world.GetHeightInBlocks() - y == h) { values[0] = 3; values[1] = 2; }
+                else if (_world.GetHeightInBlocks() - y >= h - 3) { values[0] = 2; values[1] = 2; }
+                else { values[0] = 1; values[1] = 1; }
             }
 
-            return value;
+            return values;
         }
-        public byte SecondPass(int x, int y, byte prev) {
-            byte value = prev;
+        public byte[] SecondPass(int x, int y, byte[] prev) {
+            byte[] values = prev;
             float threshold = 0.667f;
 
-            if (prev == 0 || prev == 4) return value;
-            if (prev == 2 || prev == 3) threshold += .2f;
+            if (prev[0] == 0 || prev[0] == 4) return values;
+            if (prev[0] == 2 || prev[0] == 3) threshold += .2f;
 
             float c = GetCaveValue(x, y);
 
-            if (c > threshold) value = 0;
+            if (c > threshold) values[0] = 0;
 
-            return value;
+            return values;
         }
 
-        public byte ThirdPass(int x, int y, byte prev) {
-            if (prev != 1) return prev;
+        public byte[] ThirdPass(int x, int y, byte[] prev) {
+            if (prev[0] != 1) return prev;
 
-            byte value = prev;
+            byte[] values = prev;
 
             float coalValue = GetOreValue(x, y, 498538f, 985898f);
-            if (coalValue > 0.9f) value = 9;
+            if (coalValue > 0.9f) values[0] = 9;
             else {
                 float copperValue = GetOreValue(x, y, 3089279f, 579486f);
-                if (copperValue > 0.9f) value = 8;
+                if (copperValue > 0.9f) values[0] = 8;
 
                 else
                 {
                     float ironValue = GetOreValue(x, y, 243984f, 223957f);
-                    if (ironValue > 0.9f) value = 7;
+                    if (ironValue > 0.9f) values[0] = 7;
                 }
             }
 
-            return value;
+            return values;
         }
 
         private int defaultOffset => _world.GetHeightInBlocks() / 3;
