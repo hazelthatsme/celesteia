@@ -34,6 +34,8 @@ namespace Celesteia.Resources.Collections {
                         ResourceManager.SPRITE_SCALING
                     ));
 
+                    entity.Attach(new PhysicsEntity(1f, true));
+
                     entity.Attach(new PlayerMovement()
                         .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))
                         .AddVertical(new KeyDefinition(Keys.W, Keys.S))

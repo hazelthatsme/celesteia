@@ -38,7 +38,7 @@ namespace Celesteia.Game.Systems {
             calculatedCenter /= cumulativeWeight;
 
             _target = calculatedCenter;
-            _camera.MoveTo(_camera.GetDrawingPosition(_target));
+            _camera.MoveTo(_target);
         }
     }
 }

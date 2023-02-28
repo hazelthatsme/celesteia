@@ -10,6 +10,7 @@ using Celesteia.Resources;
 using Celesteia.Graphics;
 using Celesteia.Game.Worlds;
 using Celesteia.Game.Worlds.Generators;
+using Celesteia.Game.Systems.Physics;
 
 namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
@@ -42,6 +43,8 @@ namespace Celesteia.Screens {
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
                 .AddSystem(new CameraZoomSystem(Camera))
                 .AddSystem(new MouseClickSystem(Camera, _gameWorld))
+                .AddSystem(new PhysicsSystem())
+                .AddSystem(new PhysicsGravitySystem(_gameWorld))
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);
