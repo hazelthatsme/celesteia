@@ -25,7 +25,7 @@ namespace Celesteia.UI.Elements {
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Children.ForEach(element => element.Draw(spriteBatch));
+            Children.ForEach(element => { if (element.GetEnabled()) element.Draw(spriteBatch); });
         }
 
         private Point _mousePosition;
@@ -45,8 +45,9 @@ namespace Celesteia.UI.Elements {
         }
 
         public void ResolveMouseDown(MouseButton button) {
-            Children.FindAll(x => x is IClickable).ForEach(element => {
-                IClickable clickable = element as IClickable;
+            Children.FindAll(x => x is Clickable).ForEach(element => {
+                if (!element.GetEnabled()) return;
+                Clickable clickable = element as Clickable;
 
                 if (clickable.GetRectangle().Contains(_mousePosition)) {
                     clickable.OnMouseDown(button, _mousePosition);
@@ -55,8 +56,9 @@ namespace Celesteia.UI.Elements {
         }
 
         public void ResolveMouseUp(MouseButton button) {
-            Children.FindAll(x => x is IClickable).ForEach(element => {
-                IClickable clickable = element as IClickable;
+            Children.FindAll(x => x is Clickable).ForEach(element => {
+                if (!element.GetEnabled()) return;
+                Clickable clickable = element as Clickable;
 
                 if (clickable.GetRectangle().Contains(_mousePosition)) {
                     clickable.OnMouseUp(button, _mousePosition);

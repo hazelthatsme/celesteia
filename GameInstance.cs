@@ -11,6 +11,7 @@ using MonoGame.Extended.Screens;
 using System.Linq;
 using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
+using Celesteia.Game.Worlds;
 
 namespace Celesteia
 {
@@ -30,6 +31,7 @@ namespace Celesteia
 
         private readonly ScreenManager _screenManager;
         public readonly MusicManager Music;
+        public readonly WorldManager Worlds;
 
         public GameInstance()
         {
@@ -52,6 +54,9 @@ namespace Celesteia
 
             Music = new MusicManager(this);
             Components.Add(Music);
+
+            Worlds = new WorldManager(this);
+            Components.Add(Worlds);
         }
 
         protected override void Initialize()

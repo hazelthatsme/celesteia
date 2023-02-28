@@ -5,13 +5,13 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Celesteia.UI.Elements {
     public class Element : IElement
     {
-        private bool _enabled;
+        private bool _enabled = true;
         private Rect _rect;
         private bool _isMouseOver;
         private IContainer _parent;
         private Vector2 _pivot;
 
-        public virtual bool GetEnabled() => _enabled;
+        public virtual bool GetEnabled() => _enabled && (_parent == null || _parent.GetEnabled());
         public virtual IContainer GetParent() => _parent;
         public virtual Vector2 GetPivot() => _pivot;
         public virtual Rect GetRect() => _rect;
