@@ -40,8 +40,12 @@ namespace Celesteia.Game.Systems.Physics {
             
             foreach (int entityId in ActiveEntities) {
                 RectangleF box = collisionBoxMapper.Get(entityId).Bounds;
+                collisionBoxMapper.Get(entityId).Blocks.ForEach(block => {
+                    _spriteBatch.DrawRectangle(box, Color.Green, .05f, 0f);
+                    _spriteBatch.DrawRectangle(block, )
+                });
 
-                _spriteBatch.DrawRectangle(box, Color.Green, .05f, 0f);
+                
 
                 int minX = (int)Math.Floor(box.Center.X - (box.Width / 2f));
                 int maxX = (int)Math.Ceiling(box.Center.X + (box.Width / 2f));
