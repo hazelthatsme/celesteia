@@ -24,8 +24,8 @@ namespace Celesteia.GUIs {
             Debug.WriteLine("Loaded GUI.");
         }
 
-        public virtual void Update(GameTime gameTime) {
-            Root.Update(gameTime);
+        public virtual void Update(GameTime gameTime, out bool clickedAnything) {
+            Root.Update(gameTime, out clickedAnything);
         }
 
         // Draw all elements.

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Player;
+using Celesteia.GUIs.Game;
 using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,7 +21,11 @@ namespace Celesteia.Game.Systems {
         private ComponentMapper<PlayerMovement> movementMapper;
         private ComponentMapper<LocalPlayer> localPlayerMapper;
 
-        public LocalPlayerSystem() : base(Aspect.All(typeof(TargetPosition), typeof(PhysicsEntity), typeof(EntityFrames), typeof(PlayerMovement), typeof(LocalPlayer))) { }
+        private GameGUI _gameGui;
+
+        public LocalPlayerSystem(GameGUI gameGui) : base(Aspect.All(typeof(TargetPosition), typeof(PhysicsEntity), typeof(EntityFrames), typeof(PlayerMovement), typeof(LocalPlayer))) {
+            _gameGui = gameGui;
+        }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
@@ -34,6 +39,10 @@ namespace Celesteia.Game.Systems {
 
         public override void Update(GameTime gameTime)
         {
+            bool clicked = false;
+
+            _gameGui.Update(gameTime, out clicked);
+
             foreach (int entityId in ActiveEntities) {
                 LocalPlayer localPlayer = localPlayerMapper.Get(entityId);
                 PlayerMovement input = movementMapper.Get(entityId);

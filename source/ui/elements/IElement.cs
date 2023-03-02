@@ -32,7 +32,7 @@ namespace Celesteia.UI.Elements {
         void OnMouseOut();
 
         // Update the element.
-        void Update(GameTime gameTime);
+        void Update(GameTime gameTime, out bool clickedAnything);
 
         // Draw the element.
         void Draw(SpriteBatch spriteBatch);

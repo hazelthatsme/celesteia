@@ -88,6 +88,11 @@ namespace Celesteia.GUIs.Game {
             base.Draw(gameTime);
         }
 
+        public override void Update(GameTime gameTime, out bool clickedAnything)
+        {
+            Root.Update(gameTime, out clickedAnything);
+        }
+
         private void UpdateSlotReferences() {
             _slots.ForEach(slot => slot.SetReferenceInventory(_inventory));
         }

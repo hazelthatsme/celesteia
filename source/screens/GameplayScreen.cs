@@ -41,7 +41,7 @@ namespace Celesteia.Screens {
 
             _world = new WorldBuilder()
                 .AddSystem(new PhysicsGravitySystem(_gameWorld))
-                .AddSystem(new LocalPlayerSystem())
+                .AddSystem(new LocalPlayerSystem(_gameGui))
                 .AddSystem(new PhysicsWorldCollisionSystem(_gameWorld))
                 .AddSystem(new PhysicsSystem())
                 .AddSystem(new TargetPositionSystem())
@@ -50,7 +50,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
                 .AddSystem(new MouseClickSystem(Camera, _gameWorld))
-                .AddSystem(new GameGUISystem(_gameGui))
+                .AddSystem(new GameGUIDrawSystem(_gameGui))
                 .AddSystem(new PhysicsCollisionDebugSystem(Camera, Game.SpriteBatch, _gameWorld))
                 .Build();
                 

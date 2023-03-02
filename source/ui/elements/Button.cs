@@ -101,7 +101,8 @@ namespace Celesteia.UI.Elements {
         private float _colorAmount = 0.0f;
         private bool _prevMouseOver = false;
         private bool _prevClicked = false;
-        public override void Update(GameTime gameTime) {
+        public override void Update(GameTime gameTime, out bool clickedAnything) {
+            clickedAnything = false;
             if (_prevMouseOver != GetMouseOver() || _prevClicked != GetClicked()) _colorAmount = 0.0f;
 
             _colorAmount += (float)gameTime.ElapsedGameTime.TotalSeconds / 0.5f;

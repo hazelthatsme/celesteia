@@ -30,40 +30,49 @@ namespace Celesteia.UI.Elements {
 
         private Point _mousePosition;
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, out bool clickedAnything)
         {
-            Children.ForEach(element => element.Update(gameTime));
-
+            clickedAnything = false;
             if (!UIReferences.GUIEnabled) return;
+
+            foreach (IElement element in Children) {
+                element.Update(gameTime, out clickedAnything);
+            }
 
             _mousePosition = MouseWrapper.GetPosition();
 
-            if (MouseWrapper.GetMouseDown(MouseButton.Left)) ResolveMouseDown(MouseButton.Left);
-            if (MouseWrapper.GetMouseUp(MouseButton.Left)) ResolveMouseUp(MouseButton.Left);
+            if (MouseWrapper.GetMouseDown(MouseButton.Left)) clickedAnything = ResolveMouseDown(MouseButton.Left);
+            if (MouseWrapper.GetMouseUp(MouseButton.Left)) clickedAnything = ResolveMouseUp(MouseButton.Left);
 
             ResolveMouseOver();
         }
 
-        public void ResolveMouseDown(MouseButton button) {
+        public bool ResolveMouseDown(MouseButton button) {
+            bool clicked = false;
             Children.FindAll(x => x is Clickable).ForEach(element => {
                 if (!element.GetEnabled()) return;
                 Clickable clickable = element as Clickable;
 
                 if (clickable.GetRectangle().Contains(_mousePosition)) {
+                    clicked = true;
                     clickable.OnMouseDown(button, _mousePosition);
                 }
             });
+            return clicked;
         }
 
-        public void ResolveMouseUp(MouseButton button) {
+        public bool ResolveMouseUp(MouseButton button) {
+            bool clicked = false;
             Children.FindAll(x => x is Clickable).ForEach(element => {
                 if (!element.GetEnabled()) return;
                 Clickable clickable = element as Clickable;
 
                 if (clickable.GetRectangle().Contains(_mousePosition)) {
+                    clicked = true;
                     clickable.OnMouseUp(button, _mousePosition);
                 }
             });
+            return clicked;
         }
 
         public void ResolveMouseOver() {

@@ -43,7 +43,7 @@ namespace Celesteia.UI.Elements {
         public virtual bool GetMouseOver() => _isMouseOver;
 
         // Engine functions.
-        public virtual void Update(GameTime gameTime) { }
+        public virtual void Update(GameTime gameTime, out bool clickedAnything) { clickedAnything = false; }
         public virtual void Draw(SpriteBatch spriteBatch) { }
     }
 }

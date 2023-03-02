@@ -40,7 +40,8 @@ namespace Celesteia.GUIs {
             Debug.WriteLine("Loaded Debug GUI.");
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update(GameTime gameTime, out bool clickedAnything) {
+            clickedAnything = false;
             if (gameTime.TotalGameTime.TotalSeconds - lastUpdate < 0.25) return;
 
             fps = 1 / (gameTime.ElapsedGameTime.TotalSeconds);

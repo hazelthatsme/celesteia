@@ -134,7 +134,7 @@ namespace Celesteia
             Input.Update();
 
             // Update each global GUI.
-            globalGUIs.ForEach((gui) => { gui.Update(gameTime); });
+            globalGUIs.ForEach((gui) => { gui.Update(gameTime, out _); });
 
             // If Scroll Lock is pressed, toggle GUIs.
             if (KeyboardWrapper.GetKeyDown(Keys.Scroll)) UIReferences.GUIEnabled = !UIReferences.GUIEnabled;
