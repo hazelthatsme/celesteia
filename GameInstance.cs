@@ -117,7 +117,7 @@ namespace Celesteia
             globalGUIs.Add(new DebugGUI(this));
 
             // Load each global GUI.
-            globalGUIs.ForEach((gui) => { gui.LoadContent(); });
+            globalGUIs.ForEach((gui) => { gui.LoadContent(Content); });
         }
 
         public void LoadScreen(GameScreen screen, Transition transition) {

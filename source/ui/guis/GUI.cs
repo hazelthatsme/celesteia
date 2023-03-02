@@ -4,6 +4,7 @@ using Celesteia.Game.Input;
 using Celesteia.UI;
 using Celesteia.UI.Elements;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.TextureAtlases;
@@ -19,7 +20,7 @@ namespace Celesteia.GUIs {
             this.Root = new Container(rect);
         }
 
-        public virtual void LoadContent() {
+        public virtual void LoadContent(ContentManager Content) {
             Debug.WriteLine("Loaded GUI.");
         }
 

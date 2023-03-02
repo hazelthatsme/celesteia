@@ -46,7 +46,7 @@ namespace Celesteia.Screens {
             _entityFactory.CreateSkyboxPortion("nebula", new Color(255,165,246,45), -2f, .3f);
 
             this.mainMenu = new MainMenu(Game);
-            this.mainMenu.LoadContent();
+            this.mainMenu.LoadContent(Content);
         }
 
         public override void Draw(GameTime gameTime)

@@ -34,6 +34,8 @@ namespace Celesteia.Game.Systems.Physics {
 
         public override void Draw(GameTime gameTime)
         {
+            if (!GameInstance.DebugMode) return;
+
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
             
             foreach (int entityId in ActiveEntities) {

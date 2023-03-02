@@ -1,8 +1,10 @@
+using System.Diagnostics;
 using Celesteia.Resources;
 using Celesteia.UI;
 using Celesteia.UI.Elements;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 namespace Celesteia.GUIs {
     public class DebugGUI : GUI {
@@ -14,7 +16,7 @@ namespace Celesteia.GUIs {
 
         private Label fpsLabel;
 
-        public override void LoadContent() {
+        public override void LoadContent(ContentManager Content) {
             float fontSize = 12f;
 
             Label template = new Label(new Rect(
@@ -34,6 +36,8 @@ namespace Celesteia.GUIs {
 
             Root.AddChild(template.Clone().SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(textRow(0)))).SetText("Celesteia"));
             Root.AddChild(fpsLabel = template.Clone().SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(textRow(1)))).SetText(""));
+            
+            Debug.WriteLine("Loaded Debug GUI.");
         }
 
         public override void Update(GameTime gameTime) {

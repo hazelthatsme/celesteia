@@ -4,12 +4,12 @@ using System.Diagnostics;
 
 namespace Celesteia.Game.Components.Items {
     public class Inventory {
-        private List<ItemStack> items;
+        private ItemStack[] items;
         public readonly int Capacity;
 
         public Inventory(int slots = 27) {
             Capacity = slots;
-            items = new List<ItemStack>();
+            items = new ItemStack[slots];
         }
 
         // Try adding an item to the inventory, return false if the inventory has no capacity for this action.
@@ -19,8 +19,6 @@ namespace Celesteia.Game.Components.Items {
             // If an item stack with this ID already exists, add the amount to that stack.
             if (existingStack != null) {
                 existingStack.Amount += stack.Amount;
-
-                Debug.WriteLine($"Obtained {stack.Amount}x {stack.Type.Name}.");
 
                 // If the max stack size was exceeded and a new stack has to be created, create it.
                 ItemStack newStack = existingStack.NewStack();
@@ -35,22 +33,22 @@ namespace Celesteia.Game.Components.Items {
         }
 
         public ItemStack GetItemStackWithID(byte id) {
-            return items.FindLast(x => x.ID == id && x.Amount < x.Type.MaxStackSize);
+            return Array.FindLast(items, x => x != null && x.ID == id && x.Amount < x.Type.MaxStackSize);
+        }
+
+        public ItemStack GetSlot(int slot) {
+            if (slot < 0 || slot > Capacity - 1) throw new ArgumentException($"Slot {slot} falls outside of the inventory's capacity.");
+            return items[slot];
         }
 
         private void AddItemStack(ItemStack newStack) {
-            items.Add(newStack);
+            if (!HasCapacity()) return;
+            int i = Array.FindIndex(items, x => x == null);
+            items[i] = newStack;
         }
 
         private bool HasCapacity() {
-            return items.Count < Capacity;
-        }
-
-        public void DebugOutput()
-        {
-            Debug.WriteLine("Stacks in inventory:");
-            for (int i = 0; i < items.Count; i++)
-                Debug.WriteLine($" - {items[i].Type.Name} x{items[i].Amount}");
+            return Array.Exists(items, x => x == null);
         }
     }
 }

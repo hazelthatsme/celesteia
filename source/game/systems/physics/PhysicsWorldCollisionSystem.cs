@@ -51,8 +51,8 @@ namespace Celesteia.Game.Systems.Physics {
                 bool collUp = false;
                 bool collDown = false;
 
-                for (int i = minX; i <= maxX; i++)
-                    for (int j = minY; j <= maxY; j++) {
+                for (int i = minX; i < maxX; i++)
+                    for (int j = minY; j < maxY; j++) {
                         RectangleF? blockBox = _gameWorld.GetBlockBoundingBox(i, j);
                         if (blockBox.HasValue) {
                             RectangleF inter = RectangleF.Intersection(collisionBox.Bounds, blockBox.Value);

@@ -5,6 +5,7 @@ using Celesteia.UI;
 using Celesteia.UI.Elements;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Celesteia.GUIs {
@@ -26,7 +27,7 @@ namespace Celesteia.GUIs {
         private float buttonHeight = 56f;
         private float buttonSpacing = 10f;
 
-        public override void LoadContent() {
+        public override void LoadContent(ContentManager Content) {
             logo = Game.Content.Load<Texture2D>("celesteia/logo");
             buttonTexture = Game.Content.Load<Texture2D>("sprites/ui/button");
 
@@ -51,7 +52,7 @@ namespace Celesteia.GUIs {
             LoadOptionsScreen();
             LoadNewWorldScreen();
 
-            base.LoadContent();
+            base.LoadContent(Content);
         }
         
         private void LoadMainScreen() {

@@ -115,60 +115,16 @@ namespace Celesteia.UI.Elements {
             _prevClicked = GetClicked();
         }
 
-        Rectangle r;
+        Rectangle rectangle;
         public override void Draw(SpriteBatch spriteBatch)
         {
-            r = GetRectangle();
+            rectangle = GetRectangle();
 
             // Draw the button's texture.
-            if (_patches != null) DrawPatched(spriteBatch, r);
-            else spriteBatch.Draw(GetTexture(spriteBatch), r, null, ButtonColor);
+            if (_patches != null) ImageUtilities.DrawPatched(spriteBatch, rectangle, _patches, _patchSize, ButtonColor);
+            else spriteBatch.Draw(GetTexture(spriteBatch), rectangle, null, ButtonColor);
 
-            TextUtilities.DrawAlignedText(spriteBatch, _text.GetFont(), _text.GetText(), _text.GetColor(), _text.GetAlignment(), r, 24f);
-        }
-
-        private int _scaledPatchSize => _patchSize * UIReferences.Scaling;
-        private void DrawPatched(SpriteBatch spriteBatch, Rectangle r) {
-            int y;
-
-            // Top
-            y = r.Y;
-            {
-                // Top left
-                spriteBatch.Draw(_patches.GetRegion(0), new Rectangle(r.X, y, _scaledPatchSize, _scaledPatchSize), ButtonColor);
-
-                // Top center
-                spriteBatch.Draw(_patches.GetRegion(1), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), _scaledPatchSize), ButtonColor);
-
-                // Top right
-                spriteBatch.Draw(_patches.GetRegion(2), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, _scaledPatchSize), ButtonColor);
-            }
-
-            // Center
-            y = r.Y + _scaledPatchSize;
-            {
-                // Left center
-                spriteBatch.Draw(_patches.GetRegion(3), new Rectangle(r.X, y, _scaledPatchSize, r.Height - (2 * _scaledPatchSize)), ButtonColor);
-
-                // Center
-                spriteBatch.Draw(_patches.GetRegion(4), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), r.Height - (2 * _scaledPatchSize)), ButtonColor);
-
-                // Right center
-                spriteBatch.Draw(_patches.GetRegion(5), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, r.Height - (2 * _scaledPatchSize)), ButtonColor);
-            }
-
-            // Bottom
-            y = r.Y + r.Height - _scaledPatchSize;
-            {
-                // Bottom left
-                spriteBatch.Draw(_patches.GetRegion(6), new Rectangle(r.X, y, _scaledPatchSize, _scaledPatchSize), ButtonColor);
-
-                // Bottom center
-                spriteBatch.Draw(_patches.GetRegion(7), new Rectangle(r.X + _scaledPatchSize, y, r.Width - (2 * _scaledPatchSize), _scaledPatchSize), ButtonColor);
-
-                // Bottom right
-                spriteBatch.Draw(_patches.GetRegion(8), new Rectangle(r.X + r.Width - _scaledPatchSize, y, _scaledPatchSize, _scaledPatchSize), ButtonColor);
-            }
+            TextUtilities.DrawAlignedText(spriteBatch, rectangle, _text);
         }
 
         public Texture2D GetTexture(SpriteBatch spriteBatch) {

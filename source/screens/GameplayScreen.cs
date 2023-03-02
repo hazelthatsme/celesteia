@@ -10,6 +10,8 @@ using Celesteia.Graphics;
 using Celesteia.Game.Worlds;
 using Celesteia.Game.Components;
 using Celesteia.Game.Systems.Physics;
+using Celesteia.GUIs.Game;
+using Celesteia.Game.Systems.UI;
 
 namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
@@ -24,6 +26,7 @@ namespace Celesteia.Screens {
         private World _world;
         private EntityFactory _entityFactory;
         private GameWorld _gameWorld;
+        private GameGUI _gameGui;
 
         public override void LoadContent()
         {
@@ -32,6 +35,9 @@ namespace Celesteia.Screens {
             Game.Music.PlayNow(null);
 
             Camera = new Camera2D(GraphicsDevice);
+
+            _gameGui = new GameGUI(Game);
+            _gameGui.LoadContent(Content);
 
             _world = new WorldBuilder()
                 .AddSystem(new PhysicsGravitySystem(_gameWorld))
@@ -44,11 +50,15 @@ namespace Celesteia.Screens {
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
                 .AddSystem(new MouseClickSystem(Camera, _gameWorld))
-                //.AddSystem(new PhysicsCollisionDebugSystem(Camera, Game.SpriteBatch, _gameWorld))
+                .AddSystem(new GameGUISystem(_gameGui))
+                .AddSystem(new PhysicsCollisionDebugSystem(Camera, Game.SpriteBatch, _gameWorld))
                 .Build();
                 
             _entityFactory = new EntityFactory(_world, Game);
-            _entityFactory.CreateEntity(ResourceManager.Entities.PLAYER).Get<TargetPosition>().Target = _gameWorld.GetSpawnpoint();
+
+            Entity player = _entityFactory.CreateEntity(ResourceManager.Entities.PLAYER);
+            player.Get<TargetPosition>().Target = _gameWorld.GetSpawnpoint();
+            _gameGui.SetReferenceInventory(player.Get<EntityInventory>().Inventory);
         }
 
         public override void Update(GameTime gameTime)
