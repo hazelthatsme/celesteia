@@ -62,7 +62,6 @@ namespace Celesteia.GUIs.Game {
                 AbsoluteUnit.WithValue(hotbarItemSize)
             ));
             Hotbar.SetPivot(new Vector2(0.5f, 0f));
-            Debug.WriteLine(Hotbar.GetEnabled());
 
             TextProperties text = new TextProperties()
                 .SetColor(Color.White)

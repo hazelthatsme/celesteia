@@ -38,7 +38,7 @@ namespace Celesteia.Game.Systems.Physics {
                 PhysicsEntity physicsEntity = physicsEntityMapper.Get(entityId);
                 CollisionBox collisionBox = collisionBoxMapper.Get(entityId);
 
-                collisionBox.Update(transform.Position);
+                collisionBox.Update(targetPosition.Target);
 
                 int minX = (int)Math.Floor(collisionBox.Bounds.Center.X - (collisionBox.Bounds.Width / 2f));
                 int maxX = (int)Math.Ceiling(collisionBox.Bounds.Center.X + (collisionBox.Bounds.Width / 2f));
@@ -79,8 +79,6 @@ namespace Celesteia.Game.Systems.Physics {
                 physicsEntity.CollidingUp = collUp;
                 physicsEntity.CollidingLeft = collLeft;
                 physicsEntity.CollidingRight = collRight;
-
-                Debug.WriteLine(collDown);
             }
         }
     }

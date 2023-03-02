@@ -70,8 +70,11 @@ namespace Celesteia.Game.Systems {
                 bool mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
 
                 if (mouseClick) {
-                    if (MouseWrapper.GetMouseHeld(MouseButton.Left)) stack.Type.Actions.OnLeftClick(_world, point, _player);
-                    if (MouseWrapper.GetMouseHeld(MouseButton.Right)) stack.Type.Actions.OnRightClick(_world, point, _player);
+                    bool success = false;
+                    if (MouseWrapper.GetMouseHeld(MouseButton.Left)) success = stack.Type.Actions.OnLeftClick(_world, point, _player);
+                    else if (MouseWrapper.GetMouseHeld(MouseButton.Right)) success = stack.Type.Actions.OnRightClick(_world, point, _player);
+
+                    if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
 
                     inventory.Inventory.AssertAmounts();
                 }

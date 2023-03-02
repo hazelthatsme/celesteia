@@ -11,7 +11,7 @@ namespace Celesteia.Game.Systems {
         private readonly Camera2D _camera;
         private Vector2 _target;
 
-        private ComponentMapper<TargetPosition> targetPositionMapper;
+        private ComponentMapper<Transform2> transformMapper;
         private ComponentMapper<CameraFollow> followMapper;
 
         public CameraFollowSystem(Camera2D camera) : base(Aspect.All(typeof(TargetPosition), typeof(CameraFollow))) {
@@ -20,7 +20,7 @@ namespace Celesteia.Game.Systems {
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            targetPositionMapper = mapperService.GetMapper<TargetPosition>();
+            transformMapper = mapperService.GetMapper<Transform2>();
             followMapper = mapperService.GetMapper<CameraFollow>();
         }
 
@@ -31,7 +31,7 @@ namespace Celesteia.Game.Systems {
 
             foreach (int entityId in ActiveEntities) {
                 float weight = followMapper.Get(entityId).weight;
-                calculatedCenter = targetPositionMapper.Get(entityId).Target * weight;
+                calculatedCenter = transformMapper.Get(entityId).Position * weight;
                 cumulativeWeight += weight;
             }
 
