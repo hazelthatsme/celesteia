@@ -17,12 +17,14 @@ namespace Celesteia.Game.Systems.Physics {
             _gameWorld = gameWorld;
         }
 
+        private ComponentMapper<Transform2> transformMapper;
         private ComponentMapper<TargetPosition> targetPositionMapper;
         private ComponentMapper<PhysicsEntity> physicsEntityMapper;
         private ComponentMapper<CollisionBox> collisionBoxMapper;
 
         public override void Initialize(IComponentMapperService mapperService)
         {
+            transformMapper = mapperService.GetMapper<Transform2>();
             targetPositionMapper = mapperService.GetMapper<TargetPosition>();
             physicsEntityMapper = mapperService.GetMapper<PhysicsEntity>();
             collisionBoxMapper = mapperService.GetMapper<CollisionBox>();
@@ -31,11 +33,12 @@ namespace Celesteia.Game.Systems.Physics {
         public override void Update(GameTime gameTime)
         {
             foreach (int entityId in ActiveEntities) {
+                Transform2 transform = transformMapper.Get(entityId);
                 TargetPosition targetPosition = targetPositionMapper.Get(entityId);
                 PhysicsEntity physicsEntity = physicsEntityMapper.Get(entityId);
                 CollisionBox collisionBox = collisionBoxMapper.Get(entityId);
 
-                collisionBox.Update(targetPosition.Target);
+                collisionBox.Update(transform.Position);
 
                 int minX = (int)Math.Floor(collisionBox.Bounds.Center.X - (collisionBox.Bounds.Width / 2f));
                 int maxX = (int)Math.Ceiling(collisionBox.Bounds.Center.X + (collisionBox.Bounds.Width / 2f));

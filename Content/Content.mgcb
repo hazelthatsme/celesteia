@@ -80,6 +80,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/entities/player/astronaut.png
 
+#begin sprites/items.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/items.png
+
 #begin sprites/skybox/nebula.png
 /importer:TextureImporter
 /processor:TextureProcessor

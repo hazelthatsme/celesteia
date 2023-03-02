@@ -37,6 +37,8 @@ namespace Celesteia.Resources.Collections {
                         ResourceManager.SPRITE_SCALING
                     ));
 
+                    entity.Attach(new EntityInventory());
+
                     entity.Attach(new PhysicsEntity(1f, true));
 
                     entity.Attach(new CollisionBox(1.5f, 3f));

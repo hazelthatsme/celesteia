@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using Celesteia.Resources.Collections;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
-using System.Diagnostics;
 
 namespace Celesteia.Resources.Sprites {
     public class SkyboxPortionFrames {

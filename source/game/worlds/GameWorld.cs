@@ -94,6 +94,13 @@ namespace Celesteia.Game.Worlds {
             else return 0;
         }
 
+        public byte GetBlock(Vector2 v) {
+            return GetBlock(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y)
+            );
+        }
+
         public void SetBlock(int x, int y, byte id) {
             ChunkVector cv = new ChunkVector(
                 x / Chunk.CHUNK_SIZE,
@@ -123,36 +130,13 @@ namespace Celesteia.Game.Worlds {
 
         public RectangleF? GetBlockBoundingBox(int x, int y) {
             byte id = GetBlock(x, y);
-            RectangleF? box = ResourceManager.Blocks.GetBlock(id).GetBoundingBox();
+            RectangleF? box = ResourceManager.Blocks.GetBlock(id).BoundingBox;
 
             if (!box.HasValue) return null;
             return new RectangleF(
                 x, y,
                 box.Value.Width, box.Value.Height
             );
-        }
-
-        public Vector2 GetIntersection(CollisionBox box) {
-            int minX = (int)Math.Floor(box.Bounds.Center.X - (box.Bounds.Width / 2f));
-            int maxX = (int)Math.Ceiling(box.Bounds.Center.X + (box.Bounds.Width / 2f));
-
-            int minY = (int)Math.Floor(box.Bounds.Center.Y - (box.Bounds.Height / 2f));
-            int maxY = (int)Math.Ceiling(box.Bounds.Center.Y + (box.Bounds.Height / 2f));
-
-            float xInter = 0f;
-            float yInter = 0f;
-
-            for (int i = minX; i <= maxX; i++)
-                for (int j = minY; j <= maxY; j++) {
-                    RectangleF? blockBox = ResourceManager.Blocks.GetBlock(GetBlock(i, j)).GetBoundingBox();
-                    if (blockBox.HasValue) {
-                        RectangleF intersection = box.Intersection(blockBox.Value);
-                        xInter = Math.Max(xInter, intersection.Width);
-                        yInter = Math.Max(yInter, intersection.Height);
-                    }
-                }
-
-            return new Vector2(xInter, yInter);
         }
 
         public Vector2 GetSpawnpoint() {
