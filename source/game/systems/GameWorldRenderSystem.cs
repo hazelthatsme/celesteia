@@ -11,7 +11,7 @@ namespace Celesteia.Game.Systems {
         private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
-        private int _renderDistance => MathHelper.Clamp(7 - _camera.Zoom, 1, 7);
+        private int _renderDistance => 5;
         private GameWorld _gameWorld;
 
         public GameWorldRenderSystem(Camera2D camera, SpriteBatch spriteBatch, GameWorld world) {

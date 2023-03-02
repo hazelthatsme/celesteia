@@ -52,7 +52,7 @@ namespace Celesteia.UI.Elements {
 
         // CLICKING PROPERTIES
 
-        public delegate void ClickEvent(MouseButton buttons, Point position);
+        public delegate void ClickEvent(MouseButton button, Point position);
         private ClickEvent _onMouseDown = null;
         private ClickEvent _onMouseUp = null;
 
@@ -64,6 +64,16 @@ namespace Celesteia.UI.Elements {
         public Button SetOnMouseUp(ClickEvent func) {
             _onMouseUp = func;
             return this;
+        }
+
+        public override void OnMouseDown(MouseButton button, Point position) {
+            base.OnMouseDown(button, position);
+            _onMouseDown?.Invoke(button, position);
+        }
+
+        public override void OnMouseUp(MouseButton button, Point position) {
+            base.OnMouseUp(button, position);
+            _onMouseUp?.Invoke(button, position);
         }
 
         // DRAWING PROPERTIES
@@ -83,18 +93,6 @@ namespace Celesteia.UI.Elements {
                 _patches = TextureAtlas.Create("buttonPatches", _texture, _patchSize, _patchSize);
             }
             return this;
-        }
-
-        // Functions
-
-        public override void OnMouseDown(MouseButton button, Point position) {
-            base.OnMouseDown(button, position);
-            _onMouseDown?.Invoke(button, position);
-        }
-
-        public override void OnMouseUp(MouseButton button, Point position) {
-            base.OnMouseUp(button, position);
-            _onMouseUp?.Invoke(button, position);
         }
 
         // https://gamedev.stackexchange.com/a/118255

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
+using Celesteia.Game.Input;
 using Celesteia.Resources;
 using Celesteia.UI;
 using Celesteia.UI.Elements;
@@ -10,6 +11,7 @@ using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.TextureAtlases;
 
@@ -32,6 +34,8 @@ namespace Celesteia.GUIs.Game {
 
         private Inventory _inventory;
         private List<InventorySlot> _slots;
+
+        private int selectedHotbarSlot = 0;
 
         public void SetReferenceInventory(Inventory inventory) {
             _inventory = inventory;
@@ -79,6 +83,7 @@ namespace Celesteia.GUIs.Game {
                 _slots.Add(slot);
                 Hotbar.AddChild(slot);
             }
+            _slots[0].SetSelected(true);
 
             Root.AddChild(Hotbar);
         }
@@ -90,6 +95,17 @@ namespace Celesteia.GUIs.Game {
 
         public override void Update(GameTime gameTime, out bool clickedAnything)
         {
+            if (!KeyboardWrapper.GetKeyHeld(Keys.LeftControl) && MouseWrapper.GetScrollDelta() != 0f) {
+                int change = MouseWrapper.GetScrollDelta() > 0f ? -1 : 1;
+
+                selectedHotbarSlot += change;
+                if (selectedHotbarSlot < 0) selectedHotbarSlot = hotbarSlots - 1;
+                if (selectedHotbarSlot >= hotbarSlots) selectedHotbarSlot = 0;
+
+                _slots.ForEach(slot => slot.SetSelected(false));
+                _slots[selectedHotbarSlot].SetSelected(true);
+            }
+
             Root.Update(gameTime, out clickedAnything);
         }
 

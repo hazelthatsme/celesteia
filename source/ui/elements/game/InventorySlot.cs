@@ -5,6 +5,7 @@ using Celesteia.GUIs.Game;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Input;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.UI.Elements.Game {
@@ -12,6 +13,19 @@ namespace Celesteia.UI.Elements.Game {
         public InventorySlot(Rect rect) {
             SetRect(rect);
         }
+
+        // SELECTION 
+
+        private bool _selected = false;
+        public InventorySlot SetSelected(bool selected) {
+            _selected = selected;
+            return this;
+        }
+
+        public bool GetSelected() {
+            return _selected;
+        }
+
 
         // INVENTORY REFERENCE PROPERTIES
 
@@ -61,6 +75,32 @@ namespace Celesteia.UI.Elements.Game {
             return this;
         }
 
+        // CLICKING PROPERTIES
+
+        public delegate void ClickEvent(MouseButton button, Point position);
+        private ClickEvent _onMouseDown = null;
+        private ClickEvent _onMouseUp = null;
+
+        public InventorySlot SetOnMouseDown(ClickEvent func) {
+            _onMouseDown = func;
+            return this;
+        }
+
+        public InventorySlot SetOnMouseUp(ClickEvent func) {
+            _onMouseUp = func;
+            return this;
+        }
+        
+        public override void OnMouseDown(MouseButton button, Point position) {
+            base.OnMouseDown(button, position);
+            _onMouseDown?.Invoke(button, position);
+        }
+
+        public override void OnMouseUp(MouseButton button, Point position) {
+            base.OnMouseUp(button, position);
+            _onMouseUp?.Invoke(button, position);
+        }
+
         private Rectangle GetScaledTriangle(Rectangle r, float scale) {
             int newWidth = (int)Math.Round(r.Width * scale);
             int newHeight = (int)Math.Round(r.Height * scale);
@@ -84,7 +124,7 @@ namespace Celesteia.UI.Elements.Game {
             textRectangle = GetScaledTriangle(rectangle, .6f);
 
             // Draw the slot's texture.
-            if (_patches != null) ImageUtilities.DrawPatched(spriteBatch, rectangle, _patches, _patchSize, Color.White);
+            if (_patches != null) ImageUtilities.DrawPatched(spriteBatch, rectangle, _patches, _patchSize, _selected ? Color.DarkViolet : Color.White);
             else spriteBatch.Draw(GetTexture(spriteBatch), rectangle, null, Color.White);
 
             // Draw item if present.
