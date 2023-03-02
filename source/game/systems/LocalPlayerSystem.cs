@@ -71,6 +71,7 @@ namespace Celesteia.Game.Systems {
 
                 if (mouseClick) {
                     bool success = false;
+                    
                     if (MouseWrapper.GetMouseHeld(MouseButton.Left)) success = stack.Type.Actions.OnLeftClick(_world, point, _player);
                     else if (MouseWrapper.GetMouseHeld(MouseButton.Right)) success = stack.Type.Actions.OnRightClick(_world, point, _player);
 

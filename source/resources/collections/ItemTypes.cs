@@ -1,15 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.Game.Components.Items;
-using Celesteia.Game.Worlds;
-using Celesteia.Resources.Collections.Items;
-using Celesteia.Resources.Sprites;
-using Microsoft.Xna.Framework;
+using Celesteia.Game;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.Input;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.Resources.Collections {

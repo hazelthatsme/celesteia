@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 
-namespace Celesteia.Resources.Collections.Items {
+namespace Celesteia.Game {
     public class BlockItemActions : ItemActions {
         private byte _block;
 
@@ -22,6 +22,11 @@ namespace Celesteia.Resources.Collections.Items {
 
         public bool Assert(GameWorld world, Vector2 cursor, Entity user, bool forWall) {
             if (!user.Has<Transform2>() || !user.Has<EntityAttributes>()) return false;
+
+            if (world.GetBlock(cursor + new Vector2(-1, 0)) == 0 && 
+                world.GetBlock(cursor + new Vector2(1, 0)) == 0 && 
+                world.GetBlock(cursor + new Vector2(0, -1)) == 0 && 
+                world.GetBlock(cursor + new Vector2(0, 1)) == 0) return false;
 
             Transform2 entityTransform = user.Get<Transform2>();
             EntityAttributes.EntityAttributeMap attributes = user.Get<EntityAttributes>().Attributes;
