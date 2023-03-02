@@ -39,13 +39,7 @@ namespace Celesteia.Game.Systems.Physics {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
             
             foreach (int entityId in ActiveEntities) {
-                RectangleF box = collisionBoxMapper.Get(entityId).Bounds;
-                collisionBoxMapper.Get(entityId).Blocks.ForEach(block => {
-                    _spriteBatch.DrawRectangle(box, Color.Green, .05f, 0f);
-                    _spriteBatch.DrawRectangle(block, )
-                });
-
-                
+                RectangleF box = collisionBoxMapper.Get(entityId).Bounds;                
 
                 int minX = (int)Math.Floor(box.Center.X - (box.Width / 2f));
                 int maxX = (int)Math.Ceiling(box.Center.X + (box.Width / 2f));
@@ -58,7 +52,8 @@ namespace Celesteia.Game.Systems.Physics {
                         RectangleF? blockBox = _gameWorld.GetBlockBoundingBox(i, j);
                         if (blockBox.HasValue) {
                             _spriteBatch.DrawRectangle(new RectangleF(i, j, blockBox.Value.Width, blockBox.Value.Height), Color.Red, .05f, 0f);
-                            _spriteBatch.DrawRectangle(collisionBoxMapper.Get(entityId).Intersection(blockBox.Value), Color.Blue, .05f, 0f);
+                        } else {
+                            _spriteBatch.DrawRectangle(new RectangleF(i, j, 1f, 1f), Color.Blue, .05f, 0f);
                         }
                     }
             }

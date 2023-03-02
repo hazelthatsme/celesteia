@@ -44,7 +44,6 @@ namespace Celesteia.Game.Systems {
                     if (type.Item != null) {
                         bool couldAdd = inventory.Inventory.AddItem(new ItemStack(type.Item.ItemID, 1));
                         if (couldAdd) _world.RemoveBlock(point);
-                        else Debug.WriteLine("Inventory full!");
                     } else _world.RemoveBlock(point);
                 }
             }

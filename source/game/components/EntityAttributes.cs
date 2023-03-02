@@ -30,6 +30,6 @@ namespace Celesteia.Game.Components {
     }
 
     public enum EntityAttribute {
-        MovementSpeed, JumpForce
+        MovementSpeed, JumpForce, BlockRange
     }
 }

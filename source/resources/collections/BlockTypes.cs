@@ -28,26 +28,26 @@ namespace Celesteia.Resources.Collections {
                 BlockSpriteProperties.SIZE
             );
 
-            AddType("Air", 0, 0);
+            AddBlock("Air", 0, 0);
             AddStandardBlock("Stone", 2, 1, ResourceManager.Items.GetItem("Stone"));
             AddStandardBlock("Soil", 1, 1, ResourceManager.Items.GetItem("Soil"));
             AddStandardBlock("Grown Soil", 0, 1, ResourceManager.Items.GetItem("Soil"));
             AddStandardBlock("Deepstone", 3, 1, ResourceManager.Items.GetItem("Deepstone"));
             AddStandardBlock("Wooden Log", 10, 1, ResourceManager.Items.GetItem("Wooden Log"));
-            AddType("Leaves", 11, 1);
+            AddBlock("Leaves", 11, 1);
             AddStandardBlock("Iron Ore", 8, 1, ResourceManager.Items.GetItem("Iron Ore"));
             AddStandardBlock("Copper Ore", 7, 1, ResourceManager.Items.GetItem("Copper Ore"));
             AddStandardBlock("Coal Ore", 14, 1, ResourceManager.Items.GetItem("Coal Lump"));
         }
 
         byte next = 0;
-        private void AddType(string name, int frameStart, int frameCount = 1, ItemType item = null, RectangleF? boundingBox = null) {
+        private void AddBlock(string name, int frameStart, int frameCount = 1, ItemType item = null, RectangleF? boundingBox = null) {
             Types.Add(new BlockType(next, name, _atlas, frameStart, frameCount, item, boundingBox));
             next++;
         }
 
         private void AddStandardBlock(string name, int frameStart, int frameCount = 1, ItemType item = null) {
-            AddType(name, frameStart, frameCount, item, standardBox);
+            AddBlock(name, frameStart, frameCount, item, standardBox);
         }
 
         public BlockType GetBlock(byte id) {

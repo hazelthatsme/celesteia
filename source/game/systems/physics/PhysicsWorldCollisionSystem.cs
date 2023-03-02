@@ -38,7 +38,7 @@ namespace Celesteia.Game.Systems.Physics {
                 PhysicsEntity physicsEntity = physicsEntityMapper.Get(entityId);
                 CollisionBox collisionBox = collisionBoxMapper.Get(entityId);
 
-                collisionBox.Update(transform.Position);
+                collisionBox.Update(targetPosition.Target);
 
                 int minX = (int)Math.Floor(collisionBox.Bounds.Center.X - (collisionBox.Bounds.Width / 2f));
                 int maxX = (int)Math.Ceiling(collisionBox.Bounds.Center.X + (collisionBox.Bounds.Width / 2f));
@@ -50,6 +50,8 @@ namespace Celesteia.Game.Systems.Physics {
                 bool collRight = false;
                 bool collUp = false;
                 bool collDown = false;
+
+                Vector2 projection = targetPosition.Target;
 
                 for (int i = minX; i < maxX; i++)
                     for (int j = minY; j < maxY; j++) {
@@ -63,17 +65,19 @@ namespace Celesteia.Game.Systems.Physics {
                                 collLeft = blockBox.Value.Center.X < collisionBox.Bounds.Center.X;
                                 collRight = blockBox.Value.Center.X > collisionBox.Bounds.Center.X;
 
-                                targetPosition.Target += new Vector2(blockBox.Value.Center.X < collisionBox.Bounds.Center.X ? inter.Width : -inter.Width, 0f);
+                                projection += new Vector2(blockBox.Value.Center.X < collisionBox.Bounds.Center.X ? inter.Width : -inter.Width, 0f);
                             } else {
                                 collUp = blockBox.Value.Center.Y < collisionBox.Bounds.Center.Y;
                                 collDown = blockBox.Value.Center.Y > collisionBox.Bounds.Center.Y;
 
-                                targetPosition.Target += new Vector2(0f, blockBox.Value.Center.Y < collisionBox.Bounds.Center.Y ? inter.Height : -inter.Height);
+                                projection += new Vector2(0f, blockBox.Value.Center.Y < collisionBox.Bounds.Center.Y ? inter.Height : -inter.Height);
                             }
 
-                            collisionBox.Update(targetPosition.Target);
+                            collisionBox.Update(projection);
                         }
                     }
+                
+                targetPosition.Target = projection;
                 
                 physicsEntity.CollidingDown = collDown;
                 physicsEntity.CollidingUp = collUp;

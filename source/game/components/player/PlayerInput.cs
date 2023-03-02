@@ -4,33 +4,33 @@ using Celesteia.Game.Input;
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.Game.Components.Player {
-    public class PlayerMovement {
+    public class PlayerInput {
         public List<IInputDefinition> Horizontal;
         public List<IInputDefinition> Vertical;
         public IInputDefinition Run;
         public IInputDefinition Jump;
 
-        public PlayerMovement() {
+        public PlayerInput() {
             Horizontal = new List<IInputDefinition>();
             Vertical = new List<IInputDefinition>();
         }
 
-        public PlayerMovement AddHorizontal(IInputDefinition def) {
+        public PlayerInput AddHorizontal(IInputDefinition def) {
             Horizontal.Add(def);
             return this;
         }
 
-        public PlayerMovement AddVertical(IInputDefinition def) {
+        public PlayerInput AddVertical(IInputDefinition def) {
             Vertical.Add(def);
             return this;
         }
 
-        public PlayerMovement SetRun(IInputDefinition def) {
+        public PlayerInput SetRun(IInputDefinition def) {
             Run = def;
             return this;
         }
 
-        public PlayerMovement SetJump(IInputDefinition def) {
+        public PlayerInput SetJump(IInputDefinition def) {
             Jump = def;
             return this;
         }

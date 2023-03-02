@@ -13,6 +13,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.TextureAtlases;
 using Celesteia.Game.Components.Physics;
+using Celesteia.Game.Components.Items;
 
 namespace Celesteia.Resources.Collections {
     public class EntityTypes {
@@ -37,13 +38,13 @@ namespace Celesteia.Resources.Collections {
                         ResourceManager.SPRITE_SCALING
                     ));
 
-                    entity.Attach(new EntityInventory());
+                    entity.Attach(new EntityInventory(new ItemStack(0, 10)));
 
                     entity.Attach(new PhysicsEntity(1f, true));
 
                     entity.Attach(new CollisionBox(1.5f, 3f));
 
-                    entity.Attach(new PlayerMovement()
+                    entity.Attach(new PlayerInput()
                         .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))
                         .AddVertical(new KeyDefinition(Keys.W, Keys.S))
                         .SetRun(new KeyDefinition(null, Keys.LeftShift))
@@ -57,6 +58,7 @@ namespace Celesteia.Resources.Collections {
                     entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
                         .Set(EntityAttribute.MovementSpeed, 5f)
                         .Set(EntityAttribute.JumpForce, 10f)
+                        .Set(EntityAttribute.BlockRange, 5f)
                     ));
                 }
             ));

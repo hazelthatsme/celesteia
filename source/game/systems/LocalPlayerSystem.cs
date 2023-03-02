@@ -1,8 +1,12 @@
 using System;
 using System.Diagnostics;
 using Celesteia.Game.Components;
+using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Player;
+using Celesteia.Game.Input;
+using Celesteia.Game.Worlds;
+using Celesteia.Graphics;
 using Celesteia.GUIs.Game;
 using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework;
@@ -10,53 +14,71 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
+using MonoGame.Extended.Input;
 
 namespace Celesteia.Game.Systems {
-    public class LocalPlayerSystem : EntityUpdateSystem
+    public class LocalPlayerSystem : UpdateSystem
     {
-        private ComponentMapper<TargetPosition> targetPositionMapper;
-        private ComponentMapper<PhysicsEntity> physicsEntityMapper;
-        private ComponentMapper<EntityFrames> framesMapper;
-        private ComponentMapper<EntityAttributes> attributesMapper;
-        private ComponentMapper<PlayerMovement> movementMapper;
-        private ComponentMapper<LocalPlayer> localPlayerMapper;
-
         private GameGUI _gameGui;
+        private Camera2D _camera;
+        private GameWorld _world;
+        private Entity _player;
 
-        public LocalPlayerSystem(GameGUI gameGui) : base(Aspect.All(typeof(TargetPosition), typeof(PhysicsEntity), typeof(EntityFrames), typeof(PlayerMovement), typeof(LocalPlayer))) {
+        private LocalPlayer localPlayer;
+        private PlayerInput input;
+        private PhysicsEntity physicsEntity;
+        private EntityFrames frames;
+        private EntityAttributes attributes;
+        private TargetPosition targetPosition;
+        private EntityInventory inventory;
+
+        public LocalPlayerSystem(GameGUI gameGui, Camera2D camera, GameWorld world) {
             _gameGui = gameGui;
+            _camera = camera;
+            _world = world;
         }
 
-        public override void Initialize(IComponentMapperService mapperService)
-        {
-            targetPositionMapper = mapperService.GetMapper<TargetPosition>();
-            physicsEntityMapper = mapperService.GetMapper<PhysicsEntity>();
-            framesMapper = mapperService.GetMapper<EntityFrames>();
-            attributesMapper = mapperService.GetMapper<EntityAttributes>();
-            movementMapper = mapperService.GetMapper<PlayerMovement>();
-            localPlayerMapper = mapperService.GetMapper<LocalPlayer>();
+        public void SetLocalPlayer(Entity player) {
+            _player = player;
+
+            localPlayer = _player.Get<LocalPlayer>();
+            targetPosition = _player.Get<TargetPosition>();
+            physicsEntity = _player.Get<PhysicsEntity>();
+            frames = _player.Get<EntityFrames>();
+            attributes = _player.Get<EntityAttributes>();
+            input = _player.Get<PlayerInput>();
+            inventory = _player.Get<EntityInventory>();
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (_player == null) return;
+
             bool clicked = false;
 
             _gameGui.Update(gameTime, out clicked);
 
-            foreach (int entityId in ActiveEntities) {
-                LocalPlayer localPlayer = localPlayerMapper.Get(entityId);
-                PlayerMovement input = movementMapper.Get(entityId);
-                PhysicsEntity physicsEntity = physicsEntityMapper.Get(entityId);
-                EntityFrames frames = framesMapper.Get(entityId);
-                EntityAttributes.EntityAttributeMap attributes = attributesMapper.Get(entityId).Attributes;
-                TargetPosition targetPosition = targetPositionMapper.Get(entityId);
+            UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
+            UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
 
-                UpdateMovement(gameTime, input, physicsEntity, frames, attributes, targetPosition);
-                UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes);
+            if (!clicked) {
+                Vector2 point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
+                ItemStack stack = _gameGui.GetSelectedItem();
+
+                if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
+
+                bool mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
+
+                if (mouseClick) {
+                    if (MouseWrapper.GetMouseHeld(MouseButton.Left)) stack.Type.Actions.OnLeftClick(_world, point, _player);
+                    if (MouseWrapper.GetMouseHeld(MouseButton.Right)) stack.Type.Actions.OnRightClick(_world, point, _player);
+
+                    inventory.Inventory.AssertAmounts();
+                }
             }
         }
 
-        private void UpdateMovement(GameTime gameTime, PlayerMovement input, PhysicsEntity physicsEntity, EntityFrames frames, EntityAttributes.EntityAttributeMap attributes, TargetPosition targetPosition) {
+        private void UpdateMovement(GameTime gameTime, PlayerInput input, PhysicsEntity physicsEntity, EntityFrames frames, EntityAttributes.EntityAttributeMap attributes, TargetPosition targetPosition) {
             Vector2 movement = new Vector2(input.TestHorizontal(), 0f);
 
             if (movement.X != 0f) {
@@ -70,7 +92,7 @@ namespace Celesteia.Game.Systems {
             targetPosition.Target += movement;
         }
 
-        private void UpdateJump(GameTime gameTime, LocalPlayer localPlayer, PlayerMovement input, PhysicsEntity physicsEntity, EntityAttributes.EntityAttributeMap attributes)
+        private void UpdateJump(GameTime gameTime, LocalPlayer localPlayer, PlayerInput input, PhysicsEntity physicsEntity, EntityAttributes.EntityAttributeMap attributes)
         {
             if (physicsEntity.CollidingDown) localPlayer.ResetJump();
 

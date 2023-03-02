@@ -39,26 +39,28 @@ namespace Celesteia.Screens {
             _gameGui = new GameGUI(Game);
             _gameGui.LoadContent(Content);
 
+            LocalPlayerSystem localPlayerSystem;
+
             _world = new WorldBuilder()
                 .AddSystem(new PhysicsGravitySystem(_gameWorld))
-                .AddSystem(new LocalPlayerSystem(_gameGui))
                 .AddSystem(new PhysicsWorldCollisionSystem(_gameWorld))
+                .AddSystem(localPlayerSystem = new LocalPlayerSystem(_gameGui, Camera, _gameWorld))
                 .AddSystem(new PhysicsSystem())
                 .AddSystem(new TargetPositionSystem())
                 .AddSystem(new CameraFollowSystem(Camera))
                 .AddSystem(new CameraZoomSystem(Camera))
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
-                .AddSystem(new MouseClickSystem(Camera, _gameWorld))
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
                 .AddSystem(new PhysicsCollisionDebugSystem(Camera, Game.SpriteBatch, _gameWorld))
                 .Build();
-                
+
             _entityFactory = new EntityFactory(_world, Game);
 
             Entity player = _entityFactory.CreateEntity(ResourceManager.Entities.PLAYER);
             player.Get<TargetPosition>().Target = _gameWorld.GetSpawnpoint();
             _gameGui.SetReferenceInventory(player.Get<EntityInventory>().Inventory);
+            localPlayerSystem.SetLocalPlayer(player);
         }
 
         public override void Update(GameTime gameTime)

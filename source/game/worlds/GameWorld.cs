@@ -101,6 +101,27 @@ namespace Celesteia.Game.Worlds {
             );
         }
 
+
+        public byte GetWallBlock(int x, int y) {
+            ChunkVector cv = new ChunkVector(
+                x / Chunk.CHUNK_SIZE,
+                y / Chunk.CHUNK_SIZE
+            );
+
+            x %= Chunk.CHUNK_SIZE;
+            y %= Chunk.CHUNK_SIZE;
+
+            if (ChunkIsInWorld(cv)) return GetChunk(cv).GetWallBlock(x, y);
+            else return 0;
+        }
+
+        public byte GetWallBlock(Vector2 v) {
+            return GetWallBlock(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y)
+            );
+        }
+
         public void SetBlock(int x, int y, byte id) {
             ChunkVector cv = new ChunkVector(
                 x / Chunk.CHUNK_SIZE,
@@ -113,6 +134,34 @@ namespace Celesteia.Game.Worlds {
             if (ChunkIsInWorld(cv)) GetChunk(cv).SetBlock(x, y, id);
         }
 
+        public void SetBlock(Vector2 v, byte id) {
+            SetBlock(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y),
+                id
+            );
+        }
+
+
+        public void SetWallBlock(int x, int y, byte id) {
+            ChunkVector cv = new ChunkVector(
+                x / Chunk.CHUNK_SIZE,
+                y / Chunk.CHUNK_SIZE
+            );
+
+            x %= Chunk.CHUNK_SIZE;
+            y %= Chunk.CHUNK_SIZE;
+
+            if (ChunkIsInWorld(cv)) GetChunk(cv).SetWallBlock(x, y, id);
+        }
+
+        public void SetWallBlock(Vector2 v, byte id) {
+            SetWallBlock(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y),
+                id
+            );
+        }
         public void RemoveBlock(Vector2 v) {
             RemoveBlock(
                 (int)Math.Floor(v.X),
@@ -129,13 +178,24 @@ namespace Celesteia.Game.Worlds {
         }
 
         public RectangleF? GetBlockBoundingBox(int x, int y) {
-            byte id = GetBlock(x, y);
+            return TestBoundingBox(x, y, GetBlock(x, y));
+        }
+
+        public RectangleF? TestBoundingBox(int x, int y, byte id) {
             RectangleF? box = ResourceManager.Blocks.GetBlock(id).BoundingBox;
 
             if (!box.HasValue) return null;
             return new RectangleF(
                 x, y,
                 box.Value.Width, box.Value.Height
+            );
+        }
+
+        public RectangleF? TestBoundingBox(Vector2 v, byte id) {
+            return TestBoundingBox(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y),
+                id
             );
         }
 

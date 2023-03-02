@@ -71,19 +71,27 @@ namespace Celesteia.GUIs.Game {
                 .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right);
 
             for (int i = 0; i < hotbarSlots; i++) {
+                int slotNumber = i;
                 InventorySlot slot = new InventorySlot(new Rect(
                     AbsoluteUnit.WithValue(i * hotbarItemSize + (i * slotSpacing)),
                     AbsoluteUnit.WithValue(-20f),
                     AbsoluteUnit.WithValue(hotbarItemSize),
                     AbsoluteUnit.WithValue(hotbarItemSize)
-                )).SetReferenceInventory(_inventory).SetSlot(i).SetTexture(slotTexture).SetPatches(slotPatches, 4).SetTextProperties(text);
+                ))
+                    .SetReferenceInventory(_inventory)
+                    .SetSlot(slotNumber)
+                    .SetTexture(slotTexture)
+                    .SetPatches(slotPatches, 4)
+                    .SetTextProperties(text)
+                    .SetOnMouseUp((button, point) => { selectedHotbarSlot = slotNumber; UpdateSelected(); });
                 slot.SetPivot(new Vector2(0f, 1f));
                 slot.SetEnabled(true);
 
                 _slots.Add(slot);
                 Hotbar.AddChild(slot);
             }
-            _slots[0].SetSelected(true);
+
+            UpdateSelected();
 
             Root.AddChild(Hotbar);
         }
@@ -95,6 +103,16 @@ namespace Celesteia.GUIs.Game {
 
         public override void Update(GameTime gameTime, out bool clickedAnything)
         {
+            UpdateHotbar();
+
+            Root.Update(gameTime, out clickedAnything);
+        }
+
+        public ItemStack GetSelectedItem() {
+            return _inventory.GetSlot(selectedHotbarSlot);
+        }
+
+        private void UpdateHotbar() {
             if (!KeyboardWrapper.GetKeyHeld(Keys.LeftControl) && MouseWrapper.GetScrollDelta() != 0f) {
                 int change = MouseWrapper.GetScrollDelta() > 0f ? -1 : 1;
 
@@ -102,11 +120,13 @@ namespace Celesteia.GUIs.Game {
                 if (selectedHotbarSlot < 0) selectedHotbarSlot = hotbarSlots - 1;
                 if (selectedHotbarSlot >= hotbarSlots) selectedHotbarSlot = 0;
 
-                _slots.ForEach(slot => slot.SetSelected(false));
-                _slots[selectedHotbarSlot].SetSelected(true);
+                UpdateSelected();
             }
+        }
 
-            Root.Update(gameTime, out clickedAnything);
+        private void UpdateSelected() {
+            _slots.ForEach(slot => slot.SetSelected(false));
+            _slots[selectedHotbarSlot].SetSelected(true);
         }
 
         private void UpdateSlotReferences() {

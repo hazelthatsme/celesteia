@@ -50,5 +50,9 @@ namespace Celesteia.Game.Components.Items {
         private bool HasCapacity() {
             return Array.Exists(items, x => x == null);
         }
+
+        public void AssertAmounts() {
+            for (int i = 0; i < items.Length; i++) if (items[i] != null && items[i].Amount <= 0) items[i] = null;
+        }
     }
 }
