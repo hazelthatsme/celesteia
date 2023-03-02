@@ -29,10 +29,11 @@ namespace Celesteia.Resources.Collections.Items {
             if (Vector2.Distance(entityTransform.Position, cursor) > attributes.Get(EntityAttribute.BlockRange)) return false;
 
             if (!forWall && user.Has<CollisionBox>()) {
-                CollisionBox box = user.Get<CollisionBox>();
+                Rectangle box = user.Get<CollisionBox>().RoundedBounds();
                 RectangleF? rect = world.TestBoundingBox(cursor, _block);
                 if (rect.HasValue) {
-                    if (!box.Intersection(rect.Value).IsEmpty) return false;
+                    bool intersect = rect.Intersects(new RectangleF(box.X, box.Y, box.Width, box.Height));
+                    if (intersect) return false;
                 }
             }
             

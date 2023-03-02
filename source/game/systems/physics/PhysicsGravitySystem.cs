@@ -27,8 +27,8 @@ namespace Celesteia.Game.Systems.Physics {
             foreach (int entityId in ActiveEntities) {
                 PhysicsEntity physicsEntity = physicsEntityMapper.Get(entityId);
 
-                if (physicsEntity.CollidingDown) {
-                    physicsEntity.SetVelocity(physicsEntity.Velocity.X, 0f);
+                if (physicsEntity.CollidingDown && physicsEntity.Velocity.Y > 0f) {
+                    physicsEntity.SetVelocity(physicsEntity.Velocity.X, 0.1f);
                 }
                 if (!physicsEntity.Gravity) continue;
 

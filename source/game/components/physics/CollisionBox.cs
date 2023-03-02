@@ -1,3 +1,4 @@
+using System;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework;
 
@@ -13,6 +14,10 @@ namespace Celesteia.Game.Components.Physics {
         public void Update(Vector2 position) {
             _bounds.X = position.X - (Bounds.Width / 2f);
             _bounds.Y = position.Y - (Bounds.Height / 2f);
+        }
+
+        public Rectangle RoundedBounds() {
+            return new Rectangle((int)Math.Floor(Bounds.X), (int)Math.Floor(Bounds.Y), (int)Math.Ceiling(Bounds.Width), (int)Math.Ceiling(Bounds.Height));
         }
 
         public RectangleF Intersection(CollisionBox other) {
