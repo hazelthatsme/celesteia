@@ -26,12 +26,6 @@ namespace Celesteia.Game {
 
             if (!user.Has<Transform2>() || !user.Has<EntityAttributes>()) return false;
 
-            if (forWall)
-            if (world.GetBlock(cursor + new Vector2(-1, 0)) == 0 && 
-                world.GetBlock(cursor + new Vector2(1, 0)) == 0 && 
-                world.GetBlock(cursor + new Vector2(0, -1)) == 0 && 
-                world.GetBlock(cursor + new Vector2(0, 1)) == 0) return false;
-
             Transform2 entityTransform = user.Get<Transform2>();
             EntityAttributes.EntityAttributeMap attributes = user.Get<EntityAttributes>().Attributes;
 
@@ -48,6 +42,14 @@ namespace Celesteia.Game {
 
             // If the current tile of the chosen layer is already occupied, don't place the block.
             if ((forWall && world.GetWallBlock(cursor) != 0) || (!forWall && world.GetBlock(cursor) != 0)) return false;
+
+            if (!world.GetAnyBlock(cursor + new Vector2(-1, 0), true) && 
+                !world.GetAnyBlock(cursor + new Vector2(1, 0), true) &&
+                !world.GetAnyBlock(cursor + new Vector2(0, -1), true) && 
+                !world.GetAnyBlock(cursor + new Vector2(0, 1), true)) {
+                if (!forWall && world.GetWallBlock(cursor) == 0) return false;
+                else if (forWall && world.GetBlock(cursor) == 0) return false;
+            }
             
             UpdateLastUse(gameTime);
             return true;

@@ -115,6 +115,24 @@ namespace Celesteia.Game.Worlds {
             );
         }
 
+
+        public bool GetAnyBlock(int x, int y, bool includeWalls) {
+            ChunkVector cv = GetChunkVector(x, y);
+            x %= Chunk.CHUNK_SIZE;
+            y %= Chunk.CHUNK_SIZE;
+
+            if (ChunkIsInWorld(cv)) return (includeWalls && GetChunk(cv).GetWallBlock(x, y) != 0) || GetChunk(cv).GetBlock(x, y) != 0;
+            else return false;
+        }
+
+        public bool GetAnyBlock(Vector2 v, bool includeWalls) {
+            return GetAnyBlock(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y),
+                includeWalls
+            );
+        }
+
         public void SetBlock(int x, int y, byte id) {
             ChunkVector cv = GetChunkVector(x, y);
             x %= Chunk.CHUNK_SIZE;
