@@ -68,6 +68,7 @@ namespace Celesteia.Game.Worlds {
             if (!IsInChunk(x, y)) return;
 
             tileMap[x, y] = id;
+            tileBreakProgressMap[x, y] = 0;
         }
 
         public byte GetWallBlock(int x, int y) {
@@ -80,6 +81,7 @@ namespace Celesteia.Game.Worlds {
             if (!IsInChunk(x, y)) return;
 
             wallTileMap[x, y] = id;
+            wallTileBreakProgressMap[x, y] = 0;
         }
 
         public void AddBreakProgress(int x, int y, int power, bool wall, out ItemStack drops) {
