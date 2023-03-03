@@ -50,9 +50,10 @@ namespace Celesteia.Screens {
                 .AddSystem(new CameraFollowSystem(Camera))
                 .AddSystem(new CameraZoomSystem(Camera))
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
-                .AddSystem(new CameraRenderSystem(Camera, Game.SpriteBatch))
+                .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
-                .AddSystem(new PhysicsCollisionDebugSystem(Camera, Game.SpriteBatch, _gameWorld))
+                .AddSystem(new PhysicsCollisionDebugSystem(Camera, SpriteBatch, _gameWorld))
+                .AddSystem(new EntityDebugSystem(Camera, SpriteBatch))
                 .Build();
 
             _entityFactory = new EntityFactory(_world, Game);

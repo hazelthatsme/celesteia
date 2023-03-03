@@ -33,6 +33,7 @@ namespace Celesteia.Resources.Collections {
             AddBlockItem("Copper Ore", atlas.GetRegion(9), 8);
             AddIngredientItem("Coal Lump", atlas.GetRegion(14));
             AddToolItem("Iron Pickaxe", atlas.GetRegion(33), 2);
+            AddBlockItem("Wooden Planks", atlas.GetRegion(6), 10);
         }
 
         byte next = 0;

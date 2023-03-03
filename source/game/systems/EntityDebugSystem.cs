@@ -1,4 +1,5 @@
 using Celesteia.Graphics;
+using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -11,13 +12,12 @@ namespace Celesteia.Game.Systems {
     {
         private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
-        private readonly SpriteFont _font;
 
         private ComponentMapper<Transform2> transformMapper;
-        private ComponentMapper<Sprite> spriteMapper;
 
-        public EntityDebugSystem(SpriteFont font, Camera2D camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Transform2))) {
-            _font = font;
+        private SpriteFont _font;
+
+        public EntityDebugSystem(Camera2D camera, SpriteBatch spriteBatch) : base(Aspect.All(typeof(Transform2))) {
             _camera = camera;
             _spriteBatch = spriteBatch;
         }
@@ -25,7 +25,8 @@ namespace Celesteia.Game.Systems {
         public override void Initialize(IComponentMapperService mapperService)
         {
             transformMapper = mapperService.GetMapper<Transform2>();
-            spriteMapper = mapperService.GetMapper<Sprite>();
+
+            _font = ResourceManager.Fonts.GetFontType("Hobo").Font;
         }
 
         public override void Draw(GameTime gameTime)
@@ -35,10 +36,8 @@ namespace Celesteia.Game.Systems {
             foreach (int entityId in ActiveEntities) {
                 Transform2 transform = transformMapper.Get(entityId);
 
-                _spriteBatch.DrawString(_font, transform.Position.ToString(), transform.Position, Color.White, 0f, new Vector2(0.5f, 0.5f), 1f, SpriteEffects.None, 0f);
+                _spriteBatch.DrawString(_font, transform.Position.ToString(), transform.Position, Color.White, 0f, new Vector2(0.5f, 0.5f), .12f, SpriteEffects.None, 0f);
             }
-
-            _spriteBatch.DrawString(_font, _camera.Center.ToString(), _camera.Center, Color.White, 0f, new Vector2(0.5f, 0.5f), 0.12f, SpriteEffects.None, 0f);
 
             _spriteBatch.End();
         }

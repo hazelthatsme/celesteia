@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.Game.Worlds.Generators {
@@ -22,6 +24,7 @@ namespace Celesteia.Game.Worlds.Generators {
             Random rand = new Random(_world.GetSeed());
 
             GenerateTrees(rand);
+            GenerateAbandonedHomes(rand);
         }
 
         public Vector2 GetSpawnpoint()
@@ -134,6 +137,57 @@ namespace Celesteia.Game.Worlds.Generators {
             if (!branch) GrowTreeRecursively(x, y - 1, steps - 1, rand, false);     // Grow upwards.
             if (rand.Next(0, 6) > steps) GrowTreeRecursively(x - 1, y, steps - 1, rand, true);     // Grow to the left.
             if (rand.Next(0, 6) > steps) GrowTreeRecursively(x + 1, y, steps - 1, rand, true);     // Grow to the right.
+        }
+
+        private int blocksBetweenHomes = 150;
+        public void GenerateAbandonedHomes(Random rand) {
+            int j = 0;
+            int randomNumber = 0;
+            int lastHome = 0;
+            for (int i = 0; i < _world.GetWidthInBlocks(); i++) {
+                j = _world.GetHeightInBlocks() - GetHeightValue(i);
+
+                if (Math.Abs(i - GetSpawnpoint().X) < 10f) continue;            // Don't grow trees too close to spawn.
+                if (i < 10 || i > _world.GetWidthInBlocks() - 10) continue;     // Don't grow trees too close to world borders.
+                if (i - lastHome < blocksBetweenHomes) continue;                // Force a certain number of blocks between trees.
+
+                int homeWidth = rand.Next(10, 15);
+                int homeHeight = rand.Next(6, 10);
+                int buryAmount = rand.Next(0, 5);
+
+                j -= homeHeight;    // Raise the home to be built on the ground first.
+                j += buryAmount;    // Bury the home by a random amount.
+
+                lastHome = i;
+
+                randomNumber = rand.Next(0, 5);
+
+                if (randomNumber == 1) BuildAbandonedHome(i, j, homeWidth, homeHeight, rand);
+            }
+        }
+
+        public void BuildAbandonedHome(int originX, int originY, int homeWidth, int homeHeight, Random rand) {
+            int maxX = originX + homeWidth;
+
+            for (int i = originX; i < maxX; i++) originY = Math.Max(originY, _world.GetHeightInBlocks() - GetHeightValue(i));
+            int maxY = originY + homeHeight;
+
+            byte planks = 10;
+
+            for (int i = originX; i < maxX; i++)
+                for (int j = originY; j < maxY; j++) {
+                    _world.SetWallBlock(i, j, planks);
+                    _world.SetBlock(i, j, 0);
+
+                    // Apply some random decay by skipping tiles at random.
+                    if (rand.Next(0, 5) > 3) {
+                        continue;
+                    }
+
+                    if (i == originX || i == maxX - 1 || j == originY || j == maxY - 1) _world.SetBlock(i, j, planks);
+                }
+
+            Debug.WriteLine($"Built abandoned home. {originX},{originY}");
         }
     }
 }

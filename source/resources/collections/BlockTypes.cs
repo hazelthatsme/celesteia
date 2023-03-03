@@ -38,6 +38,7 @@ namespace Celesteia.Resources.Collections {
             AddStandardBlock("Iron Ore", 8, 1, ResourceManager.Items.GetItem("Iron Ore"), 10);
             AddStandardBlock("Copper Ore", 7, 1, ResourceManager.Items.GetItem("Copper Ore"), 10);
             AddStandardBlock("Coal Ore", 14, 1, ResourceManager.Items.GetItem("Coal Lump"), 10);
+            AddStandardBlock("Wooden Planks", 4, 1, ResourceManager.Items.GetItem("Wooden Planks"), 4);
         }
 
         byte next = 0;
