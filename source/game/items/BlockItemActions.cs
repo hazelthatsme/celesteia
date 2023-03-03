@@ -10,19 +10,23 @@ namespace Celesteia.Game {
         private byte _block;
 
         public BlockItemActions(byte blockID) {
+            UseTime = 0.2;
             _block = blockID;
         }
         
-        public override bool OnLeftClick(GameWorld world, Vector2 cursor, Entity user) {
-            return Assert(world, cursor, user, false) && Place(world, cursor, false);
+        public override bool OnLeftClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
+            return Assert(gameTime, world, cursor, user, false) && Place(world, cursor, false);
         }
-        public override bool OnRightClick(GameWorld world, Vector2 cursor, Entity user) {
-            return Assert(world, cursor, user, true) && Place(world, cursor, true);
+        public override bool OnRightClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
+            return Assert(gameTime, world, cursor, user, true) && Place(world, cursor, true);
         }
 
-        public bool Assert(GameWorld world, Vector2 cursor, Entity user, bool forWall) {
+        public bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
+            if (!CheckUseTime(gameTime)) return false;
+
             if (!user.Has<Transform2>() || !user.Has<EntityAttributes>()) return false;
 
+            if (forWall)
             if (world.GetBlock(cursor + new Vector2(-1, 0)) == 0 && 
                 world.GetBlock(cursor + new Vector2(1, 0)) == 0 && 
                 world.GetBlock(cursor + new Vector2(0, -1)) == 0 && 
@@ -41,14 +45,15 @@ namespace Celesteia.Game {
                     if (intersect) return false;
                 }
             }
+
+            // If the current tile of the chosen layer is already occupied, don't place the block.
+            if ((forWall && world.GetWallBlock(cursor) != 0) || (!forWall && world.GetBlock(cursor) != 0)) return false;
             
+            UpdateLastUse(gameTime);
             return true;
         }
 
         public bool Place(GameWorld world, Vector2 cursor, bool wall) {
-            bool valid = wall ? world.GetWallBlock(cursor) == 0 : world.GetBlock(cursor) == 0;
-            if (!valid) return false;
-
             if (wall) world.SetWallBlock(cursor, _block);
             else world.SetBlock(cursor, _block);
 

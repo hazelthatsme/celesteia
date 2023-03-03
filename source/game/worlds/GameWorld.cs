@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds.Generators;
 using Celesteia.Resources;
@@ -82,11 +83,7 @@ namespace Celesteia.Game.Worlds {
 
 
         public byte GetBlock(int x, int y) {
-            ChunkVector cv = new ChunkVector(
-                x / Chunk.CHUNK_SIZE,
-                y / Chunk.CHUNK_SIZE
-            );
-
+            ChunkVector cv = GetChunkVector(x, y);
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
@@ -103,11 +100,7 @@ namespace Celesteia.Game.Worlds {
 
 
         public byte GetWallBlock(int x, int y) {
-            ChunkVector cv = new ChunkVector(
-                x / Chunk.CHUNK_SIZE,
-                y / Chunk.CHUNK_SIZE
-            );
-
+            ChunkVector cv = GetChunkVector(x, y);
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
@@ -123,11 +116,7 @@ namespace Celesteia.Game.Worlds {
         }
 
         public void SetBlock(int x, int y, byte id) {
-            ChunkVector cv = new ChunkVector(
-                x / Chunk.CHUNK_SIZE,
-                y / Chunk.CHUNK_SIZE
-            );
-
+            ChunkVector cv = GetChunkVector(x, y);
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
@@ -142,13 +131,8 @@ namespace Celesteia.Game.Worlds {
             );
         }
 
-
         public void SetWallBlock(int x, int y, byte id) {
-            ChunkVector cv = new ChunkVector(
-                x / Chunk.CHUNK_SIZE,
-                y / Chunk.CHUNK_SIZE
-            );
-
+            ChunkVector cv = GetChunkVector(x, y);
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
@@ -171,6 +155,35 @@ namespace Celesteia.Game.Worlds {
 
         public void RemoveBlock(int x, int y) {
             SetBlock(x, y, 0);
+        }
+
+        public bool AddBreakProgress(int x, int y, int power, bool wall, out ItemStack drops) {
+            ChunkVector cv = GetChunkVector(x, y);
+            x %= Chunk.CHUNK_SIZE;
+            y %= Chunk.CHUNK_SIZE;
+
+            drops = null;
+
+            if (ChunkIsInWorld(cv)) {
+                GetChunk(cv).AddBreakProgress(x, y, power, wall, out drops);
+                return true;
+            } else return false;
+        }
+
+        public bool AddBreakProgress(Vector2 v, int power, bool wall, out ItemStack drops) {
+            return AddBreakProgress(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y),
+            power, wall, out drops);
+        }
+
+        public ChunkVector GetChunkVector(int x, int y) {
+            ChunkVector cv = new ChunkVector(
+                x / Chunk.CHUNK_SIZE,
+                y / Chunk.CHUNK_SIZE
+            );
+
+            return cv;
         }
 
         public bool ChunkIsInWorld(ChunkVector cv) {

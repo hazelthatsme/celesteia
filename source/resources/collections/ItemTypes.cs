@@ -32,6 +32,7 @@ namespace Celesteia.Resources.Collections {
             AddBlockItem("Iron Ore", atlas.GetRegion(10), 7);
             AddBlockItem("Copper Ore", atlas.GetRegion(9), 8);
             AddIngredientItem("Coal Lump", atlas.GetRegion(14));
+            AddToolItem("Iron Pickaxe", atlas.GetRegion(33), 2);
         }
 
         byte next = 0;
@@ -42,6 +43,10 @@ namespace Celesteia.Resources.Collections {
 
         private void AddBlockItem(string name, TextureRegion2D sprite, byte blockID) {
             AddItem(name, sprite, new BlockItemActions(blockID), true, 99);
+        }
+
+        private void AddToolItem(string name, TextureRegion2D sprite, int power) {
+            AddItem(name, sprite, new PickaxeItemActions(power), false, 1);
         }
 
         private void AddIngredientItem(string name, TextureRegion2D sprite) {

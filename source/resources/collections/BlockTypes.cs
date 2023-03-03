@@ -29,25 +29,25 @@ namespace Celesteia.Resources.Collections {
             );
 
             AddBlock("Air", 0, 0);
-            AddStandardBlock("Stone", 2, 1, ResourceManager.Items.GetItem("Stone"));
-            AddStandardBlock("Soil", 1, 1, ResourceManager.Items.GetItem("Soil"));
-            AddStandardBlock("Grown Soil", 0, 1, ResourceManager.Items.GetItem("Soil"));
-            AddStandardBlock("Deepstone", 3, 1, ResourceManager.Items.GetItem("Deepstone"));
-            AddStandardBlock("Wooden Log", 10, 1, ResourceManager.Items.GetItem("Wooden Log"));
+            AddStandardBlock("Stone", 2, 1, ResourceManager.Items.GetItem("Stone"), 5);
+            AddStandardBlock("Soil", 1, 1, ResourceManager.Items.GetItem("Soil"), 5);
+            AddStandardBlock("Grown Soil", 0, 1, ResourceManager.Items.GetItem("Soil"), 5);
+            AddStandardBlock("Deepstone", 3, 1, ResourceManager.Items.GetItem("Deepstone"), -1);
+            AddStandardBlock("Wooden Log", 10, 1, ResourceManager.Items.GetItem("Wooden Log"), 3);
             AddBlock("Leaves", 11, 1);
-            AddStandardBlock("Iron Ore", 8, 1, ResourceManager.Items.GetItem("Iron Ore"));
-            AddStandardBlock("Copper Ore", 7, 1, ResourceManager.Items.GetItem("Copper Ore"));
-            AddStandardBlock("Coal Ore", 14, 1, ResourceManager.Items.GetItem("Coal Lump"));
+            AddStandardBlock("Iron Ore", 8, 1, ResourceManager.Items.GetItem("Iron Ore"), 10);
+            AddStandardBlock("Copper Ore", 7, 1, ResourceManager.Items.GetItem("Copper Ore"), 10);
+            AddStandardBlock("Coal Ore", 14, 1, ResourceManager.Items.GetItem("Coal Lump"), 10);
         }
 
         byte next = 0;
-        private void AddBlock(string name, int frameStart, int frameCount = 1, ItemType item = null, RectangleF? boundingBox = null) {
-            Types.Add(new BlockType(next, name, _atlas, frameStart, frameCount, item, boundingBox));
+        private void AddBlock(string name, int frameStart, int frameCount = 1, ItemType item = null, RectangleF? boundingBox = null, int strength = 1) {
+            Types.Add(new BlockType(next, name, _atlas, frameStart, frameCount, item, boundingBox, strength));
             next++;
         }
 
-        private void AddStandardBlock(string name, int frameStart, int frameCount = 1, ItemType item = null) {
-            AddBlock(name, frameStart, frameCount, item, standardBox);
+        private void AddStandardBlock(string name, int frameStart, int frameCount = 1, ItemType item = null, int strength = 1) {
+            AddBlock(name, frameStart, frameCount, item, standardBox, strength);
         }
 
         public BlockType GetBlock(byte id) {
@@ -61,8 +61,9 @@ namespace Celesteia.Resources.Collections {
         public readonly BlockFrames Frames;
         public readonly ItemType Item;
         public readonly RectangleF? BoundingBox;
+        public readonly int Strength;
 
-        public BlockType(byte id, string name, TextureAtlas atlas, int frameStart, int frameCount = 1, ItemType item = null, RectangleF? boundingBox = null) {
+        public BlockType(byte id, string name, TextureAtlas atlas, int frameStart, int frameCount, ItemType item, RectangleF? boundingBox, int strength) {
             Debug.WriteLine($"  Loading block '{name}' ({id})...");
 
             BlockID = id;
@@ -70,6 +71,7 @@ namespace Celesteia.Resources.Collections {
             Item = item;
             Frames = new BlockFrames(atlas, BlockSpriteProperties.SIZE, frameStart, frameCount);
             BoundingBox = boundingBox;
+            Strength = strength;
         }
     }
 }

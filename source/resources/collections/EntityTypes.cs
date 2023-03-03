@@ -38,7 +38,7 @@ namespace Celesteia.Resources.Collections {
                         ResourceManager.SPRITE_SCALING
                     ));
 
-                    entity.Attach(new EntityInventory(new ItemStack(0, 10)));
+                    entity.Attach(new EntityInventory(new ItemStack(0, 10), new ItemStack(8, 1)));
 
                     entity.Attach(new PhysicsEntity(1f, true));
 
