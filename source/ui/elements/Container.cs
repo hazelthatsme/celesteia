@@ -82,5 +82,9 @@ namespace Celesteia.UI.Elements {
                 } else element.OnMouseOut();
             });
         }
+
+        public void Dispose() {
+            Children.Clear();
+        }
     }
 }

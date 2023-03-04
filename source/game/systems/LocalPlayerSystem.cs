@@ -81,8 +81,31 @@ namespace Celesteia.Game.Systems {
             }
         }
 
+        bool _inventoryPress;
+        bool _craftingPress;
         private void UpdateGUI(GameTime gameTime, PlayerInput input, out bool clicked) {
-            
+            _inventoryPress = input.TestOpenInventory() > 0f;
+            _craftingPress = input.TestOpenCrafting() > 0f;
+
+            if (_inventoryPress || _craftingPress) {
+                switch (_gameGui.State) {
+                    case InventoryScreenState.Closed:
+                        if (_craftingPress) _gameGui.State = InventoryScreenState.Crafting;
+                        else if (_inventoryPress) _gameGui.State = InventoryScreenState.Inventory;
+                        break;
+                    case InventoryScreenState.Inventory:
+                        if (_craftingPress) _gameGui.State = InventoryScreenState.Crafting;
+                        else if (_inventoryPress) _gameGui.State = InventoryScreenState.Closed;
+                        break;
+                    case InventoryScreenState.Crafting:
+                        if (_craftingPress) _gameGui.State = InventoryScreenState.Closed;
+                        else if (_inventoryPress) _gameGui.State = InventoryScreenState.Closed;
+                        break;
+                    default: break;
+                }
+                
+                Debug.WriteLine($"{_inventoryPress} {_craftingPress} {_gameGui.State}");
+            }
 
             _gameGui.Update(gameTime, out clicked);
         }

@@ -68,13 +68,13 @@ namespace Celesteia.Game.Components.Player {
 
         public float TestOpenInventory() {
             float val = 0f;
-            Jump.ForEach(d => { val += d.Test(); });
+            OpenInventory.ForEach(d => { val += d.Test(); });
             return MathHelper.Clamp(val, -1f, 1f);
         }
 
         public float TestOpenCrafting() {
             float val = 0f;
-            Jump.ForEach(d => { val += d.Test(); });
+            OpenCrafting.ForEach(d => { val += d.Test(); });
             return MathHelper.Clamp(val, -1f, 1f);
         }
     }

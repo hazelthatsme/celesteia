@@ -45,12 +45,12 @@ namespace Celesteia.Resources.Collections {
                     entity.Attach(new CollisionBox(1.5f, 3f));
 
                     entity.Attach(new PlayerInput()
-                        .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))
-                        .AddVertical(new KeyDefinition(Keys.W, Keys.S))
-                        .AddRun(new KeyDefinition(null, Keys.LeftShift))
-                        .AddJump(new KeyDefinition(null, Keys.Space))
-                        .AddOpenInventory(new KeyDefinition(null, Keys.B))
-                        .AddOpenCrafting(new KeyDefinition(null, Keys.C))
+                        .AddHorizontal(new KeyDefinition(Keys.A, Keys.D, KeyDetectType.Held))
+                        .AddVertical(new KeyDefinition(Keys.W, Keys.S, KeyDetectType.Held))
+                        .AddRun(new KeyDefinition(null, Keys.LeftShift, KeyDetectType.Held))
+                        .AddJump(new KeyDefinition(null, Keys.Space, KeyDetectType.Held))
+                        .AddOpenInventory(new KeyDefinition(null, Keys.B, KeyDetectType.Down))
+                        .AddOpenCrafting(new KeyDefinition(null, Keys.C, KeyDetectType.Down))
                     );
 
                     entity.Attach(new LocalPlayer());

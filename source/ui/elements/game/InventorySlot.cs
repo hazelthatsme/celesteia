@@ -10,8 +10,16 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.UI.Elements.Game {
     public class InventorySlot : Clickable {
+        public const float SLOT_SIZE = 64f;
+        public const float SLOT_SPACING = 16f;
+
         public InventorySlot(Rect rect) {
             SetRect(rect);
+        }
+        
+        public InventorySlot SetNewRect(Rect rect) {
+            SetRect(rect);
+            return this;
         }
 
         // SELECTION 
@@ -141,6 +149,17 @@ namespace Celesteia.UI.Elements.Game {
             }
 
             return _texture;
+        }
+
+        public InventorySlot Clone() {
+            return new InventorySlot(GetRect())
+                .SetReferenceInventory(_inventory)
+                .SetOnMouseDown(_onMouseDown)
+                .SetOnMouseUp(_onMouseUp)
+                .SetSlot(_slot)
+                .SetTextProperties(_text)
+                .SetTexture(_texture)
+                .SetPatches(_patches, _patchSize);
         }
     }
 }
