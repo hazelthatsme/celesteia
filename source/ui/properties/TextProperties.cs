@@ -38,5 +38,14 @@ namespace Celesteia.UI.Properties {
             return this;
         }
         public TextAlignment GetAlignment() => _textAlignment;
+
+        public TextProperties Clone() {
+            return new TextProperties()
+                .SetColor(_textColor)
+                .SetFont(_font)
+                .SetFontSize(_fontSize)
+                .SetText(_text)
+                .SetTextAlignment(_textAlignment);
+        }
     }
 }

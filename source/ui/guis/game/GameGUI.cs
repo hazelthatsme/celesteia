@@ -66,8 +66,8 @@ namespace Celesteia.GUIs.Game {
             TextProperties text = new TextProperties()
                 .SetColor(Color.White)
                 .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
-                .SetFontSize(14f)
-                .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right);
+                .SetFontSize(24f)
+                .SetTextAlignment(TextAlignment.Top | TextAlignment.Center);
 
             for (int i = 0; i < hotbarSlots; i++) {
                 int slotNumber = i;

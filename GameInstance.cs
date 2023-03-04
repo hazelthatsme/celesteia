@@ -108,6 +108,7 @@ namespace Celesteia
 
             // Load the splash screen if it's a release build, load the game directly if it's a debug build.
             if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this, Worlds.LoadNewWorld().GetAwaiter().GetResult()));
+            else if (cmdArgs.Contains("-textDebug")) LoadScreen(new TextTestScreen(this));
             else LoadScreen(new SplashScreen(this));
         }
 

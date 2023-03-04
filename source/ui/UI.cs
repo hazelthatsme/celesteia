@@ -23,16 +23,16 @@ namespace Celesteia {
             Vector2 origin = 0.5f * size;
 
             if (textAlignment.HasFlag(TextAlignment.Left))
-                origin.X += rect.Width / 2f - size.X / 2f;
+                origin.X = 0f * size.Y;
 
             if (textAlignment.HasFlag(TextAlignment.Right))
-                origin.X -= rect.Width / 2f - size.X / 2f;
+                origin.X = size.X;
 
             if (textAlignment.HasFlag(TextAlignment.Top))
-                origin.Y += rect.Height / 2f - size.Y / 2f;
+                origin.Y = size.Y;
 
             if (textAlignment.HasFlag(TextAlignment.Bottom))
-                origin.Y -= rect.Height / 2f - size.Y / 2f;
+                origin.Y = 0f;
 
             spriteBatch.DrawString(font.Font, text, new Vector2(rect.Center.X, rect.Center.Y), color, 0f, origin, font.Scale(targetSize), SpriteEffects.None, 0f);
         }
