@@ -55,8 +55,7 @@ namespace Celesteia.Game.Systems {
             if (_player == null) return;
 
             bool clicked = false;
-
-            _gameGui.Update(gameTime, out clicked);
+            UpdateGUI(gameTime, input, out clicked);
 
             UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
             UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
@@ -80,6 +79,12 @@ namespace Celesteia.Game.Systems {
                     inventory.Inventory.AssertAmounts();
                 }
             }
+        }
+
+        private void UpdateGUI(GameTime gameTime, PlayerInput input, out bool clicked) {
+            
+
+            _gameGui.Update(gameTime, out clicked);
         }
 
         private void UpdateMovement(GameTime gameTime, PlayerInput input, PhysicsEntity physicsEntity, EntityFrames frames, EntityAttributes.EntityAttributeMap attributes, TargetPosition targetPosition) {

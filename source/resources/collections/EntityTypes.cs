@@ -38,7 +38,7 @@ namespace Celesteia.Resources.Collections {
                         ResourceManager.SPRITE_SCALING
                     ));
 
-                    entity.Attach(new EntityInventory(new ItemStack(0, 10), new ItemStack(8, 1)));
+                    entity.Attach(new EntityInventory(new ItemStack(8, 1), new ItemStack(0, 10)));
 
                     entity.Attach(new PhysicsEntity(1f, true));
 
@@ -47,8 +47,10 @@ namespace Celesteia.Resources.Collections {
                     entity.Attach(new PlayerInput()
                         .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))
                         .AddVertical(new KeyDefinition(Keys.W, Keys.S))
-                        .SetRun(new KeyDefinition(null, Keys.LeftShift))
-                        .SetJump(new KeyDefinition(null, Keys.Space))
+                        .AddRun(new KeyDefinition(null, Keys.LeftShift))
+                        .AddJump(new KeyDefinition(null, Keys.Space))
+                        .AddOpenInventory(new KeyDefinition(null, Keys.B))
+                        .AddOpenCrafting(new KeyDefinition(null, Keys.C))
                     );
 
                     entity.Attach(new LocalPlayer());
@@ -58,7 +60,7 @@ namespace Celesteia.Resources.Collections {
                     entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
                         .Set(EntityAttribute.MovementSpeed, 5f)
                         .Set(EntityAttribute.JumpForce, 10f)
-                        .Set(EntityAttribute.BlockRange, 5f)
+                        .Set(EntityAttribute.BlockRange, 7f)
                     ));
                 }
             ));

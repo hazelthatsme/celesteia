@@ -11,6 +11,12 @@ namespace Celesteia.UI {
             new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
             new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical)
         );
+        public static Rect RelativeFull(Rect parent) => new Rect(
+            new RelativeUnit(0f, parent, RelativeUnit.Orientation.Horizontal),
+            new RelativeUnit(0f, parent, RelativeUnit.Orientation.Vertical),
+            new RelativeUnit(1f, parent, RelativeUnit.Orientation.Horizontal),
+            new RelativeUnit(1f, parent, RelativeUnit.Orientation.Vertical)
+        );
 
         public IInterfaceUnit X;
         public IInterfaceUnit Y;

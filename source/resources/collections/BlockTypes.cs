@@ -16,9 +16,16 @@ namespace Celesteia.Resources.Collections {
 
         private TextureAtlas _atlas;
         private readonly RectangleF standardBox = new RectangleF(0f, 0f, 1f, 1f);
+        public BlockFrames BreakAnimation;
 
         public void LoadContent(ContentManager Content) {
             Debug.WriteLine($"Loading block types...");
+
+            BreakAnimation = new BlockFrames(TextureAtlas.Create("blockbreak",
+                Content.Load<Texture2D>("sprites/blockbreak"),
+                BlockSpriteProperties.SIZE,
+                BlockSpriteProperties.SIZE
+            ), 0, 3);
 
             Types = new List<BlockType>();
 
@@ -70,7 +77,7 @@ namespace Celesteia.Resources.Collections {
             BlockID = id;
             Name = name;
             Item = item;
-            Frames = new BlockFrames(atlas, BlockSpriteProperties.SIZE, frameStart, frameCount);
+            Frames = new BlockFrames(atlas, frameStart, frameCount);
             BoundingBox = boundingBox;
             Strength = strength;
         }

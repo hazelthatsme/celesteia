@@ -53,7 +53,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
                 .AddSystem(new PhysicsCollisionDebugSystem(Camera, SpriteBatch, _gameWorld))
-                .AddSystem(new EntityDebugSystem(Camera, SpriteBatch))
+                //.AddSystem(new EntityDebugSystem(Camera, SpriteBatch))
                 .Build();
 
             _entityFactory = new EntityFactory(_world, Game);

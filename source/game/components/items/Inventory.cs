@@ -41,6 +41,11 @@ namespace Celesteia.Game.Components.Items {
             return items[slot];
         }
 
+        public void SetSlot(int slot, ItemStack stack) {
+            if (slot < 0 || slot > Capacity - 1) throw new ArgumentException($"Slot {slot} falls outside of the inventory's capacity.");
+            items[slot] = stack;
+        }
+
         private void AddItemStack(ItemStack newStack) {
             if (!HasCapacity()) return;
             int i = Array.FindIndex(items, x => x == null);

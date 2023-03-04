@@ -8,17 +8,15 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.Resources.Sprites {
     public class BlockFrames {
-        private readonly int _size;
         private readonly Vector2 _scaling;
 
         private BlockFrame[] _frames;
 
         private bool _doDraw;
 
-        public BlockFrames(TextureAtlas atlas, int size, int startIndex, int frameCount) {
+        public BlockFrames(TextureAtlas atlas, int startIndex, int frameCount) {
             _doDraw = frameCount > 0;
 
-            _size = size;
             _scaling = new Vector2(ResourceManager.SPRITE_SCALING);
 
             _frames = new BlockFrame[frameCount];
@@ -31,6 +29,10 @@ namespace Celesteia.Resources.Sprites {
             if (!_doDraw) return null;
             
             return _frames[index % _frames.Length];
+        }
+
+        public BlockFrame GetProgressFrame(float progress) {
+            return GetFrame((int)Math.Round(progress * (_frames.Length - 1)));
         }
     }
 

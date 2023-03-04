@@ -121,7 +121,7 @@ namespace Celesteia.UI.Elements.Game {
 
             rectangle = GetRectangle();
             itemRectangle = GetScaledTriangle(rectangle, .6f);
-            textRectangle = GetScaledTriangle(rectangle, .6f);
+            textRectangle = GetScaledTriangle(rectangle, .4f);
 
             // Draw the slot's texture.
             if (_patches != null) ImageUtilities.DrawPatched(spriteBatch, rectangle, _patches, _patchSize, _selected ? Color.DarkViolet : Color.White);

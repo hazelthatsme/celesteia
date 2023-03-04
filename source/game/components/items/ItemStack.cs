@@ -20,5 +20,10 @@ namespace Celesteia.Game.Components.Items {
 
             return stack;
         }
+
+        public override string ToString()
+        {
+            return $"{Amount}x {Type.Name}";
+        }
     }
 }

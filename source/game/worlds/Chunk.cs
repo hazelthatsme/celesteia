@@ -108,33 +108,42 @@ namespace Celesteia.Game.Worlds {
         Vector2 v;
         BlockType type;
         BlockFrame frame;
+        float breakProgress;
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 v.X = i;
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     v.Y = j;
-                    if (tileMap[i, j] == 0) {           // If the tile here is empty, draw the wall instead.
+                    bool wall = tileMap[i, j] == 0;
+
+                    breakProgress = (float)(wall ? wallTileBreakProgressMap[i, j] : tileBreakProgressMap[i, j]) / (float)type.Strength;
+
+                    if (wall) {           // If the tile here is empty, draw the wall instead.
                         type = ResourceManager.Blocks.GetBlock(wallTileMap[i, j]);
                         frame = type.Frames.GetFrame(0);
-                        if (frame != null) DrawWallTile(i, j, frame, spriteBatch, 1f - ((float)wallTileBreakProgressMap[i, j] / (float)type.Strength), camera);
+                        if (frame != null) {
+                            DrawWallTile(i, j, frame, spriteBatch, camera);
+                            if (breakProgress > 0f) DrawWallTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
+                        }
                     }
                     else {                              // If there is a tile that isn't empty, draw the tile.
                         type = ResourceManager.Blocks.GetBlock(tileMap[i, j]);
                         frame = type.Frames.GetFrame(0);
-                        if (frame != null) DrawTile(i, j, frame, spriteBatch, 1f - ((float)tileBreakProgressMap[i, j] / (float)type.Strength), camera);
+                        if (frame != null) {
+                            DrawTile(i, j, frame, spriteBatch, camera);
+                            if (breakProgress > 0f) DrawTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
+                        }
                     }
                 }
             }
         }
 
-        public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, float opacity, Camera2D camera) {
-            int color = (int)Math.Round(opacity/1f * 255f);
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), new Color(color, color, color), 0.4f);
+        public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White, 0.4f);
         }
 
-        public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, float opacity, Camera2D camera) {
-            int color = (int)Math.Round(opacity/1f * 165f);
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), new Color(color, color, color), 0.5f);
+        public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.DarkGray, 0.5f);
         }
     }
 

@@ -19,9 +19,12 @@ namespace Celesteia.GUIs.Game {
     public class GameGUI : GUI
     {
         private new GameInstance Game => (GameInstance) base.Game;
-        public GameGUI(GameInstance Game) : base(Game, Rect.ScreenFull) { }
+        public GameGUI(GameInstance Game) : base(Game, Rect.ScreenFull) { 
+         }
 
         private ItemStack _cursorItem;
+
+        private IContainer ItemManagement;
 
         private IContainer Hotbar;
 
@@ -37,9 +40,16 @@ namespace Celesteia.GUIs.Game {
 
         private int selectedHotbarSlot = 0;
 
+        private IContainer _inventoryScreen;
+        private IContainer _craftingScreen;
+
+        public InventoryScreenState _state = InventoryScreenState.Inventory;
+
         public void SetReferenceInventory(Inventory inventory) {
             _inventory = inventory;
             UpdateSlotReferences();
+
+            LoadInventoryScreen();
         }
 
         public override void LoadContent(ContentManager Content)
@@ -49,6 +59,9 @@ namespace Celesteia.GUIs.Game {
 
             _slots = new List<InventorySlot>();
 
+            ItemManagement = new Container(Rect.ScreenFull);
+            Root.AddChild(ItemManagement);
+
             LoadHotbar();
 
             Debug.WriteLine("Loaded Game GUI.");
@@ -56,24 +69,24 @@ namespace Celesteia.GUIs.Game {
 
         private void LoadHotbar() {
             Hotbar = new Container(new Rect(
-                new ScreenSpaceUnit(0.5f, ScreenSpaceUnit.ScreenSpaceOrientation.Horizontal),
-                new ScreenSpaceUnit(1f, ScreenSpaceUnit.ScreenSpaceOrientation.Vertical),
+                new RelativeUnit(0.5f, ItemManagement.GetRect(), RelativeUnit.Orientation.Horizontal),
+                new RelativeUnit(1f, ItemManagement.GetRect(), RelativeUnit.Orientation.Vertical),
                 AbsoluteUnit.WithValue((hotbarSlots * hotbarItemSize) + ((hotbarSlots - 1) * slotSpacing)),
                 AbsoluteUnit.WithValue(hotbarItemSize)
             ));
-            Hotbar.SetPivot(new Vector2(0.5f, 0f));
+            Hotbar.SetPivot(new Vector2(0.5f, 1f));
 
             TextProperties text = new TextProperties()
                 .SetColor(Color.White)
                 .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
-                .SetFontSize(24f)
-                .SetTextAlignment(TextAlignment.Top | TextAlignment.Center);
+                .SetFontSize(16f)
+                .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right);
 
             for (int i = 0; i < hotbarSlots; i++) {
                 int slotNumber = i;
                 InventorySlot slot = new InventorySlot(new Rect(
                     AbsoluteUnit.WithValue(i * hotbarItemSize + (i * slotSpacing)),
-                    AbsoluteUnit.WithValue(-20f),
+                    AbsoluteUnit.WithValue(-slotSpacing),
                     AbsoluteUnit.WithValue(hotbarItemSize),
                     AbsoluteUnit.WithValue(hotbarItemSize)
                 ))
@@ -82,8 +95,18 @@ namespace Celesteia.GUIs.Game {
                     .SetTexture(slotTexture)
                     .SetPatches(slotPatches, 4)
                     .SetTextProperties(text)
-                    .SetOnMouseUp((button, point) => { selectedHotbarSlot = slotNumber; UpdateSelected(); });
-                slot.SetPivot(new Vector2(0f, 1f));
+                    .SetOnMouseUp((button, point) => {
+                        if ((int)_state < 1) {
+                            selectedHotbarSlot = slotNumber;
+                            UpdateSelected();
+                        } else {
+                            ItemStack itemInSlot = _inventory.GetSlot(slotNumber);
+
+                            _inventory.SetSlot(slotNumber, _cursorItem);
+                            _cursorItem = itemInSlot;
+                        }
+                    });
+                slot.SetPivot(new Vector2(0f, 0f));
                 slot.SetEnabled(true);
 
                 _slots.Add(slot);
@@ -92,17 +115,38 @@ namespace Celesteia.GUIs.Game {
 
             UpdateSelected();
 
-            Root.AddChild(Hotbar);
+            ItemManagement.AddChild(Hotbar);
         }
 
+        private void LoadInventoryScreen() {
+            int remainingSlots = _inventory.Capacity - hotbarSlots;
+            _inventoryScreen = new InventoryWindow(new Rect(
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(hotbarItemSize - slotSpacing),
+                new AbsoluteUnit((hotbarSlots * hotbarItemSize) + ((hotbarSlots - 1) * slotSpacing)),
+                new AbsoluteUnit((remainingSlots / hotbarSlots) * hotbarItemSize)
+            ));
+            _inventoryScreen.SetPivot(new Vector2(0.5f, 1f));
+
+            ItemManagement.AddChild(_inventoryScreen);
+        }
+
+        private Color _slightlyTransparent = new Color(255, 255, 255, 175);
+        private Vector2 scale = new Vector2(2f);
         public override void Draw(GameTime gameTime)
         {
+            Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null);
+            if (_cursorItem != null) Game.SpriteBatch.Draw(_cursorItem.Type.Sprite, MouseWrapper.GetPosition().ToVector2(), _slightlyTransparent, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            Game.SpriteBatch.End();
+
             base.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime, out bool clickedAnything)
         {
             UpdateHotbar();
+
+            if (_cursorItem != null) Debug.WriteLine(_cursorItem.ToString());
 
             Root.Update(gameTime, out clickedAnything);
         }
@@ -131,5 +175,9 @@ namespace Celesteia.GUIs.Game {
         private void UpdateSlotReferences() {
             _slots.ForEach(slot => slot.SetReferenceInventory(_inventory));
         }
+    }
+
+    public enum InventoryScreenState {
+        Closed, Inventory, Crafting
     }
 }
