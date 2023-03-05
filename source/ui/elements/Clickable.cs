@@ -15,4 +15,7 @@ namespace Celesteia.UI.Elements {
 
         public bool GetClicked() => _clicked;
     }
+
+    public delegate void HoverEvent();
+    public delegate void ClickEvent(MouseButton button, Point position);
 }

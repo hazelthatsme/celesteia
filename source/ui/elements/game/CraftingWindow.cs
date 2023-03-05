@@ -13,8 +13,6 @@ namespace Celesteia.UI.Elements.Game {
         private Image background;
         private GameGUI _gameGui;
 
-        private List<CraftingRecipeSlot> recipes;
-
         public CraftingWindow(GameGUI gameGui, Rect rect, Texture2D backgroundImage, Inventory inventory, CraftingRecipeSlot template) : base(rect) {
             _gameGui = gameGui;
 

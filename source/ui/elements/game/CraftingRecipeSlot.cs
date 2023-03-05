@@ -65,9 +65,11 @@ namespace Celesteia.UI.Elements.Game {
 
         // CLICKING PROPERTIES
 
-        public delegate void ClickEvent(MouseButton button, Point position);
         private ClickEvent _onMouseDown = null;
         private ClickEvent _onMouseUp = null;
+        public delegate void CraftHoverEvent(CraftingRecipe recipe);
+        private CraftHoverEvent _onMouseIn = null;
+        private HoverEvent _onMouseOut = null;
 
         public CraftingRecipeSlot SetOnMouseDown(ClickEvent func) {
             _onMouseDown = func;
@@ -76,6 +78,16 @@ namespace Celesteia.UI.Elements.Game {
 
         public CraftingRecipeSlot SetOnMouseUp(ClickEvent func) {
             _onMouseUp = func;
+            return this;
+        }
+
+        public CraftingRecipeSlot SetOnMouseIn(CraftHoverEvent func) {
+            _onMouseIn = func;
+            return this;
+        }
+
+        public CraftingRecipeSlot SetOnMouseOut(HoverEvent func) {
+            _onMouseOut = func;
             return this;
         }
         
@@ -87,6 +99,16 @@ namespace Celesteia.UI.Elements.Game {
         public override void OnMouseUp(MouseButton button, Point position) {
             base.OnMouseUp(button, position);
             _onMouseUp?.Invoke(button, position);
+        }
+        
+        public override void OnMouseIn() {
+            base.OnMouseIn();
+            if (_recipe != null) _onMouseIn?.Invoke(_recipe);
+        }
+
+        public override void OnMouseOut() {
+            base.OnMouseOut();
+            _onMouseOut?.Invoke();
         }
 
         private Rectangle GetScaledTriangle(Rectangle r, float scale) {

@@ -8,7 +8,8 @@ namespace Celesteia.Resources.Collections {
         public const int STANDARD_SIZE = 12;
     }
 
-    public class FontTypes {        
+    public class FontTypes {
+        public FontType DEFAULT { get; private set; }
         private List<FontType> Types;
 
         public void LoadContent(ContentManager Content) {
@@ -16,7 +17,7 @@ namespace Celesteia.Resources.Collections {
 
             Types = new List<FontType>();
 
-            Types.Add(new FontType("Hobo", Content.Load<SpriteFont>("Hobo")));
+            Types.Add(DEFAULT = new FontType("Hobo", Content.Load<SpriteFont>("Hobo")));
         }
 
         public FontType GetFontType(string name) {

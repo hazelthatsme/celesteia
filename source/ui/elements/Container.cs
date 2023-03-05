@@ -77,9 +77,11 @@ namespace Celesteia.UI.Elements {
 
         public void ResolveMouseOver() {
             Children.ForEach(element => {
-                if (element.GetRectangle().Contains(_mousePosition)) {
+                if (!element.GetEnabled()) return;
+                bool over = element.GetRectangle().Contains(_mousePosition);
+                if (over && !element.GetMouseOver()) {
                     element.OnMouseIn();
-                } else element.OnMouseOut();
+                } else if (!over && element.GetMouseOver()) element.OnMouseOut();
             });
         }
 

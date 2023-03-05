@@ -30,6 +30,9 @@ namespace Celesteia.UI.Elements {
         
         // Called when the mouse position is within the element's containing rect.
         void OnMouseOut();
+    	
+        // Get if the element has the mouse over it.
+        bool GetMouseOver();
 
         // Update the element.
         void Update(GameTime gameTime, out bool clickedAnything);

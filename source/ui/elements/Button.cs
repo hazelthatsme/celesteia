@@ -52,7 +52,6 @@ namespace Celesteia.UI.Elements {
 
         // CLICKING PROPERTIES
 
-        public delegate void ClickEvent(MouseButton button, Point position);
         private ClickEvent _onMouseDown = null;
         private ClickEvent _onMouseUp = null;
 

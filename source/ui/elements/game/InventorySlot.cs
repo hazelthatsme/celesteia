@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using Celesteia.Game.Components.Items;
 using Celesteia.GUIs.Game;
+using Celesteia.Resources.Collections;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -85,9 +86,11 @@ namespace Celesteia.UI.Elements.Game {
 
         // CLICKING PROPERTIES
 
-        public delegate void ClickEvent(MouseButton button, Point position);
         private ClickEvent _onMouseDown = null;
         private ClickEvent _onMouseUp = null;
+        public delegate void ItemHoverEvent(ItemType type);
+        private ItemHoverEvent _onMouseIn = null;
+        private HoverEvent _onMouseOut = null;
 
         public InventorySlot SetOnMouseDown(ClickEvent func) {
             _onMouseDown = func;
@@ -96,6 +99,16 @@ namespace Celesteia.UI.Elements.Game {
 
         public InventorySlot SetOnMouseUp(ClickEvent func) {
             _onMouseUp = func;
+            return this;
+        }
+
+        public InventorySlot SetOnMouseIn(ItemHoverEvent func) {
+            _onMouseIn = func;
+            return this;
+        }
+
+        public InventorySlot SetOnMouseOut(HoverEvent func) {
+            _onMouseOut = func;
             return this;
         }
         
@@ -107,6 +120,16 @@ namespace Celesteia.UI.Elements.Game {
         public override void OnMouseUp(MouseButton button, Point position) {
             base.OnMouseUp(button, position);
             _onMouseUp?.Invoke(button, position);
+        }
+        
+        public override void OnMouseIn() {
+            base.OnMouseIn();
+            if (_inventory.GetSlot(_slot) != null) _onMouseIn?.Invoke(_inventory.GetSlot(_slot).Type);
+        }
+
+        public override void OnMouseOut() {
+            base.OnMouseOut();
+            _onMouseOut?.Invoke();
         }
 
         private Rectangle GetScaledTriangle(Rectangle r, float scale) {
@@ -159,6 +182,8 @@ namespace Celesteia.UI.Elements.Game {
                 .SetReferenceInventory(_inventory)
                 .SetOnMouseDown(_onMouseDown)
                 .SetOnMouseUp(_onMouseUp)
+                .SetOnMouseIn(_onMouseIn)
+                .SetOnMouseOut(_onMouseOut)
                 .SetSlot(_slot)
                 .SetTextProperties(_text)
                 .SetTexture(_texture)

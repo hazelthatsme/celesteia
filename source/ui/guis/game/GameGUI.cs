@@ -1,18 +1,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Input;
 using Celesteia.Resources;
 using Celesteia.UI;
 using Celesteia.UI.Elements;
 using Celesteia.UI.Elements.Game;
+using Celesteia.UI.Elements.Game.Tooltips;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Content;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.GUIs.Game {
@@ -20,6 +18,7 @@ namespace Celesteia.GUIs.Game {
     {
         private new GameInstance Game => (GameInstance) base.Game;
         public GameGUI(GameInstance Game) : base(Game, Rect.ScreenFull) { }
+
 
         public ItemStack CursorItem;
 
@@ -34,6 +33,8 @@ namespace Celesteia.GUIs.Game {
         
         private Texture2D slotTexture;
         private TextureAtlas slotPatches;
+        private Texture2D windowTexture;
+        private Texture2D tooltipTexture;
 
         private Inventory _inventory;
         private List<InventorySlot> _slots;
@@ -61,6 +62,11 @@ namespace Celesteia.GUIs.Game {
             }
         }
 
+        private ItemTooltipDisplay _itemDisplay;
+        private bool _itemDisplayEnabled = false;
+        private CraftingTooltipDisplay _craftingDisplay;
+        private bool _craftingDisplayEnabled = false;
+
         public void SetReferenceInventory(Inventory inventory) {
             _inventory = inventory;
 
@@ -76,8 +82,11 @@ namespace Celesteia.GUIs.Game {
         public override void LoadContent(ContentManager Content)
         {
             slotTexture = Content.Load<Texture2D>("sprites/ui/button");
+            windowTexture = Content.Load<Texture2D>("sprites/ui/button");
+            tooltipTexture = Content.Load<Texture2D>("sprites/ui/window");
             slotPatches = TextureAtlas.Create("patches", slotTexture, 4, 4);
 
+            LoadTooltipDisplays(Content);
             LoadPauseMenu(Content);
 
             _slotTemplate = new InventorySlot(new Rect(
@@ -93,7 +102,13 @@ namespace Celesteia.GUIs.Game {
                     .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
                     .SetFontSize(16f)
                     .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
-                );
+                )
+                .SetOnMouseIn((item) => {
+                    if ((int)State < 1) return;
+                    _itemDisplay.SetItem(item);
+                    _itemDisplayEnabled = true;
+                })
+                .SetOnMouseOut(() => _itemDisplayEnabled = false);
             
             _recipeTemplate = new CraftingRecipeSlot(new Rect(
                 AbsoluteUnit.WithValue(0f),
@@ -108,7 +123,13 @@ namespace Celesteia.GUIs.Game {
                     .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
                     .SetFontSize(16f)
                     .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
-                );
+                )
+                .SetOnMouseIn((recipe) => {
+                    if ((int)State < 2) return;
+                    //_craftingDisplay.SetRecipe(recipe);
+                    _craftingDisplayEnabled = true;
+                })
+                .SetOnMouseOut(() => _craftingDisplayEnabled = false);
 
             _slots = new List<InventorySlot>();
 
@@ -148,6 +169,24 @@ namespace Celesteia.GUIs.Game {
             Root.AddChild(_pauseMenu);
 
             UpdatePauseMenu();
+        }
+
+        private void LoadTooltipDisplays(ContentManager Content) {
+            _itemDisplay = new ItemTooltipDisplay(new Rect(
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(256f),
+                AbsoluteUnit.WithValue(64f)
+            ), tooltipTexture);
+            _itemDisplay.SetPivot(new Vector2(0f, 1f));
+
+            _craftingDisplay = new CraftingTooltipDisplay(new Rect(
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(150f),
+                AbsoluteUnit.WithValue(250f)
+            ));
+            _craftingDisplay.SetPivot(new Vector2(0f, 0f));
         }
 
         private void LoadHotbar() {
@@ -208,7 +247,7 @@ namespace Celesteia.GUIs.Game {
                 AbsoluteUnit.WithValue(-(InventorySlot.SLOT_SIZE + (2 * InventorySlot.SLOT_SPACING))),
                 new RelativeUnit(1f, pivot.GetRect(), RelativeUnit.Orientation.Horizontal),
                 new RelativeUnit(1f, pivot.GetRect(), RelativeUnit.Orientation.Vertical)
-            ), Game.Content.Load<Texture2D>("sprites/ui/button"), _inventory, remainingSlots, HotbarSlots, _slotTemplate);
+            ), windowTexture, _inventory, remainingSlots, HotbarSlots, _slotTemplate);
             _inventoryScreen.SetPivot(new Vector2(0.5f, 1f));
 
             pivot.AddChild(_inventoryScreen);
@@ -231,11 +270,20 @@ namespace Celesteia.GUIs.Game {
                 AbsoluteUnit.WithValue(CraftingRecipeSlot.SLOT_SPACING),
                 new RelativeUnit(1f, pivot.GetRect(), RelativeUnit.Orientation.Horizontal),
                 new RelativeUnit(1f, pivot.GetRect(), RelativeUnit.Orientation.Vertical)
-            ), Game.Content.Load<Texture2D>("sprites/ui/button"), _inventory, _recipeTemplate);
+            ), windowTexture, _inventory, _recipeTemplate);
             _craftingScreen.SetPivot(new Vector2(0.5f, 0f));
 
             pivot.AddChild(_craftingScreen);
             ItemManagement.AddChild(pivot);
+        }
+
+        public override void Update(GameTime gameTime, out bool clickedAnything)
+        {
+            _itemDisplay.MoveTo(MouseWrapper.GetPosition());
+            _itemDisplay.SetEnabled(_itemDisplayEnabled && (int)_state > 0);
+            _craftingDisplay.MoveTo(MouseWrapper.GetPosition());
+            _craftingDisplay.SetEnabled(_craftingDisplayEnabled && (int)_state > 1);
+            base.Update(gameTime, out clickedAnything);
         }
 
         private Color _slightlyTransparent = new Color(255, 255, 255, 175);
@@ -245,7 +293,13 @@ namespace Celesteia.GUIs.Game {
             base.Draw(gameTime);
 
             Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null);
+
             if (CursorItem != null) Game.SpriteBatch.Draw(CursorItem.Type.Sprite, MouseWrapper.GetPosition().ToVector2(), _slightlyTransparent, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            else {
+                _itemDisplay.Draw(Game.SpriteBatch);
+                _craftingDisplay.Draw(Game.SpriteBatch);
+            }
+
             Game.SpriteBatch.End();
         }
 
