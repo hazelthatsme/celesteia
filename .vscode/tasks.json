@@ -23,11 +23,13 @@
                 "Release",
                 "-r",
                 "win-x64",
+                "--self-contained",
                 "/p:PublishReadyToRun=false",
                 "/p:TieredCompilation=false",
                 "/p:DebugType=none",
                 "/p:DebugSymbols=false",
-                "--self-contained"
+                "/p:PublishSingleFile=true",
+                "/p:IncludeNativeLibrariesForSelfExtract=true"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -41,11 +43,13 @@
                 "Release",
                 "-r",
                 "win-x86",
+                "--self-contained",
                 "/p:PublishReadyToRun=false",
                 "/p:TieredCompilation=false",
                 "/p:DebugType=none",
                 "/p:DebugSymbols=false",
-                "--self-contained"
+                "/p:PublishSingleFile=true",
+                "/p:IncludeNativeLibrariesForSelfExtract=true"
             ],
             "problemMatcher": "$msCompile"
         },
