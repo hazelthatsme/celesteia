@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
@@ -22,8 +20,22 @@ namespace Celesteia.Game.Systems {
         private GameGUI _gameGui;
         private Camera2D _camera;
         private GameWorld _world;
-        private Entity _player;
 
+        private Entity _player;
+        public Entity Player {
+            get => _player;
+            set {
+                _player = value;
+
+                localPlayer = _player.Get<LocalPlayer>();
+                targetPosition = _player.Get<TargetPosition>();
+                physicsEntity = _player.Get<PhysicsEntity>();
+                frames = _player.Get<EntityFrames>();
+                attributes = _player.Get<EntityAttributes>();
+                input = _player.Get<PlayerInput>();
+                inventory = _player.Get<EntityInventory>();
+            }
+        }
         private LocalPlayer localPlayer;
         private PlayerInput input;
         private PhysicsEntity physicsEntity;
@@ -38,49 +50,20 @@ namespace Celesteia.Game.Systems {
             _world = world;
         }
 
-        public void SetLocalPlayer(Entity player) {
-            _player = player;
-
-            localPlayer = _player.Get<LocalPlayer>();
-            targetPosition = _player.Get<TargetPosition>();
-            physicsEntity = _player.Get<PhysicsEntity>();
-            frames = _player.Get<EntityFrames>();
-            attributes = _player.Get<EntityAttributes>();
-            input = _player.Get<PlayerInput>();
-            inventory = _player.Get<EntityInventory>();
-        }
-
         public override void Update(GameTime gameTime)
         {
             if (_player == null) return;
 
             bool clicked = false;
             UpdateGUI(gameTime, input, out clicked);
+            
             if (!_gameGui.Paused && (int)_gameGui.State < 1) {
                 UpdateSelectedItem();
                 
                 UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
                 UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
 
-                if (!clicked) {
-                    Vector2 point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
-                    ItemStack stack = _gameGui.GetSelectedItem();
-
-                    if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
-
-                    bool mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
-
-                    if (mouseClick) {
-                        bool success = false;
-                        
-                        if (MouseWrapper.GetMouseHeld(MouseButton.Left)) success = stack.Type.Actions.OnLeftClick(gameTime, _world, point, _player);
-                        else if (MouseWrapper.GetMouseHeld(MouseButton.Right)) success = stack.Type.Actions.OnRightClick(gameTime, _world, point, _player);
-
-                        if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
-
-                        inventory.Inventory.AssertAmounts();
-                    }
-                }
+                if (!clicked) UpdateClick(gameTime);
             }
         }
 
@@ -161,6 +144,26 @@ namespace Celesteia.Game.Systems {
                     physicsEntity.SetVelocity(physicsEntity.Velocity.X, -attributes.Get(EntityAttribute.JumpForce));
                     localPlayer.JumpRemaining -= gameTime.GetElapsedSeconds();
                 }
+            }
+        }
+
+        private void UpdateClick(GameTime gameTime) {
+            Vector2 point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
+             ItemStack stack = _gameGui.GetSelectedItem();
+
+            if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
+
+            bool mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
+
+            if (mouseClick) {
+                bool success = false;
+                        
+                if (MouseWrapper.GetMouseHeld(MouseButton.Left)) success = stack.Type.Actions.OnLeftClick(gameTime, _world, point, _player);
+                else if (MouseWrapper.GetMouseHeld(MouseButton.Right)) success = stack.Type.Actions.OnRightClick(gameTime, _world, point, _player);
+
+                if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
+
+                inventory.Inventory.AssertAmounts();
             }
         }
     }
