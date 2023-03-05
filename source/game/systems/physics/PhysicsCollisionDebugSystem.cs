@@ -39,7 +39,7 @@ namespace Celesteia.Game.Systems.Physics {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
             
             foreach (int entityId in ActiveEntities) {
-                Rectangle box = collisionBoxMapper.Get(entityId).RoundedBounds();                
+                Rectangle box = collisionBoxMapper.Get(entityId).Rounded;                
 
                 int minX = box.X;
                 int maxX = box.X + box.Width;

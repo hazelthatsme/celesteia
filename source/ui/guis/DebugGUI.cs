@@ -5,6 +5,7 @@ using Celesteia.UI.Elements;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using MonoGame.Extended;
 
 namespace Celesteia.GUIs {
     public class DebugGUI : GUI {
@@ -44,9 +45,10 @@ namespace Celesteia.GUIs {
             clickedAnything = false;
             if (gameTime.TotalGameTime.TotalSeconds - lastUpdate < 0.25) return;
 
-            fps = 1 / (gameTime.ElapsedGameTime.TotalSeconds);
+            fps = 1 / gameTime.GetElapsedSeconds();
 
             fpsLabel.SetText("FPS: " + fps.ToString("0"));
+            fpsLabel.SetColor(gameTime.IsRunningSlowly ? Color.Red : Color.White);
 
             lastUpdate = gameTime.TotalGameTime.TotalSeconds;
         }

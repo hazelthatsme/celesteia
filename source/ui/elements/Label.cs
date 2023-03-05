@@ -31,6 +31,11 @@ namespace Celesteia.UI.Elements {
             return this;
         }
 
+        public Label SetColor(Color color) {
+            _text.SetColor(color);
+            return this;
+        }
+
         public Label SetTextProperties(TextProperties text) {
             _text = text;
             return this;

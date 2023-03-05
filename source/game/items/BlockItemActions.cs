@@ -32,7 +32,7 @@ namespace Celesteia.Game {
             if (Vector2.Distance(entityTransform.Position, cursor) > attributes.Get(EntityAttribute.BlockRange)) return false;
 
             if (!forWall && user.Has<CollisionBox>()) {
-                Rectangle box = user.Get<CollisionBox>().RoundedBounds();
+                Rectangle box = user.Get<CollisionBox>().Rounded;
                 RectangleF? rect = world.TestBoundingBox(cursor, _block);
                 if (rect.HasValue) {
                     bool intersect = rect.Intersects(new RectangleF(box.X, box.Y, box.Width, box.Height));

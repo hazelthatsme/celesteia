@@ -27,15 +27,10 @@ namespace Celesteia.Game.Systems {
         public override void Update(GameTime gameTime)
         {
             Vector2 calculatedCenter = _camera.Center;
-            float cumulativeWeight = 0f;
 
             foreach (int entityId in ActiveEntities) {
-                float weight = followMapper.Get(entityId).weight;
-                calculatedCenter = transformMapper.Get(entityId).Position * weight;
-                cumulativeWeight += weight;
+                calculatedCenter = transformMapper.Get(entityId).Position;
             }
-
-            calculatedCenter /= cumulativeWeight;
 
             _target = calculatedCenter;
             _camera.MoveTo(_target);

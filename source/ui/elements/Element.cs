@@ -15,6 +15,10 @@ namespace Celesteia.UI.Elements {
         public virtual IContainer GetParent() => _parent;
         public virtual Vector2 GetPivot() => _pivot;
         public virtual Rect GetRect() => _rect;
+        public virtual void MoveTo(Point point) {
+            _rect.SetX(AbsoluteUnit.WithValue(point.X));
+            _rect.SetY(AbsoluteUnit.WithValue(point.Y));
+        }
 
         // Get element rectangle with pivot.
         public virtual Rectangle GetRectangle() {

@@ -49,6 +49,7 @@ namespace Celesteia.GUIs.Game {
         }
         public readonly int HotbarSlots = 9;
 
+        private IContainer _mousePivot;
         private IContainer _inventoryScreen;
         private IContainer _craftingScreen;
 
@@ -172,21 +173,29 @@ namespace Celesteia.GUIs.Game {
         }
 
         private void LoadTooltipDisplays(ContentManager Content) {
+            _mousePivot = new Container(new Rect(
+                AbsoluteUnit.WithValue(0f)
+            ));
+            
             _itemDisplay = new ItemTooltipDisplay(new Rect(
-                AbsoluteUnit.WithValue(0f),
-                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(16f),
+                AbsoluteUnit.WithValue(16f),
                 AbsoluteUnit.WithValue(256f),
                 AbsoluteUnit.WithValue(64f)
             ), tooltipTexture);
             _itemDisplay.SetPivot(new Vector2(0f, 1f));
 
+            _mousePivot.AddChild(_itemDisplay);
+
             _craftingDisplay = new CraftingTooltipDisplay(new Rect(
-                AbsoluteUnit.WithValue(0f),
-                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(16f),
+                AbsoluteUnit.WithValue(16f),
                 AbsoluteUnit.WithValue(150f),
                 AbsoluteUnit.WithValue(250f)
             ));
             _craftingDisplay.SetPivot(new Vector2(0f, 0f));
+
+            _mousePivot.AddChild(_craftingDisplay);
         }
 
         private void LoadHotbar() {
@@ -279,10 +288,10 @@ namespace Celesteia.GUIs.Game {
 
         public override void Update(GameTime gameTime, out bool clickedAnything)
         {
-            _itemDisplay.MoveTo(MouseWrapper.GetPosition());
+            _mousePivot.MoveTo(MouseWrapper.GetPosition());
             _itemDisplay.SetEnabled(_itemDisplayEnabled && (int)_state > 0);
-            _craftingDisplay.MoveTo(MouseWrapper.GetPosition());
             _craftingDisplay.SetEnabled(_craftingDisplayEnabled && (int)_state > 1);
+
             base.Update(gameTime, out clickedAnything);
         }
 

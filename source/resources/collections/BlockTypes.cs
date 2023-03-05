@@ -13,6 +13,7 @@ namespace Celesteia.Resources.Collections {
 
     public class BlockTypes {        
         private List<BlockType> Types;
+        private BlockType[] BakedTypes;
 
         private TextureAtlas _atlas;
         private readonly RectangleF standardBox = new RectangleF(0f, 0f, 1f, 1f);
@@ -46,6 +47,8 @@ namespace Celesteia.Resources.Collections {
             AddStandardBlock("Copper Ore", 7, 1, ResourceManager.Items.GetItem("Copper Ore"), 10);
             AddStandardBlock("Coal Ore", 14, 1, ResourceManager.Items.GetItem("Coal Lump"), 10);
             AddStandardBlock("Wooden Planks", 4, 1, ResourceManager.Items.GetItem("Wooden Planks"), 4);
+
+            BakedTypes = Types.ToArray();
         }
 
         byte next = 0;
@@ -59,7 +62,7 @@ namespace Celesteia.Resources.Collections {
         }
 
         public BlockType GetBlock(byte id) {
-            return Types.Find(x => x.BlockID == id);
+            return BakedTypes[id];
         }
     }
 

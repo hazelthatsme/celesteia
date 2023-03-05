@@ -4,10 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.UI.Elements.Game.Tooltips {
-    public class ItemDisplay : Container {
+    public class ItemDisplay : Element {
         public TextureRegion2D Sprite;
 
-        public ItemDisplay(Rect rect) : base(rect) { }
+        public ItemDisplay(Rect rect) {
+            SetRect(rect);
+        }
 
         public ItemDisplay SetItem(ItemType type) {
             Sprite = type.Sprite;
@@ -17,7 +19,6 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Sprite, GetRectangle(), Color.White, null);
-            base.Draw(spriteBatch);
         }
     }
 }

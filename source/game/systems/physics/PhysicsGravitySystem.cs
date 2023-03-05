@@ -26,11 +26,11 @@ namespace Celesteia.Game.Systems.Physics {
         {
             foreach (int entityId in ActiveEntities) {
                 PhysicsEntity physicsEntity = physicsEntityMapper.Get(entityId);
+                if (!physicsEntity.Gravity) continue;
 
                 if (physicsEntity.CollidingDown && physicsEntity.Velocity.Y > 0f) {
                     physicsEntity.SetVelocity(physicsEntity.Velocity.X, 0.1f);
                 }
-                if (!physicsEntity.Gravity) continue;
 
                 Vector2 gravity = new Vector2(0f, physicsEntity.Mass * PhysicsSystem.GRAVITY_CONSTANT);
                 gravity *= gameTime.GetElapsedSeconds();

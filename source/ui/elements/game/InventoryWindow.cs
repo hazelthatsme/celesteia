@@ -52,10 +52,5 @@ namespace Celesteia.UI.Elements.Game {
                     AddChild(slot);
                 }
         }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            base.Draw(spriteBatch);
-        }
     }
 }

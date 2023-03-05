@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Celesteia.Game.Components.Items {
     public class Inventory {

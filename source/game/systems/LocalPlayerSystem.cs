@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
@@ -9,6 +10,7 @@ using Celesteia.GUIs.Game;
 using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -67,16 +69,24 @@ namespace Celesteia.Game.Systems {
             }
         }
 
+        private Dictionary<Keys, int> numberKeys = new Dictionary<Keys, int>() {
+            { Keys.D1, 0 },
+            { Keys.D2, 1 },
+            { Keys.D3, 2 },
+            { Keys.D4, 3 },
+            { Keys.D5, 4 },
+            { Keys.D6, 5 },
+            { Keys.D7, 6 },
+            { Keys.D8, 7 },
+            { Keys.D9, 8 },
+        };
         private void UpdateSelectedItem() {
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D1)) _gameGui.HotbarSelection = 0;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D2)) _gameGui.HotbarSelection = 1;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D3)) _gameGui.HotbarSelection = 2;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D4)) _gameGui.HotbarSelection = 3;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D5)) _gameGui.HotbarSelection = 4;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D6)) _gameGui.HotbarSelection = 5;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D7)) _gameGui.HotbarSelection = 6;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D8)) _gameGui.HotbarSelection = 7;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D9)) _gameGui.HotbarSelection = 8;
+            foreach (Keys k in numberKeys.Values) {
+                if (KeyboardWrapper.GetKeyDown(k)) {
+                    _gameGui.HotbarSelection = numberKeys[k];
+                    break;
+                }
+            }
             
             if (!KeyboardWrapper.GetKeyHeld(Microsoft.Xna.Framework.Input.Keys.LeftControl) && MouseWrapper.GetScrollDelta() != 0f) {
                 int change = MouseWrapper.GetScrollDelta() > 0f ? -1 : 1;
@@ -88,7 +98,6 @@ namespace Celesteia.Game.Systems {
                 if (selection >= _gameGui.HotbarSlots) selection = 0;
 
                 _gameGui.HotbarSelection = selection;
-                
             }
         }
 
@@ -121,12 +130,16 @@ namespace Celesteia.Game.Systems {
             _gameGui.Update(gameTime, out clicked);
         }
 
+        float h;
         private void UpdateMovement(GameTime gameTime, PlayerInput input, PhysicsEntity physicsEntity, EntityFrames frames, EntityAttributes.EntityAttributeMap attributes, TargetPosition targetPosition) {
-            Vector2 movement = new Vector2(input.TestHorizontal(), 0f);
+            h = input.TestHorizontal();
+            Vector2 movement = new Vector2(h, 0f);
 
             if (movement.X != 0f) {
                 frames.Effects = movement.X < 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             }
+
+            if (h == 0f) return;
 
             movement *= 1f + (input.TestRun() * 1.5f);
             movement *= attributes.Get(EntityAttribute.MovementSpeed);
@@ -147,13 +160,19 @@ namespace Celesteia.Game.Systems {
             }
         }
 
+
+        bool mouseClick = false;
+        Vector2 point = Vector2.Zero;
+        ItemStack stack = null;
         private void UpdateClick(GameTime gameTime) {
-            Vector2 point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
-             ItemStack stack = _gameGui.GetSelectedItem();
+            mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
+
+            if (!mouseClick) return;
+
+            point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
+            stack = _gameGui.GetSelectedItem();
 
             if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
-
-            bool mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
 
             if (mouseClick) {
                 bool success = false;

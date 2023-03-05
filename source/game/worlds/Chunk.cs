@@ -106,6 +106,7 @@ namespace Celesteia.Game.Worlds {
         }
 
         Vector2 v;
+        bool wall;
         BlockType type;
         BlockFrame frame;
         float breakProgress;
@@ -114,25 +115,21 @@ namespace Celesteia.Game.Worlds {
                 v.X = i;
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     v.Y = j;
-                    bool wall = tileMap[i, j] == 0;
+                    wall = tileMap[i, j] == 0;
+                    type = wall ? ResourceManager.Blocks.GetBlock(wallTileMap[i, j]) : ResourceManager.Blocks.GetBlock(tileMap[i, j]);
+                    
+                    frame = type.Frames.GetFrame(0);
+                    if (frame == null) continue;
 
-                    if (wall) {           // If the tile here is empty, draw the wall instead.
-                        type = ResourceManager.Blocks.GetBlock(wallTileMap[i, j]);
-                        frame = type.Frames.GetFrame(0);
-                        breakProgress = (float)wallTileBreakProgressMap[i, j] / (float)type.Strength;
-                        if (frame != null) {
-                            DrawWallTile(i, j, frame, spriteBatch, camera);
-                            if (breakProgress > 0f) DrawWallTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
-                        }
+                    breakProgress = wall ? ((float)wallTileBreakProgressMap[i, j] / (float)type.Strength) : ((float)tileBreakProgressMap[i, j] / (float)type.Strength);
+
+                    if (wall) {             // If the tile here is empty, draw the wall instead.
+                        DrawWallTile(i, j, frame, spriteBatch, camera);
+                        if (breakProgress > 0f) DrawWallTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
                     }
-                    else {                              // If there is a tile that isn't empty, draw the tile.
-                        type = ResourceManager.Blocks.GetBlock(tileMap[i, j]);
-                        frame = type.Frames.GetFrame(0);
-                        breakProgress = (float)tileBreakProgressMap[i, j] / (float)type.Strength;
-                        if (frame != null) {
-                            DrawTile(i, j, frame, spriteBatch, camera);
-                            if (breakProgress > 0f) DrawTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
-                        }
+                    else {                  // If there is a tile that isn't empty, draw the tile.
+                        DrawTile(i, j, frame, spriteBatch, camera);
+                        if (breakProgress > 0f) DrawTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
                     }
                 }
             }

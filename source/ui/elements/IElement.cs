@@ -16,6 +16,9 @@ namespace Celesteia.UI.Elements {
         // Set the containing rect of the element.
         void SetRect(Rect rect);
 
+        // Move to a point.
+        void MoveTo(Point point);
+
         // Get the rectangle with a pivot point.
         Rectangle GetRectangle();
 

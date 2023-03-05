@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Sprites;
 
 namespace Celesteia.Game.Systems {    
     public class EntityDebugSystem : EntityDrawSystem

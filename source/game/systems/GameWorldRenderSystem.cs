@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
@@ -18,20 +17,6 @@ namespace Celesteia.Game.Systems {
             _camera = camera;
             _spriteBatch = spriteBatch;
             _gameWorld = world;
-        }
-
-        private List<ChunkVector> activeChunks = new List<ChunkVector>();
-
-        private void EnableChunk(ChunkVector cv) {
-            Chunk c = _gameWorld.GetChunk(cv);
-            
-            if (c != null) c.Enabled = true;
-        }
-
-        private void DisableChunk(ChunkVector cv) {
-            Chunk c = _gameWorld.GetChunk(cv);
-            
-            if (c != null) c.Enabled = false;
         }
 
         private ChunkVector _v;

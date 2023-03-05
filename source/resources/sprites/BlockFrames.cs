@@ -51,11 +51,7 @@ namespace Celesteia.Resources.Sprites {
         }
 
         public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color, float depth = 0f) {
-            spriteBatch.Draw(GetTexture(), position, GetTexture().Bounds, color, 0f, Vector2.Zero, _scaling, SpriteEffects.None, depth);
-        }
-
-        public Texture2D GetTexture() {
-            return _standaloneTexture;
+            spriteBatch.Draw(_standaloneTexture, position, _standaloneTexture.Bounds, color, 0f, Vector2.Zero, _scaling, SpriteEffects.None, depth);
         }
 
         private void CreateStandaloneTexture() {
