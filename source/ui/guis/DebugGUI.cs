@@ -35,7 +35,7 @@ namespace Celesteia.GUIs {
             float textSpacing = 4f;
             float textRow(int number) => 10f + number * (fontSize + textSpacing);
 
-            Root.AddChild(template.Clone().SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(textRow(0)))).SetText("Celesteia Alpha 1.0"));
+            Root.AddChild(template.Clone().SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(textRow(0)))).SetText("Celesteia Alpha 1.0.1"));
             Root.AddChild(fpsLabel = template.Clone().SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(textRow(1)))).SetText(""));
             
             Debug.WriteLine("Loaded Debug GUI.");
