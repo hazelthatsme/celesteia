@@ -56,7 +56,7 @@ namespace Celesteia.Game.Systems {
 
             bool clicked = false;
             UpdateGUI(gameTime, input, out clicked);
-            if (!_gameGui.Paused) {
+            if (!_gameGui.Paused && (int)_gameGui.State < 1) {
                 UpdateSelectedItem();
                 
                 UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
