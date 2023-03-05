@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.Game.Worlds.Generators {
@@ -15,6 +16,6 @@ namespace Celesteia.Game.Worlds.Generators {
         public Vector2 GetSpawnpoint();
 
         // Generate various structures in the world.
-        public void GenerateStructures();
+        public void GenerateStructures(Action<string> progressReport = null);
     }
 }

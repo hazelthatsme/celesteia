@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Celesteia.Game.Worlds;
 using Celesteia.Resources;
 using Celesteia.Screens;
@@ -94,8 +95,10 @@ namespace Celesteia.GUIs {
                     )
                     .SetOnMouseUp(async (button, position) => {
                         ShowNewWorldScreen();
+                        Debug.WriteLine("Generating world...");
                         GameWorld _gameWorld = await Game.Worlds.LoadNewWorld((progressReport) => {
                             Progress.SetText(progressReport);
+                            Debug.WriteLine("  " + progressReport);
                         });
                         Game.LoadScreen(
                             new GameplayScreen(Game, _gameWorld), 

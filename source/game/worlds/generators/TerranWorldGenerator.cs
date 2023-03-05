@@ -20,10 +20,12 @@ namespace Celesteia.Game.Worlds.Generators {
             return ThirdPass(x, y, SecondPass(x, y, FirstPass(x, y)));
         }
 
-        public void GenerateStructures() {
+        public void GenerateStructures(Action<string> progressReport = null) {
             Random rand = new Random(_world.GetSeed());
 
+            if (progressReport != null) progressReport("Planting trees...");
             GenerateTrees(rand);
+            if (progressReport != null) progressReport("Abandoning houses...");
             GenerateAbandonedHomes(rand);
         }
 
@@ -186,8 +188,6 @@ namespace Celesteia.Game.Worlds.Generators {
 
                     if (i == originX || i == maxX - 1 || j == originY || j == maxY - 1) _world.SetBlock(i, j, planks);
                 }
-
-            Debug.WriteLine($"Built abandoned home. {originX},{originY}");
         }
     }
 }

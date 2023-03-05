@@ -55,6 +55,7 @@ namespace Celesteia.Game.Worlds {
         public void Generate(Action<string> progressReport = null) {
             int count = 0;
             int total = _width * _height;
+            progressReport("Generating chunks...");
             for (int i = 0; i < _width; i++) {
                 _gv.X = i;
                 for (int j = 0; j < _height; j++) {
@@ -66,13 +67,13 @@ namespace Celesteia.Game.Worlds {
                     _c.Enabled = false;
 
                     count++;
-                    if (progressReport != null) progressReport($"Generated {count}/{total} chunks.");
 
                     chunkMap[i, j] = _c;
                 }
             }
 
-            _generator.GenerateStructures();
+            if (progressReport != null) progressReport("Generating structures...");
+            _generator.GenerateStructures(progressReport);
 
             Debug.WriteLine("World generated.");
         }
