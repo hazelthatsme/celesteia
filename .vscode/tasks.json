@@ -14,18 +14,34 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "Publish Windows x64",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Celesteia.csproj",
-                "/p:PublishReadyToRun=false",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary",
-                "/p:Configuration=Release",
+                "-c",
+                "Release",
                 "-r",
-                "win-x64"
+                "win-x64",
+                "/p:PublishReadyToRun=false",
+                "/p:TieredCompilation=false",
+                "--self-contained"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Publish Windows x86",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "-c",
+                "Release",
+                "-r",
+                "win-x86",
+                "/p:PublishReadyToRun=false",
+                "/p:TieredCompilation=false",
+                "--self-contained"
             ],
             "problemMatcher": "$msCompile"
         },
