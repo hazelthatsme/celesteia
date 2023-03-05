@@ -91,7 +91,7 @@ namespace Celesteia
 
             // Allow game window to be resized, and set the title.
             Window.AllowUserResizing = true;
-            Window.Title = "Celesteia";
+            Window.Title = "Celesteia Alpha 1.0";
 
             // Make sure the UI knows what game window to refer to for screen space calculations.
             UIReferences.gameWindow = Window;
