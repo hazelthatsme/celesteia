@@ -52,7 +52,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
-                .AddSystem(new PhysicsCollisionDebugSystem(Camera, SpriteBatch, _gameWorld))
+                //.AddSystem(new PhysicsCollisionDebugSystem(Camera, SpriteBatch, _gameWorld))
                 //.AddSystem(new EntityDebugSystem(Camera, SpriteBatch))
                 .Build();
 
@@ -61,7 +61,7 @@ namespace Celesteia.Screens {
             Entity player = _entityFactory.CreateEntity(ResourceManager.Entities.PLAYER);
             player.Get<TargetPosition>().Target = _gameWorld.GetSpawnpoint();
             _gameGui.SetReferenceInventory(player.Get<EntityInventory>().Inventory);
-            localPlayerSystem.SetLocalPlayer(player);
+            localPlayerSystem.Player = player;
         }
 
         public override void Update(GameTime gameTime)
