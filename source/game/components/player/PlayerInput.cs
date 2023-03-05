@@ -9,8 +9,9 @@ namespace Celesteia.Game.Components.Player {
         public List<IInputDefinition> Vertical = new List<IInputDefinition>();
         public List<IInputDefinition> Run = new List<IInputDefinition>();
         public List<IInputDefinition> Jump = new List<IInputDefinition>();
-        public List<IInputDefinition> OpenInventory = new List<IInputDefinition>();
-        public List<IInputDefinition> OpenCrafting = new List<IInputDefinition>();
+        public List<IInputDefinition> Inventory = new List<IInputDefinition>();
+        public List<IInputDefinition> Crafting = new List<IInputDefinition>();
+        public List<IInputDefinition> Pause = new List<IInputDefinition>();
 
         public PlayerInput AddHorizontal(params IInputDefinition[] defs) {
             Horizontal.AddRange(defs);
@@ -32,13 +33,18 @@ namespace Celesteia.Game.Components.Player {
             return this;
         }
 
-        public PlayerInput AddOpenInventory(params IInputDefinition[] defs) {
-            OpenInventory.AddRange(defs);
+        public PlayerInput AddInventory(params IInputDefinition[] defs) {
+            Inventory.AddRange(defs);
             return this;
         }
 
-        public PlayerInput AddOpenCrafting(params IInputDefinition[] defs) {
-            OpenCrafting.AddRange(defs);
+        public PlayerInput AddCrafting(params IInputDefinition[] defs) {
+            Crafting.AddRange(defs);
+            return this;
+        }
+
+        public PlayerInput AddPause(params IInputDefinition[] defs) {
+            Pause.AddRange(defs);
             return this;
         }
 
@@ -66,15 +72,21 @@ namespace Celesteia.Game.Components.Player {
             return MathHelper.Clamp(val, -1f, 1f);
         }
 
-        public float TestOpenInventory() {
+        public float TestInventory() {
             float val = 0f;
-            OpenInventory.ForEach(d => { val += d.Test(); });
+            Inventory.ForEach(d => { val += d.Test(); });
             return MathHelper.Clamp(val, -1f, 1f);
         }
 
-        public float TestOpenCrafting() {
+        public float TestCrafting() {
             float val = 0f;
-            OpenCrafting.ForEach(d => { val += d.Test(); });
+            Crafting.ForEach(d => { val += d.Test(); });
+            return MathHelper.Clamp(val, -1f, 1f);
+        }
+
+        public float TestPause() {
+            float val = 0f;
+            Pause.ForEach(d => { val += d.Test(); });
             return MathHelper.Clamp(val, -1f, 1f);
         }
     }

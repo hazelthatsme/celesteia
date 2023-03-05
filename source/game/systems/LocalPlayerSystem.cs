@@ -56,28 +56,30 @@ namespace Celesteia.Game.Systems {
 
             bool clicked = false;
             UpdateGUI(gameTime, input, out clicked);
-            UpdateSelectedItem();
+            if (!_gameGui.Paused) {
+                UpdateSelectedItem();
+                
+                UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
+                UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
 
-            UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
-            UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
+                if (!clicked) {
+                    Vector2 point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
+                    ItemStack stack = _gameGui.GetSelectedItem();
 
-            if (!clicked) {
-                Vector2 point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
-                ItemStack stack = _gameGui.GetSelectedItem();
+                    if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
 
-                if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
+                    bool mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
 
-                bool mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
+                    if (mouseClick) {
+                        bool success = false;
+                        
+                        if (MouseWrapper.GetMouseHeld(MouseButton.Left)) success = stack.Type.Actions.OnLeftClick(gameTime, _world, point, _player);
+                        else if (MouseWrapper.GetMouseHeld(MouseButton.Right)) success = stack.Type.Actions.OnRightClick(gameTime, _world, point, _player);
 
-                if (mouseClick) {
-                    bool success = false;
-                    
-                    if (MouseWrapper.GetMouseHeld(MouseButton.Left)) success = stack.Type.Actions.OnLeftClick(gameTime, _world, point, _player);
-                    else if (MouseWrapper.GetMouseHeld(MouseButton.Right)) success = stack.Type.Actions.OnRightClick(gameTime, _world, point, _player);
+                        if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
 
-                    if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
-
-                    inventory.Inventory.AssertAmounts();
+                        inventory.Inventory.AssertAmounts();
+                    }
                 }
             }
         }
@@ -99,38 +101,38 @@ namespace Celesteia.Game.Systems {
 
                 selection += change;
 
-                if (selection < 0) _gameGui.HotbarSelection = _gameGui.HotbarSlots - 1;
-                if (selection >= _gameGui.HotbarSlots) _gameGui.HotbarSelection = 0;
+                if (selection < 0) selection = _gameGui.HotbarSlots - 1;
+                if (selection >= _gameGui.HotbarSlots) selection = 0;
 
-                _gameGui.HotbarSelection += change;
+                _gameGui.HotbarSelection = selection;
                 
             }
         }
 
         bool _inventoryPress;
         bool _craftingPress;
+        bool _pausePress;
         private void UpdateGUI(GameTime gameTime, PlayerInput input, out bool clicked) {
-            _inventoryPress = input.TestOpenInventory() > 0f;
-            _craftingPress = input.TestOpenCrafting() > 0f;
+            _inventoryPress = input.TestInventory() > 0f;
+            _craftingPress = input.TestCrafting() > 0f;
+            _pausePress = input.TestPause() > 0f;
 
-            if (_inventoryPress || _craftingPress) {
+            if (_inventoryPress || _craftingPress || _pausePress) {
                 switch (_gameGui.State) {
                     case InventoryScreenState.Closed:
                         if (_craftingPress) _gameGui.State = InventoryScreenState.Crafting;
                         else if (_inventoryPress) _gameGui.State = InventoryScreenState.Inventory;
+                        else if (_pausePress) _gameGui.TogglePause();
                         break;
                     case InventoryScreenState.Inventory:
                         if (_craftingPress) _gameGui.State = InventoryScreenState.Crafting;
-                        else if (_inventoryPress) _gameGui.State = InventoryScreenState.Closed;
+                        else _gameGui.State = InventoryScreenState.Closed;
                         break;
                     case InventoryScreenState.Crafting:
-                        if (_craftingPress) _gameGui.State = InventoryScreenState.Closed;
-                        else if (_inventoryPress) _gameGui.State = InventoryScreenState.Closed;
+                        _gameGui.State = InventoryScreenState.Closed;
                         break;
                     default: break;
                 }
-                
-                Debug.WriteLine($"{_inventoryPress} {_craftingPress} {_gameGui.State}");
             }
 
             _gameGui.Update(gameTime, out clicked);

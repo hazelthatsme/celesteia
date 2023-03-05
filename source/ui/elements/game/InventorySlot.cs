@@ -123,6 +123,8 @@ namespace Celesteia.UI.Elements.Game {
         Rectangle rectangle;
         Rectangle itemRectangle;
         Rectangle textRectangle;
+        ItemStack inSlot;
+        Color slightlyTransparent = new Color(255, 255, 255, 100);
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (_inventory == null) return;
@@ -136,10 +138,11 @@ namespace Celesteia.UI.Elements.Game {
             else spriteBatch.Draw(GetTexture(spriteBatch), rectangle, null, Color.White);
 
             // Draw item if present.
-            if (_inventory.GetSlot(_slot) != null) {
-                spriteBatch.Draw(_inventory.GetSlot(_slot).Type.Sprite, itemRectangle, Color.White);
-                TextUtilities.DrawAlignedText(spriteBatch, textRectangle, _text.GetFont(), _inventory.GetSlot(_slot).Amount + "", _text.GetColor(), _text.GetAlignment(), _text.GetFontSize());
-            }
+            inSlot = _inventory.GetSlot(_slot);
+            if (inSlot != null) {
+                spriteBatch.Draw(inSlot.Type.Sprite, itemRectangle, Color.White);
+                if (inSlot.Amount > 1) TextUtilities.DrawAlignedText(spriteBatch, textRectangle, _text.GetFont(), $"{inSlot.Amount}", _text.GetColor(), _text.GetAlignment(), _text.GetFontSize());
+            } else TextUtilities.DrawAlignedText(spriteBatch, rectangle, _text.GetFont(), $"{_slot + 1}", slightlyTransparent, TextAlignment.Center, 24f);
         }
 
         public Texture2D GetTexture(SpriteBatch spriteBatch) {

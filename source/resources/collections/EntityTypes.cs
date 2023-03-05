@@ -49,8 +49,9 @@ namespace Celesteia.Resources.Collections {
                         .AddVertical(new KeyDefinition(Keys.W, Keys.S, KeyDetectType.Held))
                         .AddRun(new KeyDefinition(null, Keys.LeftShift, KeyDetectType.Held))
                         .AddJump(new KeyDefinition(null, Keys.Space, KeyDetectType.Held))
-                        .AddOpenInventory(new KeyDefinition(null, Keys.B, KeyDetectType.Down))
-                        .AddOpenCrafting(new KeyDefinition(null, Keys.C, KeyDetectType.Down))
+                        .AddInventory(new KeyDefinition(null, Keys.B, KeyDetectType.Down))
+                        .AddCrafting(new KeyDefinition(null, Keys.C, KeyDetectType.Down))
+                        .AddPause(new KeyDefinition(null, Keys.Escape, KeyDetectType.Down))
                     );
 
                     entity.Attach(new LocalPlayer());

@@ -19,10 +19,11 @@ namespace Celesteia.GUIs.Game {
     public class GameGUI : GUI
     {
         private new GameInstance Game => (GameInstance) base.Game;
-        public GameGUI(GameInstance Game) : base(Game, Rect.ScreenFull) { 
-         }
+        public GameGUI(GameInstance Game) : base(Game, Rect.ScreenFull) { }
 
         public ItemStack CursorItem;
+
+        private IContainer _pauseMenu;
 
         private IContainer ItemManagement;
 
@@ -77,6 +78,8 @@ namespace Celesteia.GUIs.Game {
             slotTexture = Content.Load<Texture2D>("sprites/ui/button");
             slotPatches = TextureAtlas.Create("patches", slotTexture, 4, 4);
 
+            LoadPauseMenu(Content);
+
             _slotTemplate = new InventorySlot(new Rect(
                 AbsoluteUnit.WithValue(0f),
                 AbsoluteUnit.WithValue(-InventorySlot.SLOT_SPACING),
@@ -115,6 +118,36 @@ namespace Celesteia.GUIs.Game {
             LoadHotbar();
 
             Debug.WriteLine("Loaded Game GUI.");
+        }
+
+        public bool Paused { get; private set; }
+        public void TogglePause() {
+            Paused = !Paused;
+            UpdatePauseMenu();
+        }
+
+        private void LoadPauseMenu(ContentManager Content) {
+            _pauseMenu = new PauseMenu(this, Rect.ScreenFull,
+                new Button(new Rect(
+                    AbsoluteUnit.WithValue(0f),
+                    AbsoluteUnit.WithValue(0f),
+                    AbsoluteUnit.WithValue(250f),
+                    AbsoluteUnit.WithValue(56f)
+                ))
+                .SetPivotPoint(new Vector2(.5f))
+                .SetTexture(Content.Load<Texture2D>("sprites/ui/button"))
+                .MakePatches(4)
+                .SetTextProperties(new TextProperties()
+                    .SetColor(Color.White)
+                    .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
+                    .SetFontSize(24f)
+                    .SetTextAlignment(TextAlignment.Center))
+                .SetColorGroup(new ButtonColorGroup(Color.White, Color.Black, Color.Violet, Color.DarkViolet))
+            );
+
+            Root.AddChild(_pauseMenu);
+
+            UpdatePauseMenu();
         }
 
         private void LoadHotbar() {
@@ -223,6 +256,10 @@ namespace Celesteia.GUIs.Game {
         private void UpdateSelected() {
             _slots.ForEach(slot => slot.SetSelected(false));
             _slots[HotbarSelection].SetSelected(true);
+        }
+
+        private void UpdatePauseMenu() {
+            _pauseMenu.SetEnabled(Paused);
         }
     }
 
