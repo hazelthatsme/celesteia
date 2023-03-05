@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
@@ -69,24 +70,16 @@ namespace Celesteia.Game.Systems {
             }
         }
 
-        private Dictionary<Keys, int> numberKeys = new Dictionary<Keys, int>() {
-            { Keys.D1, 0 },
-            { Keys.D2, 1 },
-            { Keys.D3, 2 },
-            { Keys.D4, 3 },
-            { Keys.D5, 4 },
-            { Keys.D6, 5 },
-            { Keys.D7, 6 },
-            { Keys.D8, 7 },
-            { Keys.D9, 8 },
-        };
         private void UpdateSelectedItem() {
-            foreach (Keys k in numberKeys.Values) {
-                if (KeyboardWrapper.GetKeyDown(k)) {
-                    _gameGui.HotbarSelection = numberKeys[k];
-                    break;
-                }
-            }
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D1)) _gameGui.HotbarSelection = 0;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D2)) _gameGui.HotbarSelection = 1;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D3)) _gameGui.HotbarSelection = 2;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D4)) _gameGui.HotbarSelection = 3;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D5)) _gameGui.HotbarSelection = 4;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D6)) _gameGui.HotbarSelection = 5;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D7)) _gameGui.HotbarSelection = 6;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D8)) _gameGui.HotbarSelection = 7;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D9)) _gameGui.HotbarSelection = 8;
             
             if (!KeyboardWrapper.GetKeyHeld(Microsoft.Xna.Framework.Input.Keys.LeftControl) && MouseWrapper.GetScrollDelta() != 0f) {
                 int change = MouseWrapper.GetScrollDelta() > 0f ? -1 : 1;
