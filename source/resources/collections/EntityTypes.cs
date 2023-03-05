@@ -38,7 +38,7 @@ namespace Celesteia.Resources.Collections {
                         ResourceManager.SPRITE_SCALING
                     ));
 
-                    entity.Attach(new EntityInventory(new ItemStack(8, 1), new ItemStack(0, 10)));
+                    entity.Attach(new EntityInventory(36, new ItemStack(8, 1), new ItemStack(0, 10)));
 
                     entity.Attach(new PhysicsEntity(1f, true));
 
@@ -69,7 +69,7 @@ namespace Celesteia.Resources.Collections {
         }
     }
 
-    public struct EntityType {
+    public class EntityType {
         public readonly byte EntityID;
         public readonly string EntityName;
         private readonly Action<Entity> InstantiateAction;

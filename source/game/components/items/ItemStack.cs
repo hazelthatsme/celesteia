@@ -21,6 +21,10 @@ namespace Celesteia.Game.Components.Items {
             return stack;
         }
 
+        public ItemStack Clone() {
+            return new ItemStack(ID, Amount);
+        }
+
         public override string ToString()
         {
             return $"{Amount}x {Type.Name}";

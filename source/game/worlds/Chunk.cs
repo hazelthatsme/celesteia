@@ -116,11 +116,10 @@ namespace Celesteia.Game.Worlds {
                     v.Y = j;
                     bool wall = tileMap[i, j] == 0;
 
-                    breakProgress = (float)(wall ? wallTileBreakProgressMap[i, j] : tileBreakProgressMap[i, j]) / (float)type.Strength;
-
                     if (wall) {           // If the tile here is empty, draw the wall instead.
                         type = ResourceManager.Blocks.GetBlock(wallTileMap[i, j]);
                         frame = type.Frames.GetFrame(0);
+                        breakProgress = (float)wallTileBreakProgressMap[i, j] / (float)type.Strength;
                         if (frame != null) {
                             DrawWallTile(i, j, frame, spriteBatch, camera);
                             if (breakProgress > 0f) DrawWallTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
@@ -129,6 +128,7 @@ namespace Celesteia.Game.Worlds {
                     else {                              // If there is a tile that isn't empty, draw the tile.
                         type = ResourceManager.Blocks.GetBlock(tileMap[i, j]);
                         frame = type.Frames.GetFrame(0);
+                        breakProgress = (float)tileBreakProgressMap[i, j] / (float)type.Strength;
                         if (frame != null) {
                             DrawTile(i, j, frame, spriteBatch, camera);
                             if (breakProgress > 0f) DrawTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);

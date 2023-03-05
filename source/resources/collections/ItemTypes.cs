@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Game;
+using Celesteia.Game.Components.Items;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
@@ -34,6 +35,7 @@ namespace Celesteia.Resources.Collections {
             AddIngredientItem("Coal Lump", atlas.GetRegion(14));
             AddToolItem("Iron Pickaxe", atlas.GetRegion(33), 4);
             AddBlockItem("Wooden Planks", atlas.GetRegion(6), 10);
+            AddIngredientItem("Plank", atlas.GetRegion(15));
         }
 
         byte next = 0;
@@ -80,6 +82,10 @@ namespace Celesteia.Resources.Collections {
             Actions = actions;
             MaxStackSize = maxStack;
             ConsumeOnUse = consumeOnUse;
+        }
+
+        public ItemStack GetStack(int amount) {
+            return new ItemStack(ItemID, amount);
         }
     }
 }

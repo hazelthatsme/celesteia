@@ -5,8 +5,8 @@ namespace Celesteia.Game.Components {
         private Inventory _inventory;
         public Inventory Inventory => _inventory;
 
-        public EntityInventory(params ItemStack[] startingItems) {
-            _inventory = new Inventory();
+        public EntityInventory(int capacity, params ItemStack[] startingItems) {
+            _inventory = new Inventory(capacity);
 
             for (int i = 0; i < startingItems.Length; i++)
                 _inventory.AddItem(startingItems[i]);

@@ -24,9 +24,9 @@ namespace Celesteia.Resources.Collections {
         }
     }
 
-    public struct FontType {
-        public readonly string Name { get; }
-        public readonly SpriteFont Font { get; }
+    public class FontType {
+        public readonly string Name;
+        public readonly SpriteFont Font;
 
         public FontType(string name, SpriteFont font) {
             Name = name;

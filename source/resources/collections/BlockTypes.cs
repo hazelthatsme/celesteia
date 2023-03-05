@@ -63,7 +63,7 @@ namespace Celesteia.Resources.Collections {
         }
     }
 
-    public struct BlockType {
+    public class BlockType {
         public readonly byte BlockID;
         public readonly string Name;
         public readonly BlockFrames Frames;

@@ -26,7 +26,8 @@ namespace Celesteia.GUIs.Game {
 
         private IContainer ItemManagement;
 
-        private InventorySlot slotTemplate;
+        private InventorySlot _slotTemplate;
+        private CraftingRecipeSlot _recipeTemplate;
         private IContainer Hotbar;
 
         
@@ -62,7 +63,7 @@ namespace Celesteia.GUIs.Game {
         public void SetReferenceInventory(Inventory inventory) {
             _inventory = inventory;
 
-            slotTemplate.SetReferenceInventory(_inventory);
+            _slotTemplate.SetReferenceInventory(_inventory);
 
             LoadHotbar();
             LoadInventoryScreen();
@@ -76,13 +77,27 @@ namespace Celesteia.GUIs.Game {
             slotTexture = Content.Load<Texture2D>("sprites/ui/button");
             slotPatches = TextureAtlas.Create("patches", slotTexture, 4, 4);
 
-            slotTemplate = new InventorySlot(new Rect(
+            _slotTemplate = new InventorySlot(new Rect(
                 AbsoluteUnit.WithValue(0f),
                 AbsoluteUnit.WithValue(-InventorySlot.SLOT_SPACING),
                 AbsoluteUnit.WithValue(InventorySlot.SLOT_SIZE),
                 AbsoluteUnit.WithValue(InventorySlot.SLOT_SIZE)
             ))
-                .SetReferenceInventory(_inventory)
+                .SetTexture(slotTexture)
+                .SetPatches(slotPatches, 4)
+                .SetTextProperties(new TextProperties()
+                    .SetColor(Color.White)
+                    .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
+                    .SetFontSize(16f)
+                    .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+                );
+            
+            _recipeTemplate = new CraftingRecipeSlot(new Rect(
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(-CraftingRecipeSlot.SLOT_SPACING),
+                AbsoluteUnit.WithValue(CraftingRecipeSlot.SLOT_SIZE),
+                AbsoluteUnit.WithValue(CraftingRecipeSlot.SLOT_SIZE)
+            ))
                 .SetTexture(slotTexture)
                 .SetPatches(slotPatches, 4)
                 .SetTextProperties(new TextProperties()
@@ -118,8 +133,8 @@ namespace Celesteia.GUIs.Game {
 
             for (int i = 0; i < HotbarSlots; i++) {
                 int slotNumber = i;
-                InventorySlot slot = slotTemplate.Clone()
-                    .SetNewRect(slotTemplate.GetRect().SetX(AbsoluteUnit.WithValue(i * InventorySlot.SLOT_SIZE + (i * InventorySlot.SLOT_SPACING))))
+                InventorySlot slot = _slotTemplate.Clone()
+                    .SetNewRect(_slotTemplate.GetRect().SetX(AbsoluteUnit.WithValue(i * InventorySlot.SLOT_SIZE + (i * InventorySlot.SLOT_SPACING))))
                     .SetSlot(slotNumber)
                     .SetOnMouseUp((button, point) => {
                         if ((int)State < 1) {
@@ -160,7 +175,7 @@ namespace Celesteia.GUIs.Game {
                 AbsoluteUnit.WithValue(-(InventorySlot.SLOT_SIZE + (2 * InventorySlot.SLOT_SPACING))),
                 new RelativeUnit(1f, pivot.GetRect(), RelativeUnit.Orientation.Horizontal),
                 new RelativeUnit(1f, pivot.GetRect(), RelativeUnit.Orientation.Vertical)
-            ), Game.Content.Load<Texture2D>("sprites/ui/button"), _inventory, remainingSlots, HotbarSlots, slotTemplate);
+            ), Game.Content.Load<Texture2D>("sprites/ui/button"), _inventory, remainingSlots, HotbarSlots, _slotTemplate);
             _inventoryScreen.SetPivot(new Vector2(0.5f, 1f));
 
             pivot.AddChild(_inventoryScreen);
@@ -168,7 +183,26 @@ namespace Celesteia.GUIs.Game {
         }
 
         private void LoadCraftingScreen() {
-            _craftingScreen = new Container(Rect.AbsoluteZero);
+            int remainingSlots = _inventory.Capacity - HotbarSlots;
+            int rows = (remainingSlots / HotbarSlots);
+
+            Container pivot = new Container(new Rect(
+                new RelativeUnit(0.5f, ItemManagement.GetRect(), RelativeUnit.Orientation.Horizontal),
+                new RelativeUnit(0f, ItemManagement.GetRect(), RelativeUnit.Orientation.Vertical),
+                new AbsoluteUnit((HotbarSlots * CraftingRecipeSlot.SLOT_SIZE) + ((HotbarSlots + 1) * CraftingRecipeSlot.SLOT_SPACING)),
+                new AbsoluteUnit((rows * CraftingRecipeSlot.SLOT_SIZE) + ((rows + 1) * CraftingRecipeSlot.SLOT_SPACING))
+            ));
+
+            _craftingScreen = new CraftingWindow(this, new Rect(
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(CraftingRecipeSlot.SLOT_SPACING),
+                new RelativeUnit(1f, pivot.GetRect(), RelativeUnit.Orientation.Horizontal),
+                new RelativeUnit(1f, pivot.GetRect(), RelativeUnit.Orientation.Vertical)
+            ), Game.Content.Load<Texture2D>("sprites/ui/button"), _inventory, _recipeTemplate);
+            _craftingScreen.SetPivot(new Vector2(0.5f, 0f));
+
+            pivot.AddChild(_craftingScreen);
+            ItemManagement.AddChild(pivot);
         }
 
         private Color _slightlyTransparent = new Color(255, 255, 255, 175);
