@@ -12,9 +12,13 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.TextureAtlases;
+using Celesteia.Game.Components.Physics;
+using Celesteia.Game.Components.Items;
 
 namespace Celesteia.Resources.Collections {
     public class EntityTypes {
+        public EntityType PLAYER;
+
         public List<EntityType> Types;
 
         public void LoadContent(ContentManager Content) {
@@ -22,20 +26,43 @@ namespace Celesteia.Resources.Collections {
 
             Types = new List<EntityType>();
 
-            Types.Add(new EntityType(0, "Player", TextureAtlas.Create("player", Content.Load<Texture2D>("sprites/entities/player/astronaut"), 24, 24), 
-                (world, atlas) => { new EntityBuilder(world)
-                    .AddComponent(new Transform2())
-                    .AddComponent(new EntityFrames(atlas, 0, 1, ResourceManager.SPRITE_SCALING))
-                    .AddComponent(new PlayerMovement()
-                        .AddHorizontal(new KeyDefinition(Keys.A, Keys.D))
-                        .AddVertical(new KeyDefinition(Keys.W, Keys.S))
-                    )
-                    .AddComponent(new LocalPlayer())
-                    .AddComponent(new CameraFollow())
-                    .AddComponent(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
+            Types.Add(PLAYER = new EntityType(0, "Player",
+                (entity) => {
+                    entity.Attach(new Transform2());
+
+                    entity.Attach(new TargetPosition());
+
+                    entity.Attach(new EntityFrames(
+                        TextureAtlas.Create("player", Content.Load<Texture2D>("sprites/entities/player/astronaut"), 24, 24),
+                        0, 1,
+                        ResourceManager.SPRITE_SCALING
+                    ));
+
+                    entity.Attach(new EntityInventory(36, new ItemStack(8, 1), new ItemStack(0, 10)));
+
+                    entity.Attach(new PhysicsEntity(1f, true));
+
+                    entity.Attach(new CollisionBox(1.5f, 3f));
+
+                    entity.Attach(new PlayerInput()
+                        .AddHorizontal(new KeyDefinition(Keys.A, Keys.D, KeyDetectType.Held))
+                        .AddVertical(new KeyDefinition(Keys.W, Keys.S, KeyDetectType.Held))
+                        .AddRun(new KeyDefinition(null, Keys.LeftShift, KeyDetectType.Held))
+                        .AddJump(new KeyDefinition(null, Keys.Space, KeyDetectType.Held))
+                        .AddInventory(new KeyDefinition(null, Keys.B, KeyDetectType.Down))
+                        .AddCrafting(new KeyDefinition(null, Keys.C, KeyDetectType.Down))
+                        .AddPause(new KeyDefinition(null, Keys.Escape, KeyDetectType.Down))
+                    );
+
+                    entity.Attach(new LocalPlayer());
+
+                    entity.Attach(new CameraFollow());
+
+                    entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
                         .Set(EntityAttribute.MovementSpeed, 5f)
-                    ))
-                    .Build();
+                        .Set(EntityAttribute.JumpForce, 10f)
+                        .Set(EntityAttribute.BlockRange, 7f)
+                    ));
                 }
             ));
             
@@ -43,23 +70,21 @@ namespace Celesteia.Resources.Collections {
         }
     }
 
-    public struct EntityType {
+    public class EntityType {
         public readonly byte EntityID;
         public readonly string EntityName;
-        public readonly TextureAtlas Atlas;
-        private readonly Action<World, TextureAtlas> InstantiateAction;
+        private readonly Action<Entity> InstantiateAction;
 
-        public EntityType(byte id, string name, TextureAtlas atlas, Action<World, TextureAtlas> instantiate) {
+        public EntityType(byte id, string name, Action<Entity> instantiate) {
             EntityID = id;
             EntityName = name;
-            Atlas = atlas;
             InstantiateAction = instantiate;
 
             Debug.WriteLine($"  Entity '{name}' loaded.");
         }
 
-        public void Instantiate(World world) {
-            InstantiateAction.Invoke(world, Atlas);
+        public void Instantiate(Entity entity) {
+            InstantiateAction.Invoke(entity);
         }
     }
 }

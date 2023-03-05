@@ -1,8 +1,11 @@
+using System.Diagnostics;
 using Celesteia.Resources;
 using Celesteia.UI;
 using Celesteia.UI.Elements;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using MonoGame.Extended;
 
 namespace Celesteia.GUIs {
     public class DebugGUI : GUI {
@@ -14,7 +17,7 @@ namespace Celesteia.GUIs {
 
         private Label fpsLabel;
 
-        public override void LoadContent() {
+        public override void LoadContent(ContentManager Content) {
             float fontSize = 12f;
 
             Label template = new Label(new Rect(
@@ -32,16 +35,20 @@ namespace Celesteia.GUIs {
             float textSpacing = 4f;
             float textRow(int number) => 10f + number * (fontSize + textSpacing);
 
-            Root.AddChild(template.Clone().SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(textRow(0)))).SetText("Celesteia"));
+            Root.AddChild(template.Clone().SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(textRow(0)))).SetText("Celesteia Alpha 1.0"));
             Root.AddChild(fpsLabel = template.Clone().SetNewRect(template.GetRect().SetY(AbsoluteUnit.WithValue(textRow(1)))).SetText(""));
+            
+            Debug.WriteLine("Loaded Debug GUI.");
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update(GameTime gameTime, out bool clickedAnything) {
+            clickedAnything = false;
             if (gameTime.TotalGameTime.TotalSeconds - lastUpdate < 0.25) return;
 
-            fps = 1 / (gameTime.ElapsedGameTime.TotalSeconds);
+            fps = 1 / gameTime.GetElapsedSeconds();
 
             fpsLabel.SetText("FPS: " + fps.ToString("0"));
+            fpsLabel.SetColor(gameTime.IsRunningSlowly ? Color.Red : Color.White);
 
             lastUpdate = gameTime.TotalGameTime.TotalSeconds;
         }

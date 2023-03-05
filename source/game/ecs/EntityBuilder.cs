@@ -2,25 +2,32 @@ using System;
 using MonoGame.Extended.Entities;
 
 namespace Celesteia.Game.ECS {
+    /*
+        Class for easily building MonoGameExtended entities.
+    */
+
     public class EntityBuilder : IDisposable {
-        private Entity entity;
+        private Entity _me;
 
         public EntityBuilder(World _world) {
-            entity = _world.CreateEntity();
+            _me = _world.CreateEntity();
         }
 
+        // Add a component to the entity.
         public EntityBuilder AddComponent<T>(T component) where T : class {
-            entity.Attach<T>(component);
+            _me.Attach<T>(component);
             return this;
         }
 
+        // Return the built entity.
         public Entity Build() {
-            return entity;
+            return _me;
         }
 
+        // Dispose the built entity.
         public void Dispose()
         {
-            entity = null;
+            _me = null;
         }
     }
 }

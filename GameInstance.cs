@@ -11,6 +11,7 @@ using MonoGame.Extended.Screens;
 using System.Linq;
 using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
+using Celesteia.Game.Worlds;
 
 namespace Celesteia
 {
@@ -30,6 +31,7 @@ namespace Celesteia
 
         private readonly ScreenManager _screenManager;
         public readonly MusicManager Music;
+        public readonly WorldManager Worlds;
 
         public GameInstance()
         {
@@ -52,6 +54,9 @@ namespace Celesteia
 
             Music = new MusicManager(this);
             Components.Add(Music);
+
+            Worlds = new WorldManager(this);
+            Components.Add(Worlds);
         }
 
         protected override void Initialize()
@@ -86,7 +91,7 @@ namespace Celesteia
 
             // Allow game window to be resized, and set the title.
             Window.AllowUserResizing = true;
-            Window.Title = "Celesteia";
+            Window.Title = "Celesteia Alpha 1.0";
 
             // Make sure the UI knows what game window to refer to for screen space calculations.
             UIReferences.gameWindow = Window;
@@ -102,7 +107,8 @@ namespace Celesteia
             LoadGUI();
 
             // Load the splash screen if it's a release build, load the game directly if it's a debug build.
-            if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this));
+            if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this, Worlds.LoadNewWorld().GetAwaiter().GetResult()));
+            else if (cmdArgs.Contains("-textDebug")) LoadScreen(new TextTestScreen(this));
             else LoadScreen(new SplashScreen(this));
         }
 
@@ -112,7 +118,7 @@ namespace Celesteia
             globalGUIs.Add(new DebugGUI(this));
 
             // Load each global GUI.
-            globalGUIs.ForEach((gui) => { gui.LoadContent(); });
+            globalGUIs.ForEach((gui) => { gui.LoadContent(Content); });
         }
 
         public void LoadScreen(GameScreen screen, Transition transition) {
@@ -129,7 +135,7 @@ namespace Celesteia
             Input.Update();
 
             // Update each global GUI.
-            globalGUIs.ForEach((gui) => { gui.Update(gameTime); });
+            globalGUIs.ForEach((gui) => { gui.Update(gameTime, out _); });
 
             // If Scroll Lock is pressed, toggle GUIs.
             if (KeyboardWrapper.GetKeyDown(Keys.Scroll)) UIReferences.GUIEnabled = !UIReferences.GUIEnabled;

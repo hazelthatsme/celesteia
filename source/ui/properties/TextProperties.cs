@@ -1,3 +1,4 @@
+using Celesteia.Resources;
 using Celesteia.Resources.Collections;
 using Microsoft.Xna.Framework;
 
@@ -8,6 +9,16 @@ namespace Celesteia.UI.Properties {
         private Color _textColor;
         private float _fontSize;
         private TextAlignment _textAlignment;
+
+        public TextProperties Standard() {
+            _text = "";
+            _font = ResourceManager.Fonts.DEFAULT;
+            _textColor = Color.White;
+            _fontSize = 16f;
+            _textAlignment = TextAlignment.Center;
+
+            return this;
+        }
 
         public TextProperties SetText(string text) {
             _text = text;
@@ -38,5 +49,14 @@ namespace Celesteia.UI.Properties {
             return this;
         }
         public TextAlignment GetAlignment() => _textAlignment;
+
+        public TextProperties Clone() {
+            return new TextProperties()
+                .SetColor(_textColor)
+                .SetFont(_font)
+                .SetFontSize(_fontSize)
+                .SetText(_text)
+                .SetTextAlignment(_textAlignment);
+        }
     }
 }

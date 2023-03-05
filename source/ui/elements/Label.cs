@@ -31,6 +31,11 @@ namespace Celesteia.UI.Elements {
             return this;
         }
 
+        public Label SetColor(Color color) {
+            _text.SetColor(color);
+            return this;
+        }
+
         public Label SetTextProperties(TextProperties text) {
             _text = text;
             return this;
@@ -41,7 +46,7 @@ namespace Celesteia.UI.Elements {
             // Draw the label's background, if present.
             if (_background != null) spriteBatch.Draw(GetTexture(), GetRectangle(), null, Color.White);
 
-            TextUtilities.DrawAlignedText(spriteBatch, _text.GetFont(), _text.GetText(), _text.GetColor(), _text.GetAlignment(), GetRectangle(), _text.GetFontSize());
+            TextUtilities.DrawAlignedText(spriteBatch, GetRectangle(), _text);
         }
 
         public Texture2D GetTexture() => _background;

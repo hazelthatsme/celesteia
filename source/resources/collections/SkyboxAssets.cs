@@ -24,7 +24,7 @@ namespace Celesteia.Resources.Collections {
         }
     }
 
-    public struct SkyboxAsset {
+    public class SkyboxAsset {
         public readonly byte AssetID;
         public readonly string Name;
         public readonly SkyboxPortionFrames Frames;

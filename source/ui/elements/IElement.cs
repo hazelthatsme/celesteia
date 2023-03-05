@@ -16,6 +16,9 @@ namespace Celesteia.UI.Elements {
         // Set the containing rect of the element.
         void SetRect(Rect rect);
 
+        // Move to a point.
+        void MoveTo(Point point);
+
         // Get the rectangle with a pivot point.
         Rectangle GetRectangle();
 
@@ -30,9 +33,12 @@ namespace Celesteia.UI.Elements {
         
         // Called when the mouse position is within the element's containing rect.
         void OnMouseOut();
+    	
+        // Get if the element has the mouse over it.
+        bool GetMouseOver();
 
         // Update the element.
-        void Update(GameTime gameTime);
+        void Update(GameTime gameTime, out bool clickedAnything);
 
         // Draw the element.
         void Draw(SpriteBatch spriteBatch);

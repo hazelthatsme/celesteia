@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.UI.Elements {
     public class Image : Element {
@@ -26,9 +27,20 @@ namespace Celesteia.UI.Elements {
             return this;
         }
 
+        private TextureAtlas _patches;
+        private int _patchSize;
+        public Image MakePatches(int size) {
+            if (_texture != null) {
+                _patchSize = size;
+                _patches = TextureAtlas.Create("patches", _texture, _patchSize, _patchSize);
+            }
+            return this;
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(GetTexture(spriteBatch), GetRectangle(), _color);
+            if (_patches != null) ImageUtilities.DrawPatched(spriteBatch, GetRectangle(), _patches, _patchSize, _color);
+            else spriteBatch.Draw(GetTexture(spriteBatch), GetRectangle(), null, _color);
         }
 
         public Texture2D GetTexture(SpriteBatch spriteBatch)
