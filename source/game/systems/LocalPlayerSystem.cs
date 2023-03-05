@@ -56,6 +56,7 @@ namespace Celesteia.Game.Systems {
 
             bool clicked = false;
             UpdateGUI(gameTime, input, out clicked);
+            UpdateSelectedItem();
 
             UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
             UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
@@ -78,6 +79,31 @@ namespace Celesteia.Game.Systems {
 
                     inventory.Inventory.AssertAmounts();
                 }
+            }
+        }
+
+        private void UpdateSelectedItem() {
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D1)) _gameGui.HotbarSelection = 0;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D2)) _gameGui.HotbarSelection = 1;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D3)) _gameGui.HotbarSelection = 2;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D4)) _gameGui.HotbarSelection = 3;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D5)) _gameGui.HotbarSelection = 4;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D6)) _gameGui.HotbarSelection = 5;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D7)) _gameGui.HotbarSelection = 6;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D8)) _gameGui.HotbarSelection = 7;
+            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D9)) _gameGui.HotbarSelection = 8;
+            
+            if (!KeyboardWrapper.GetKeyHeld(Microsoft.Xna.Framework.Input.Keys.LeftControl) && MouseWrapper.GetScrollDelta() != 0f) {
+                int change = MouseWrapper.GetScrollDelta() > 0f ? -1 : 1;
+                int selection = _gameGui.HotbarSelection;
+
+                selection += change;
+
+                if (selection < 0) _gameGui.HotbarSelection = _gameGui.HotbarSlots - 1;
+                if (selection >= _gameGui.HotbarSlots) _gameGui.HotbarSelection = 0;
+
+                _gameGui.HotbarSelection += change;
+                
             }
         }
 
