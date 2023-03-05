@@ -25,6 +25,8 @@
                 "win-x64",
                 "/p:PublishReadyToRun=false",
                 "/p:TieredCompilation=false",
+                "/p:DebugType=none",
+                "/p:DebugSymbols=false",
                 "--self-contained"
             ],
             "problemMatcher": "$msCompile"
@@ -41,6 +43,8 @@
                 "win-x86",
                 "/p:PublishReadyToRun=false",
                 "/p:TieredCompilation=false",
+                "/p:DebugType=none",
+                "/p:DebugSymbols=false",
                 "--self-contained"
             ],
             "problemMatcher": "$msCompile"
