@@ -127,7 +127,7 @@ namespace Celesteia.GUIs.Game {
                 )
                 .SetOnMouseIn((recipe) => {
                     if ((int)State < 2) return;
-                    //_craftingDisplay.SetRecipe(recipe);
+                    _craftingDisplay.SetRecipe(recipe);
                     _craftingDisplayEnabled = true;
                 })
                 .SetOnMouseOut(() => _craftingDisplayEnabled = false);
@@ -190,9 +190,9 @@ namespace Celesteia.GUIs.Game {
             _craftingDisplay = new CraftingTooltipDisplay(new Rect(
                 AbsoluteUnit.WithValue(16f),
                 AbsoluteUnit.WithValue(16f),
-                AbsoluteUnit.WithValue(150f),
-                AbsoluteUnit.WithValue(250f)
-            ));
+                AbsoluteUnit.WithValue(256f),
+                AbsoluteUnit.WithValue(64f)
+            ), tooltipTexture);
             _craftingDisplay.SetPivot(new Vector2(0f, 0f));
 
             _mousePivot.AddChild(_craftingDisplay);

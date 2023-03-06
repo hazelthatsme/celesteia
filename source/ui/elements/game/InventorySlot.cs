@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using Celesteia.Game.Components.Items;
-using Celesteia.GUIs.Game;
 using Celesteia.Resources.Collections;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;

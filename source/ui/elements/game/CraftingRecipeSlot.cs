@@ -1,7 +1,4 @@
 using System;
-using System.Diagnostics;
-using Celesteia.Game.Components.Items;
-using Celesteia.GUIs.Game;
 using Celesteia.Resources.Collections;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
@@ -155,6 +152,8 @@ namespace Celesteia.UI.Elements.Game {
                 .SetRecipe(_recipe)
                 .SetOnMouseDown(_onMouseDown)
                 .SetOnMouseUp(_onMouseUp)
+                .SetOnMouseIn(_onMouseIn)
+                .SetOnMouseOut(_onMouseOut)
                 .SetTextProperties(_text)
                 .SetTexture(_texture)
                 .SetPatches(_patches, _patchSize);
