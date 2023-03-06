@@ -22,4 +22,30 @@ namespace Celesteia.Resources {
             Skybox.LoadContent(content);
         }
     }
+
+    public struct NamespacedKey {
+        public readonly string Namespace;
+        public readonly string Key;
+
+        public NamespacedKey(string ns, string key) {
+            Namespace = ns;
+            Key = key;
+        }
+
+        public static NamespacedKey Base(string key) {
+            return new NamespacedKey("celesteia", key);
+        }
+
+        public string Qualify() {
+            return $"{Namespace}:{Key}";
+        }
+    }
+
+    public interface IResourceType {
+        public byte GetID();
+    }
+
+    public interface IResourceCollection {
+        public IResourceType GetResource(NamespacedKey namespacedKey);
+    }
 }

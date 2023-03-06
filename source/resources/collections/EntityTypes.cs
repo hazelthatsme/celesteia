@@ -2,75 +2,50 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Game.ECS;
-using Celesteia.Game.Components;
-using Celesteia.Game.Components.Player;
-using Celesteia.Game.Input;
-using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 using MonoGame.Extended.Entities;
-using MonoGame.Extended.TextureAtlases;
-using Celesteia.Game.Components.Physics;
-using Celesteia.Game.Components.Items;
 
 namespace Celesteia.Resources.Collections {
-    public class EntityTypes {
+    public class EntityTypes : IResourceCollection {
         public EntityType PLAYER;
 
         public List<EntityType> Types;
+        private EntityType[] BakedTypes;
+        private Dictionary<string, byte> keys = new Dictionary<string, byte>();
 
         public void LoadContent(ContentManager Content) {
             Debug.WriteLine($"Loading entity types...");
 
             Types = new List<EntityType>();
 
-            Types.Add(PLAYER = new EntityType(0, "Player",
-                (entity) => {
-                    entity.Attach(new Transform2());
+            AddEntity("player", "Player", (entity) => EntityFactory.BuildPlayer(entity, Content.Load<Texture2D>("sprites/entities/player/astronaut")));
 
-                    entity.Attach(new TargetPosition());
+            BakedTypes = Types.ToArray();
+        }
 
-                    entity.Attach(new EntityFrames(
-                        TextureAtlas.Create("player", Content.Load<Texture2D>("sprites/entities/player/astronaut"), 24, 24),
-                        0, 1,
-                        ResourceManager.SPRITE_SCALING
-                    ));
+        private void AddKey(NamespacedKey key, byte id) {
+            keys.Add(key.Qualify(), id);
+            Debug.WriteLine($"  Loading block '{key.Qualify()}' ({id})...");
+        }
 
-                    entity.Attach(new EntityInventory(36, new ItemStack(8, 1), new ItemStack(0, 10)));
+        private byte next;
+        private byte AddType(string name, Action<Entity> instantiate) {
+            Types.Add(new EntityType(next, name, instantiate));
+            return next++;
+        }
 
-                    entity.Attach(new PhysicsEntity(1f, true));
+        private void AddEntity(string key, string name, Action<Entity> instantiate) {
+            AddKey(NamespacedKey.Base(key), AddType(name, instantiate));
+        }
 
-                    entity.Attach(new CollisionBox(1.5f, 3f));
-
-                    entity.Attach(new PlayerInput()
-                        .AddHorizontal(new KeyDefinition(Keys.A, Keys.D, KeyDetectType.Held))
-                        .AddVertical(new KeyDefinition(Keys.W, Keys.S, KeyDetectType.Held))
-                        .AddRun(new KeyDefinition(null, Keys.LeftShift, KeyDetectType.Held))
-                        .AddJump(new KeyDefinition(null, Keys.Space, KeyDetectType.Held))
-                        .AddInventory(new KeyDefinition(null, Keys.B, KeyDetectType.Down))
-                        .AddCrafting(new KeyDefinition(null, Keys.C, KeyDetectType.Down))
-                        .AddPause(new KeyDefinition(null, Keys.Escape, KeyDetectType.Down))
-                    );
-
-                    entity.Attach(new LocalPlayer());
-
-                    entity.Attach(new CameraFollow());
-
-                    entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
-                        .Set(EntityAttribute.MovementSpeed, 5f)
-                        .Set(EntityAttribute.JumpForce, 10f)
-                        .Set(EntityAttribute.BlockRange, 7f)
-                    ));
-                }
-            ));
-            
-            Debug.WriteLine("Entities loaded.");
+        public IResourceType GetResource(NamespacedKey key) {
+            if (!keys.ContainsKey(key.Qualify())) throw new NullReferenceException();
+            return BakedTypes[keys[key.Qualify()]];
         }
     }
 
-    public class EntityType {
+    public class EntityType : IResourceType {
         public readonly byte EntityID;
         public readonly string EntityName;
         private readonly Action<Entity> InstantiateAction;
@@ -80,11 +55,13 @@ namespace Celesteia.Resources.Collections {
             EntityName = name;
             InstantiateAction = instantiate;
 
-            Debug.WriteLine($"  Entity '{name}' loaded.");
+            Debug.WriteLine($"  Entity '{name}' ({id}) loaded.");
         }
 
         public void Instantiate(Entity entity) {
             InstantiateAction.Invoke(entity);
         }
+
+        public byte GetID() => EntityID;
     }
 }

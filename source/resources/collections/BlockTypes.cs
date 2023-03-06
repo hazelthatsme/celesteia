@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Resources.Sprites;
@@ -11,9 +12,10 @@ namespace Celesteia.Resources.Collections {
         public const int SIZE = 8; 
     }
 
-    public class BlockTypes {        
+    public class BlockTypes : IResourceCollection {        
         private List<BlockType> Types;
         private BlockType[] BakedTypes;
+        private Dictionary<string, byte> keys = new Dictionary<string, byte>();
 
         private TextureAtlas _atlas;
         private readonly RectangleF standardBox = new RectangleF(0f, 0f, 1f, 1f);
@@ -43,53 +45,73 @@ namespace Celesteia.Resources.Collections {
                 BlockSpriteProperties.SIZE
             );
 
-            AddBlock("Air", 0, 0);
-            AddStandardBlock("Stone", 2, 1, ResourceManager.Items.GetItem("Stone"), 5);
-            AddStandardBlock("Soil", 1, 1, ResourceManager.Items.GetItem("Soil"), 5);
-            AddStandardBlock("Grown Soil", 0, 1, ResourceManager.Items.GetItem("Soil"), 5);
-            AddStandardBlock("Deepstone", 3, 1, ResourceManager.Items.GetItem("Deepstone"), -1);
-            AddStandardBlock("Wooden Log", 10, 1, ResourceManager.Items.GetItem("Wooden Log"), 3);
-            AddBlock("Leaves", 11, 1);
-            AddStandardBlock("Iron Ore", 8, 1, ResourceManager.Items.GetItem("Iron Ore"), 10);
-            AddStandardBlock("Copper Ore", 7, 1, ResourceManager.Items.GetItem("Copper Ore"), 10);
-            AddStandardBlock("Coal Ore", 14, 1, ResourceManager.Items.GetItem("Coal Lump"), 10);
-            AddStandardBlock("Wooden Planks", 4, 1, ResourceManager.Items.GetItem("Wooden Planks"), 4);
+            AddEmptyBlock("air", "Air");
+            AddStandardBlock("stone", "Stone", 2, 1, NamespacedKey.Base("stone"), 5);
+            AddStandardBlock("soil", "Soil", 1, 1, NamespacedKey.Base("soil"), 5);
+            AddStandardBlock("grown_soil", "Grown Soil", 0, 1, NamespacedKey.Base("soil"), 5);
+            AddStandardBlock("deepstone", "Deepstone", 3, 1, NamespacedKey.Base("deepstone"), -1);
+            AddStandardBlock("log", "Wooden Log", 10, 1, NamespacedKey.Base("log"), 3);
+            AddWalkthroughBlock("leaves", "Leaves", 11);
+            AddStandardBlock("iron_ore", "Iron Ore", 8, 1, NamespacedKey.Base("iron_ore"), 10);
+            AddStandardBlock("copper_ore", "Copper Ore", 7, 1, NamespacedKey.Base("copper_ore"), 10);
+            AddStandardBlock("coal_ore", "Coal Ore", 14, 1, NamespacedKey.Base("coal"), 10);
+            AddStandardBlock("wooden_planks", "Wooden Planks", 4, 1, NamespacedKey.Base("wooden_planks"), 4);
 
             BakedTypes = Types.ToArray();
         }
 
-        byte next = 0;
-        private void AddBlock(string name, int frameStart, int frameCount = 1, ItemType item = null, RectangleF? boundingBox = null, int strength = 1) {
-            Types.Add(new BlockType(next, name, _atlas, frameStart, frameCount, item, boundingBox, strength));
-            next++;
+        private void AddKey(NamespacedKey key, byte id) {
+            keys.Add(key.Qualify(), id);
+            Debug.WriteLine($"  Loading block '{key.Qualify()}' ({id})...");
         }
 
-        private void AddStandardBlock(string name, int frameStart, int frameCount = 1, ItemType item = null, int strength = 1) {
-            AddBlock(name, frameStart, frameCount, item, standardBox, strength);
+        byte next = 0;
+        private byte AddType(string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, RectangleF? boundingBox = null, int strength = 1) {
+            Types.Add(new BlockType(next, name, _atlas, frameStart, frameCount, itemKey, boundingBox, strength));
+            return next++;
+        }
+
+        private void AddEmptyBlock(string key, string name) {
+            AddKey(NamespacedKey.Base(key), AddType(name, 0, 0));
+        }
+
+        private void AddStandardBlock(string key, string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, int strength = 1) {
+            AddKey(NamespacedKey.Base(key), AddType(name, frameStart, frameCount, itemKey, standardBox, strength));
+        }
+
+        private void AddWalkthroughBlock(string key, string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, int strength = 1) {
+            AddKey(NamespacedKey.Base(key), AddType(name, frameStart, frameCount, itemKey, null, strength));
         }
 
         public BlockType GetBlock(byte id) {
             return BakedTypes[id];
         }
+
+        public IResourceType GetResource(NamespacedKey key) {
+            if (!keys.ContainsKey(key.Qualify())) throw new NullReferenceException();
+            return BakedTypes[keys[key.Qualify()]];
+        }
     }
 
-    public class BlockType {
+    public class BlockType : IResourceType {
         public readonly byte BlockID;
         public readonly string Name;
         public readonly BlockFrames Frames;
-        public readonly ItemType Item;
+        public readonly NamespacedKey? DropKey;
         public readonly RectangleF? BoundingBox;
         public readonly int Strength;
 
-        public BlockType(byte id, string name, TextureAtlas atlas, int frameStart, int frameCount, ItemType item, RectangleF? boundingBox, int strength) {
-            Debug.WriteLine($"  Loading block '{name}' ({id})...");
-
+        public BlockType(byte id, string name, TextureAtlas atlas, int frameStart, int frameCount, NamespacedKey? dropKey, RectangleF? boundingBox, int strength) {
             BlockID = id;
             Name = name;
-            Item = item;
+            DropKey = dropKey;
             Frames = new BlockFrames(atlas, frameStart, frameCount);
             BoundingBox = boundingBox;
             Strength = strength;
         }
+
+        public ItemType GetDrops() => DropKey.HasValue ? ResourceManager.Items.GetResource(DropKey.Value) as ItemType : null;
+
+        public byte GetID() => BlockID;
     }
 }

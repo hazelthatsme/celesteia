@@ -1,6 +1,5 @@
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
-using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds;
 using Celesteia.Resources;
 using Microsoft.Xna.Framework;
