@@ -6,7 +6,6 @@ using Celesteia.UI;
 using Celesteia.UI.Elements;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 
@@ -19,12 +18,12 @@ namespace Celesteia.Screens {
 
         private Label topLeft;
         private Label topCenter;
-        private Label topRight;
-        private Label middleLeft;
-        private Label middle;
-        private Label middleRight;
-        private Label bottomLeft;
-        private Label bottom;
+        //private Label topRight;
+        //private Label middleLeft;
+        //private Label middle;
+        //private Label middleRight;
+        //private Label bottomLeft;
+        //private Label bottom;
         private Label bottomRight;
 
         private TextProperties properties;
