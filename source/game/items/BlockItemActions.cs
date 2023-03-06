@@ -1,27 +1,36 @@
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds;
+using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 
 namespace Celesteia.Game {
     public class BlockItemActions : ItemActions {
-        private byte _block;
+        private NamespacedKey _blockKey;
+        private byte _block = 0;
 
-        public BlockItemActions(byte blockID) {
+        public BlockItemActions(NamespacedKey blockKey) {
             UseTime = 0.2;
-            _block = blockID;
+            _blockKey = blockKey;
+        }
+        
+        private void TryQualify() {
+            _block = ResourceManager.Blocks.GetBlock(_blockKey).GetID();
         }
         
         public override bool OnLeftClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
+            TryQualify();
             return Assert(gameTime, world, cursor, user, false) && Place(world, cursor, false);
         }
         public override bool OnRightClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
+            TryQualify();
             return Assert(gameTime, world, cursor, user, true) && Place(world, cursor, true);
         }
 
         public bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
+            if (_block == 0) return false;
             if (!CheckUseTime(gameTime)) return false;
 
             if (!user.Has<Transform2>() || !user.Has<EntityAttributes>()) return false;

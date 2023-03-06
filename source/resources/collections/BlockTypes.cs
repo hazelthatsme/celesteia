@@ -46,16 +46,16 @@ namespace Celesteia.Resources.Collections {
             );
 
             AddEmptyBlock("air", "Air");
-            AddStandardBlock("stone", "Stone", 2, 1, ResourceManager.Items.GetItem("Stone"), 5);
-            AddStandardBlock("soil", "Soil", 1, 1, ResourceManager.Items.GetItem("Soil"), 5);
-            AddStandardBlock("grown_soil", "Grown Soil", 0, 1, ResourceManager.Items.GetItem("Soil"), 5);
-            AddStandardBlock("deepstone", "Deepstone", 3, 1, ResourceManager.Items.GetItem("Deepstone"), -1);
-            AddStandardBlock("log", "Wooden Log", 10, 1, ResourceManager.Items.GetItem("Wooden Log"), 3);
+            AddStandardBlock("stone", "Stone", 2, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("stone")), 5);
+            AddStandardBlock("soil", "Soil", 1, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("soil")), 5);
+            AddStandardBlock("grown_soil", "Grown Soil", 0, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("soil")), 5);
+            AddStandardBlock("deepstone", "Deepstone", 3, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("deepstone")), -1);
+            AddStandardBlock("log", "Wooden Log", 10, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("log")), 3);
             AddWalkthroughBlock("leaves", "Leaves", 11);
-            AddStandardBlock("iron_ore", "Iron Ore", 8, 1, ResourceManager.Items.GetItem("Iron Ore"), 10);
-            AddStandardBlock("copper_ore", "Copper Ore", 7, 1, ResourceManager.Items.GetItem("Copper Ore"), 10);
-            AddStandardBlock("coal_ore", "Coal Ore", 14, 1, ResourceManager.Items.GetItem("Coal Lump"), 10);
-            AddStandardBlock("wooden_planks", "Wooden Planks", 4, 1, ResourceManager.Items.GetItem("Wooden Planks"), 4);
+            AddStandardBlock("iron_ore", "Iron Ore", 8, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("iron_ore")), 10);
+            AddStandardBlock("copper_ore", "Copper Ore", 7, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("copper_ore")), 10);
+            AddStandardBlock("coal_ore", "Coal Ore", 14, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("coal")), 10);
+            AddStandardBlock("wooden_planks", "Wooden Planks", 4, 1, ResourceManager.Items.GetItem(NamespacedKey.Base("wooden_planks")), 4);
 
             BakedTypes = Types.ToArray();
         }
