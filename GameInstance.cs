@@ -87,6 +87,7 @@ namespace Celesteia
             InactiveSleepTime = new TimeSpan(0);
 
             // Set maximum framerate to avoid resource soaking.
+            IsFixedTimeStep = true;
             TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
 
             // Allow game window to be resized, and set the title.
@@ -131,9 +132,6 @@ namespace Celesteia
 
         protected override void Update(GameTime gameTime)
         {
-            // Only fix framerate when resources allow for it.
-            IsFixedTimeStep = !gameTime.IsRunningSlowly;
-
             // Update the input.
             Input.Update();
 
