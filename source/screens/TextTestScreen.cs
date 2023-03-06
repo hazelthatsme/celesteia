@@ -17,7 +17,7 @@ namespace Celesteia.Screens {
         private IContainer Root;
 
         private Label topLeft;
-        private Label topCenter;
+        //private Label topCenter;
         //private Label topRight;
         //private Label middleLeft;
         //private Label middle;
