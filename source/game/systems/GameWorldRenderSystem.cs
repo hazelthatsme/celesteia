@@ -46,8 +46,8 @@ namespace Celesteia.Game.Systems {
                 }
             }
             
-            if (_gameWorld.GetSelectedBlock() != null)
-                _selectionSprite.GetFrame(0).Draw(0, _spriteBatch, _gameWorld.GetSelection(), _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black);
+            if (_gameWorld.GetSelection().HasValue && _gameWorld.GetSelectedBlock() != null)
+                _selectionSprite.GetFrame(0).Draw(0, _spriteBatch, _gameWorld.GetSelection().Value, _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black);
 
             _spriteBatch.End();
         }

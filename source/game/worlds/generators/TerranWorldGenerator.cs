@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using Celesteia.Resources;
 
 namespace Celesteia.Game.Worlds.Generators {
     public class TerranWorldGenerator : IWorldGenerator {
@@ -11,6 +12,19 @@ namespace Celesteia.Game.Worlds.Generators {
         public TerranWorldGenerator(GameWorld world) {
             SetWorld(world);
             _noise = new FastNoiseLite(world.GetSeed());
+
+            LoadBlockIndices();
+        }
+
+        private byte top;
+        private byte soil;
+        private byte stone;
+        private byte deepstone;
+        private void LoadBlockIndices() {
+            top = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID();
+            soil = ResourceManager.Blocks.GetResource(NamespacedKey.Base("soil")).GetID();
+            stone = ResourceManager.Blocks.GetResource(NamespacedKey.Base("stone")).GetID();
+            deepstone = ResourceManager.Blocks.GetResource(NamespacedKey.Base("deepstone")).GetID();
         }
 
         public byte[] GetNaturalBlocks(int x, int y)
@@ -43,14 +57,14 @@ namespace Celesteia.Game.Worlds.Generators {
             values[0] = 0;
             values[1] = 0;
 
-            if (y > _world.GetHeightInBlocks() - 5) { values[0] = 4; values[1] = 4; }
+            if (y > _world.GetHeightInBlocks() - 5) { values[0] = deepstone; values[1] = deepstone; }
             else {
                 int h = GetHeightValue(x);
 
                 if (_world.GetHeightInBlocks() - y <= h) {
-                    if (_world.GetHeightInBlocks() - y == h) { values[0] = 3; values[1] = 2; }
-                    else if (_world.GetHeightInBlocks() - y >= h - 3) { values[0] = 2; values[1] = 2; }
-                    else { values[0] = 1; values[1] = 1; }
+                    if (_world.GetHeightInBlocks() - y == h) { values[0] = top; values[1] = soil; }
+                    else if (_world.GetHeightInBlocks() - y >= h - 3) { values[0] = soil; values[1] = soil; }
+                    else { values[0] = stone; values[1] = stone; }
                 }
             }
 
@@ -60,8 +74,8 @@ namespace Celesteia.Game.Worlds.Generators {
             byte[] values = prev;
             float threshold = 0.667f;
 
-            if (prev[0] == 0 || prev[0] == 4) return values;
-            if (prev[0] == 2 || prev[0] == 3) threshold += .2f;
+            if (prev[0] == 0 || prev[0] == deepstone) return values;
+            if (prev[0] == soil || prev[0] == top) threshold += .2f;
 
             float c = GetCaveValue(x, y);
 
@@ -71,7 +85,7 @@ namespace Celesteia.Game.Worlds.Generators {
         }
 
         public byte[] ThirdPass(int x, int y, byte[] prev) {
-            if (prev[0] != 1) return prev;
+            if (prev[0] != stone) return prev;
 
             byte[] values = prev;
 

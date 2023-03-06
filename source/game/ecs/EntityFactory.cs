@@ -12,6 +12,8 @@ using Celesteia.Game.Input;
 using Celesteia.Game.Components;
 using Microsoft.Xna.Framework.Input;
 using Celesteia.Resources.Collections;
+using Celesteia.Game.Components.Physics;
+using Celesteia.Game.Components.Items;
 
 namespace Celesteia.Game.ECS {
     /*
@@ -43,6 +45,45 @@ namespace Celesteia.Game.ECS {
             type.Instantiate(entity);
             
             return entity;
+        }
+
+        public static void BuildPlayer(Entity entity, Texture2D sprites) {
+            entity.Attach(new Transform2());
+
+            entity.Attach(new TargetPosition());
+
+            entity.Attach(new EntityFrames(
+                TextureAtlas.Create("player", sprites, 24, 24),
+                0, 1,
+                ResourceManager.SPRITE_SCALING
+            ));
+
+            entity.Attach(new EntityInventory(36, new ItemStack(8, 1)));
+
+            entity.Attach(new PhysicsEntity(1f, true));
+
+            entity.Attach(new CollisionBox(1.5f, 3f));
+
+            entity.Attach(new PlayerInput()
+                .AddHorizontal(new KeyDefinition(Keys.A, Keys.D, KeyDetectType.Held))
+                .AddVertical(new KeyDefinition(Keys.W, Keys.S, KeyDetectType.Held))
+                .AddRun(new KeyDefinition(null, Keys.LeftShift, KeyDetectType.Held))
+                .AddJump(new KeyDefinition(null, Keys.Space, KeyDetectType.Held))
+                .AddInventory(new KeyDefinition(null, Keys.B, KeyDetectType.Down))
+                .AddCrafting(new KeyDefinition(null, Keys.C, KeyDetectType.Down))
+                .AddPause(new KeyDefinition(null, Keys.Escape, KeyDetectType.Down))
+            );
+
+            entity.Attach(new LocalPlayer());
+
+            entity.Attach(new CameraFollow());
+
+            entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
+                .Set(EntityAttribute.MovementSpeed, 5f)
+                .Set(EntityAttribute.JumpFuel, .5f)
+                .Set(EntityAttribute.JumpForce, 10f)
+                .Set(EntityAttribute.BlockRange, 7f)
+            ));
         }
     }
 }

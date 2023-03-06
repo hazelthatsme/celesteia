@@ -12,18 +12,32 @@ namespace Celesteia.Resources.Collections {
 
             Recipes = new List<CraftingRecipe>();
 
-            AddRecipe(ResourceManager.Items.GetItem("Plank").GetStack(4), ResourceManager.Items.GetItem("Wooden Log").GetStack(1));
-            AddRecipe(ResourceManager.Items.GetItem("Wooden Planks").GetStack(1), ResourceManager.Items.GetItem("Plank").GetStack(2));
+            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("plank")) as ItemType).GetStack(4),
+                (ResourceManager.Items.GetResource(NamespacedKey.Base("log")) as ItemType).GetStack(1)
+            );
+
+            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("wooden_planks")) as ItemType).GetStack(1),
+                (ResourceManager.Items.GetResource(NamespacedKey.Base("plank")) as ItemType).GetStack(2)
+            );
+
+            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("copper_ingot")) as ItemType).GetStack(1),
+                (ResourceManager.Items.GetResource(NamespacedKey.Base("copper_ore")) as ItemType).GetStack(1)
+            );
+
+            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("iron_ingot")) as ItemType).GetStack(1),
+                (ResourceManager.Items.GetResource(NamespacedKey.Base("iron_ore")) as ItemType).GetStack(1)
+            );
+
+            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("jetpack_tank")) as ItemType).GetStack(1), 
+                (ResourceManager.Items.GetResource(NamespacedKey.Base("iron_ingot")) as ItemType).GetStack(10),
+                (ResourceManager.Items.GetResource(NamespacedKey.Base("copper_ingot")) as ItemType).GetStack(5)
+            );
         }
 
         byte next = 0;
         private void AddRecipe(ItemStack result, params ItemStack[] ingredients) {
             Recipes.Add(new CraftingRecipe(next, result, ingredients));
             next++;
-        }
-
-        public CraftingRecipe GetRecipe(byte id) {
-            return Recipes.Find(x => x.RecipeID == id);
         }
 
         public List<CraftingRecipe> GetRecipes() {
