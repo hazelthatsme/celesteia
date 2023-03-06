@@ -17,7 +17,7 @@ namespace Celesteia.Game {
         }
         
         private void TryQualify() {
-            _block = ResourceManager.Blocks.GetBlock(_blockKey).GetID();
+            _block = ResourceManager.Blocks.GetResource(_blockKey).GetID();
         }
         
         public override bool OnLeftClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {

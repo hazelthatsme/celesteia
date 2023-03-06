@@ -21,10 +21,10 @@ namespace Celesteia.Game.Worlds.Generators {
         private byte stone;
         private byte deepstone;
         private void LoadBlockIndices() {
-            top = ResourceManager.Blocks.GetBlock(NamespacedKey.Base("grown_soil")).GetID();
-            soil = ResourceManager.Blocks.GetBlock(NamespacedKey.Base("soil")).GetID();
-            stone = ResourceManager.Blocks.GetBlock(NamespacedKey.Base("stone")).GetID();
-            deepstone = ResourceManager.Blocks.GetBlock(NamespacedKey.Base("deepstone")).GetID();
+            top = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID();
+            soil = ResourceManager.Blocks.GetResource(NamespacedKey.Base("soil")).GetID();
+            stone = ResourceManager.Blocks.GetResource(NamespacedKey.Base("stone")).GetID();
+            deepstone = ResourceManager.Blocks.GetResource(NamespacedKey.Base("deepstone")).GetID();
         }
 
         public byte[] GetNaturalBlocks(int x, int y)

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Celesteia.Resources.Collections;
 using Microsoft.Xna.Framework.Content;
 
@@ -44,5 +43,9 @@ namespace Celesteia.Resources {
 
     public interface IResourceType {
         public byte GetID();
+    }
+
+    public interface IResourceCollection {
+        public IResourceType GetResource(NamespacedKey namespacedKey);
     }
 }

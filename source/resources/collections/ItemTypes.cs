@@ -18,7 +18,7 @@ namespace Celesteia.Resources.Collections {
         private Dictionary<string, byte> keys = new Dictionary<string, byte>();
 
         public void LoadContent(ContentManager Content) {
-            Debug.WriteLine($"Loading block types...");
+            Debug.WriteLine($"Loading item types...");
 
             Types = new List<ItemType>();
 
@@ -49,21 +49,21 @@ namespace Celesteia.Resources.Collections {
         }
 
         byte next = 0;
-        private byte AddItem(string name, string lore, TextureRegion2D sprite, ItemActions actions, bool consumeOnUse, int maxStack) {
+        private byte AddType(string name, string lore, TextureRegion2D sprite, ItemActions actions, bool consumeOnUse, int maxStack) {
             Types.Add(new ItemType(next, name, lore, sprite, actions, consumeOnUse, maxStack));
             return next++;
         }
 
         private void AddBlockItem(string key, string name, TextureRegion2D sprite, NamespacedKey blockKey, string lore) {
-            AddKey(NamespacedKey.Base(key), AddItem(name, lore, sprite, new BlockItemActions(blockKey), true, 99));
+            AddKey(NamespacedKey.Base(key), AddType(name, lore, sprite, new BlockItemActions(blockKey), true, 99));
         }
 
         private void AddToolItem(string key, string name, TextureRegion2D sprite, int power, string lore) {
-            AddKey(NamespacedKey.Base(key), AddItem(name, lore, sprite, new PickaxeItemActions(power), false, 1));
+            AddKey(NamespacedKey.Base(key), AddType(name, lore, sprite, new PickaxeItemActions(power), false, 1));
         }
 
         private void AddIngredientItem(string key, string name, TextureRegion2D sprite, string lore) {
-            AddKey(NamespacedKey.Base(key), AddItem(name, lore, sprite, null, true, 99));
+            AddKey(NamespacedKey.Base(key), AddType(name, lore, sprite, null, true, 99));
         }
 
         public ItemType GetItem(byte id) {
@@ -74,13 +74,13 @@ namespace Celesteia.Resources.Collections {
             return Types.Find(x => x.Name == name);
         }
 
-        public ItemType GetItem(NamespacedKey key) {
+        public IResourceType GetResource(NamespacedKey key) {
             if (!keys.ContainsKey(key.Qualify())) throw new NullReferenceException();
             return BakedTypes[keys[key.Qualify()]];
         }
     }
 
-    public class ItemType {
+    public class ItemType : IResourceType {
         public readonly byte ItemID;
         public readonly string Name;
         public readonly string Lore;
@@ -104,5 +104,7 @@ namespace Celesteia.Resources.Collections {
         public ItemStack GetStack(int amount) {
             return new ItemStack(ItemID, amount);
         }
+
+        public byte GetID() => ItemID;
     }
 }

@@ -50,6 +50,8 @@ namespace Celesteia.Game.Systems {
             _world = world;
         }
 
+        private bool IsGameActive => !_gameGui.Paused && (int)_gameGui.State < 1;
+
         public override void Update(GameTime gameTime)
         {
             if (_player == null) return;
@@ -57,14 +59,14 @@ namespace Celesteia.Game.Systems {
             bool clicked = false;
             UpdateGUI(gameTime, input, out clicked);
             
-            if (!_gameGui.Paused && (int)_gameGui.State < 1) {
+            if (IsGameActive) {
                 UpdateSelectedItem();
                 
                 UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
                 UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
-                
-                UpdateMouse(gameTime, clicked);
             }
+            
+            UpdateMouse(gameTime, clicked);
         }
 
         private void UpdateSelectedItem() {
@@ -154,9 +156,10 @@ namespace Celesteia.Game.Systems {
         private void UpdateMouse(GameTime gameTime, bool clicked) {
             point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
             
-            _world.SetSelection(point);
+            if (IsGameActive) _world.SetSelection(point);
+            else _world.SetSelection(null);
 
-            if (!clicked) UpdateClick(gameTime);
+            if (!clicked && IsGameActive) UpdateClick(gameTime);
         }
 
 

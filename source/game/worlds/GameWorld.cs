@@ -26,13 +26,16 @@ namespace Celesteia.Game.Worlds {
         private int _seed;
         public int GetSeed() => _seed;
 
-        private Vector2 _selection;
+        private Vector2? _selection;
         private BlockType _selectedBlock;
-        public Vector2 GetSelection() => _selection;
+        public Vector2? GetSelection() => _selection;
         public BlockType GetSelectedBlock() => _selectedBlock;
-        public void SetSelection(Vector2 selection) {
-            _selection = RoundSelection(selection);
-            _selectedBlock = ResourceManager.Blocks.GetBlock(GetBlock(selection));
+        public void SetSelection(Vector2? selection) {
+            _selection = selection;
+            if (!_selection.HasValue) return;
+
+            _selection = RoundSelection(_selection.Value);
+            _selectedBlock = ResourceManager.Blocks.GetBlock(GetBlock(_selection.Value));
         }
         private Vector2 RoundSelection(Vector2 pos) {
             pos.X = (int)Math.Floor(pos.X);
