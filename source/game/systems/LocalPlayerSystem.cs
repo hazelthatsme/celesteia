@@ -142,14 +142,12 @@ namespace Celesteia.Game.Systems {
 
         private void UpdateJump(GameTime gameTime, LocalPlayer localPlayer, PlayerInput input, PhysicsEntity physicsEntity, EntityAttributes.EntityAttributeMap attributes)
         {
-            if (physicsEntity.CollidingDown) localPlayer.ResetJump();
-
             if (localPlayer.JumpRemaining > 0f) {
                 if (input.TestJump() > 0f) {
                     physicsEntity.SetVelocity(physicsEntity.Velocity.X, -attributes.Get(EntityAttribute.JumpForce));
                     localPlayer.JumpRemaining -= gameTime.GetElapsedSeconds();
                 }
-            }
+            } else if (physicsEntity.CollidingDown) localPlayer.ResetJump(attributes.Get(EntityAttribute.JumpFuel));
         }
 
         Vector2 point = Vector2.Zero;

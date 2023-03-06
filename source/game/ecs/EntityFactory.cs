@@ -80,6 +80,7 @@ namespace Celesteia.Game.ECS {
 
             entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
                 .Set(EntityAttribute.MovementSpeed, 5f)
+                .Set(EntityAttribute.JumpFuel, .5f)
                 .Set(EntityAttribute.JumpForce, 10f)
                 .Set(EntityAttribute.BlockRange, 7f)
             ));

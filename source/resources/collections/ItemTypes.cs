@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Game;
+using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,6 +40,9 @@ namespace Celesteia.Resources.Collections {
             AddToolItem("iron_pickaxe", "Iron Pickaxe", atlas.GetRegion(33), 4, "Used to harvest blocks.");
             AddBlockItem("wooden_planks", "Wooden Planks", atlas.GetRegion(6), NamespacedKey.Base("wooden_planks"), "Great for building.");
             AddIngredientItem("plank", "Plank", atlas.GetRegion(15), "Good for making blocks.");
+            AddIngredientItem("copper_ingot", "Copper Ingot", atlas.GetRegion(17), "Conducts currents.");
+            AddIngredientItem("iron_ingot", "Iron Ingot", atlas.GetRegion(18), "Strong and sturdy.");
+            AddUpgradeItem("jetpack_tank", "Jetpack Tank", atlas.GetRegion(16), "Upgrades your jetpack fuel.", EntityAttribute.JumpFuel, .1f, 1f);
 
             BakedTypes = Types.ToArray();
         }
@@ -60,6 +64,10 @@ namespace Celesteia.Resources.Collections {
 
         private void AddToolItem(string key, string name, TextureRegion2D sprite, int power, string lore) {
             AddKey(NamespacedKey.Base(key), AddType(name, lore, sprite, new PickaxeItemActions(power), false, 1));
+        }
+
+        private void AddUpgradeItem(string key, string name, TextureRegion2D sprite, string lore, EntityAttribute attribute, float increase, float max) {
+            AddKey(NamespacedKey.Base(key), AddType(name, lore, sprite, new UpgradeItemActions(increase, attribute, max), true, 1));
         }
 
         private void AddIngredientItem(string key, string name, TextureRegion2D sprite, string lore) {
