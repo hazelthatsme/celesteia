@@ -170,11 +170,22 @@ namespace Celesteia.Game.Worlds {
         }
 
         public static bool operator ==(ChunkVector a, ChunkVector b) {
-            return a.X == b.X && a.Y == b.Y;
+            return a.Equals(b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ChunkVector) return ((ChunkVector)obj).X == this.X && ((ChunkVector)obj).Y == this.Y;
+            return false;
         }
 
         public static bool operator !=(ChunkVector a, ChunkVector b) {
-            return a.X != b.X || a.Y != b.Y;
+            return !a.Equals(b);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

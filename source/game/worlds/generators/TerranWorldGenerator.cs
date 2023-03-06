@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.Game.Worlds.Generators {
@@ -45,12 +43,15 @@ namespace Celesteia.Game.Worlds.Generators {
             values[0] = 0;
             values[1] = 0;
 
-            int h = GetHeightValue(x);
+            if (y > _world.GetHeightInBlocks() - 5) { values[0] = 4; values[1] = 4; }
+            else {
+                int h = GetHeightValue(x);
 
-            if (_world.GetHeightInBlocks() - y <= h) {
-                if (_world.GetHeightInBlocks() - y == h) { values[0] = 3; values[1] = 2; }
-                else if (_world.GetHeightInBlocks() - y >= h - 3) { values[0] = 2; values[1] = 2; }
-                else { values[0] = 1; values[1] = 1; }
+                if (_world.GetHeightInBlocks() - y <= h) {
+                    if (_world.GetHeightInBlocks() - y == h) { values[0] = 3; values[1] = 2; }
+                    else if (_world.GetHeightInBlocks() - y >= h - 3) { values[0] = 2; values[1] = 2; }
+                    else { values[0] = 1; values[1] = 1; }
+                }
             }
 
             return values;

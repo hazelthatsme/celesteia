@@ -1,5 +1,8 @@
+using System;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
+using Celesteia.Resources;
+using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities.Systems;
@@ -12,11 +15,14 @@ namespace Celesteia.Game.Systems {
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
         private int _renderDistance => 5;
         private GameWorld _gameWorld;
+        private BlockFrames _selectionSprite;
 
         public GameWorldRenderSystem(Camera2D camera, SpriteBatch spriteBatch, GameWorld world) {
             _camera = camera;
             _spriteBatch = spriteBatch;
             _gameWorld = world;
+
+            _selectionSprite = ResourceManager.Blocks.Selection;
         }
 
         private ChunkVector _v;
@@ -39,6 +45,8 @@ namespace Celesteia.Game.Systems {
                     DrawChunk(_v, gameTime, _spriteBatch, _camera);
                 }
             }
+            
+            _selectionSprite.GetFrame(0).Draw(0, _spriteBatch, _gameWorld.GetSelection(), _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black);
 
             _spriteBatch.End();
         }

@@ -1,4 +1,5 @@
 using Celesteia.Game.Components;
+using Celesteia.Game.Worlds;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -6,10 +7,14 @@ using MonoGame.Extended.Entities.Systems;
 
 namespace Celesteia.Game.Systems {
     public class TargetPositionSystem : EntityUpdateSystem {
+        private GameWorld _gameWorld;
+        
         private ComponentMapper<Transform2> transformMapper;
         private ComponentMapper<TargetPosition> targetPositionMapper;
 
-        public TargetPositionSystem() : base(Aspect.All(typeof(Transform2), typeof(TargetPosition))) {}
+        public TargetPositionSystem(GameWorld gameWorld) : base(Aspect.All(typeof(Transform2), typeof(TargetPosition))) {
+            _gameWorld = gameWorld;
+        }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
@@ -23,6 +28,7 @@ namespace Celesteia.Game.Systems {
                 TargetPosition targetPosition = targetPositionMapper.Get(entityId);
                 Transform2 transform = transformMapper.Get(entityId);
 
+                targetPosition.Target.X = MathHelper.Clamp(targetPosition.Target.X, 0f, _gameWorld.GetWidthInBlocks());
                 transform.Position = targetPosition.Target;
             }
         }

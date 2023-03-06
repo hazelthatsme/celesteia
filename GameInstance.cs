@@ -17,6 +17,7 @@ namespace Celesteia
 {
     public class GameInstance : Microsoft.Xna.Framework.Game
     {
+        public static readonly string Version = "Alpha 1.1";
         public static bool DebugMode { get; private set; }
         
         private readonly List<string> cmdArgs;
@@ -77,7 +78,7 @@ namespace Celesteia
         }
 
         private void SetupGraphicsAndWindow() {
-            GraphicsController.VSync = true;
+            GraphicsController.VSync = false;
             GraphicsController.FullScreen = FullscreenMode.Windowed;
             GraphicsController.Resolution = Window.ClientBounds;
             GraphicsController.Apply();
@@ -86,12 +87,11 @@ namespace Celesteia
             InactiveSleepTime = new TimeSpan(0);
 
             // Set maximum framerate to avoid resource soaking.
-            IsFixedTimeStep = true;
             TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
 
             // Allow game window to be resized, and set the title.
             Window.AllowUserResizing = true;
-            Window.Title = "Celesteia Alpha 1.0.1";
+            Window.Title = $"Celesteia {Version}";
 
             // Make sure the UI knows what game window to refer to for screen space calculations.
             UIReferences.gameWindow = Window;
@@ -131,6 +131,9 @@ namespace Celesteia
 
         protected override void Update(GameTime gameTime)
         {
+            // Only fix framerate when resources allow for it.
+            IsFixedTimeStep = !gameTime.IsRunningSlowly;
+
             // Update the input.
             Input.Update();
 

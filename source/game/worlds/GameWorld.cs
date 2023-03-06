@@ -4,6 +4,7 @@ using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds.Generators;
 using Celesteia.Resources;
+using Celesteia.Resources.Collections;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -24,6 +25,20 @@ namespace Celesteia.Game.Worlds {
 
         private int _seed;
         public int GetSeed() => _seed;
+
+        private Vector2 _selection;
+        private BlockType _selectedBlock;
+        public Vector2 GetSelection() => _selection;
+        public BlockType GetSelectedBlock() => _selectedBlock;
+        public void SetSelection(Vector2 selection) {
+            _selection = RoundSelection(selection);
+            _selectedBlock = ResourceManager.Blocks.GetBlock(GetBlock(selection));
+        }
+        private Vector2 RoundSelection(Vector2 pos) {
+            pos.X = (int)Math.Floor(pos.X);
+            pos.Y = (int)Math.Floor(pos.Y);
+            return pos;
+        }
 
         public GameWorld(int width, int height, GameInstance game) {
             _game = game;

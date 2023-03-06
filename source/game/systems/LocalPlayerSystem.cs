@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Diagnostics;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
@@ -11,7 +9,6 @@ using Celesteia.GUIs.Game;
 using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -65,8 +62,8 @@ namespace Celesteia.Game.Systems {
                 
                 UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
                 UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
-
-                if (!clicked) UpdateClick(gameTime);
+                
+                UpdateMouse(gameTime, clicked);
             }
         }
 
@@ -153,16 +150,23 @@ namespace Celesteia.Game.Systems {
             }
         }
 
+        Vector2 point = Vector2.Zero;
+        private void UpdateMouse(GameTime gameTime, bool clicked) {
+            point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
+            
+            _world.SetSelection(point);
+
+            if (!clicked) UpdateClick(gameTime);
+        }
+
 
         bool mouseClick = false;
-        Vector2 point = Vector2.Zero;
         ItemStack stack = null;
         private void UpdateClick(GameTime gameTime) {
             mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
 
             if (!mouseClick) return;
 
-            point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
             stack = _gameGui.GetSelectedItem();
 
             if (stack == null || stack.Type == null || stack.Type.Actions == null) return;

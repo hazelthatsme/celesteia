@@ -18,6 +18,7 @@ namespace Celesteia.Resources.Collections {
         private TextureAtlas _atlas;
         private readonly RectangleF standardBox = new RectangleF(0f, 0f, 1f, 1f);
         public BlockFrames BreakAnimation;
+        public BlockFrames Selection;
 
         public void LoadContent(ContentManager Content) {
             Debug.WriteLine($"Loading block types...");
@@ -27,6 +28,12 @@ namespace Celesteia.Resources.Collections {
                 BlockSpriteProperties.SIZE,
                 BlockSpriteProperties.SIZE
             ), 0, 3);
+
+            Selection = new BlockFrames(TextureAtlas.Create("selection",
+                Content.Load<Texture2D>("sprites/blockselection"),
+                BlockSpriteProperties.SIZE,
+                BlockSpriteProperties.SIZE
+            ), 0, 1);
 
             Types = new List<BlockType>();
 

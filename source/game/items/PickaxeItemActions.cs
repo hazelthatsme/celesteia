@@ -2,6 +2,7 @@ using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds;
+using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -35,8 +36,13 @@ namespace Celesteia.Game {
             // Check if the targeted location is within the entity's block manipulation range.
             if (Vector2.Distance(entityTransform.Position, cursor) > attributes.Get(EntityAttribute.BlockRange)) return false;
 
+            byte id = forWall ? world.GetWallBlock(cursor) : world.GetBlock(cursor);
+
             // If there is no tile in the given location, the action will not continue.
-            if ((forWall && world.GetWallBlock(cursor) == 0) || (!forWall && world.GetBlock(cursor) == 0)) return false;
+            if (id == 0) return false;
+
+            // If the block is unbreakable, don't break it. Duh.
+            if (ResourceManager.Blocks.GetBlock(id).Strength < 0) return false;
 
             UpdateLastUse(gameTime);
             
