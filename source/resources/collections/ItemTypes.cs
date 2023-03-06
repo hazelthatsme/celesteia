@@ -34,15 +34,15 @@ namespace Celesteia.Resources.Collections {
             AddBlockItem("grown_soil", "Grown Soil", atlas.GetRegion(2), NamespacedKey.Base("grown_soil"), "Grassy.");
             AddBlockItem("deepstone", "Deepstone", atlas.GetRegion(5), NamespacedKey.Base("deepstone"), "Tougher than rock.");
             AddBlockItem("log", "Wooden Log", atlas.GetRegion(11), NamespacedKey.Base("log"), "Good for making planks.");
-            AddBlockItem("iron_ore", "Iron Ore", atlas.GetRegion(10), NamespacedKey.Base("iron_ore"), "Contains nodes of iron.");
-            AddBlockItem("copper_ore", "Copper Ore", atlas.GetRegion(9), NamespacedKey.Base("copper_ore"), "Contains nodes of copper.");
+            AddBlockItem("iron_ore", "Iron Ore", atlas.GetRegion(10), NamespacedKey.Base("iron_ore"), "Contains iron.");
+            AddBlockItem("copper_ore", "Copper Ore", atlas.GetRegion(9), NamespacedKey.Base("copper_ore"), "Contains copper.");
             AddIngredientItem("coal", "Coal", atlas.GetRegion(14), "A primitive fuel source.");
             AddToolItem("iron_pickaxe", "Iron Pickaxe", atlas.GetRegion(33), 4, "Used to harvest blocks.");
             AddBlockItem("wooden_planks", "Wooden Planks", atlas.GetRegion(6), NamespacedKey.Base("wooden_planks"), "Great for building.");
             AddIngredientItem("plank", "Plank", atlas.GetRegion(15), "Good for making blocks.");
             AddIngredientItem("copper_ingot", "Copper Ingot", atlas.GetRegion(17), "Conducts currents.");
             AddIngredientItem("iron_ingot", "Iron Ingot", atlas.GetRegion(18), "Strong and sturdy.");
-            AddUpgradeItem("jetpack_tank", "Jetpack Tank", atlas.GetRegion(16), "Upgrades your jetpack fuel.", EntityAttribute.JumpFuel, .1f, 1f);
+            AddUpgradeItem("jetpack_tank", "Jetpack Tank", atlas.GetRegion(16), "Upgrades jetpack fuel.", EntityAttribute.JumpFuel, .1f, 1f);
 
             BakedTypes = Types.ToArray();
         }
