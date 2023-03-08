@@ -17,7 +17,7 @@ namespace Celesteia
 {
     public class GameInstance : Microsoft.Xna.Framework.Game
     {
-        public static readonly string Version = "Alpha 1.2.4_01";
+        public static readonly string Version = "Alpha 1.3";
         public static bool DebugMode { get; private set; }
         
         private readonly List<string> cmdArgs;
