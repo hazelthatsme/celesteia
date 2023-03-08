@@ -64,15 +64,16 @@ namespace Celesteia.Game.Components.Items {
         public void RemoveAmountOfType(byte id, int amount) {
             int amountToGo = amount;
             
-            ItemStack lastStack = Array.FindLast(items, x => x != null && x.ID == id);
+            ItemStack lastStack;
             while (amountToGo > 0) {
+                lastStack = Array.FindLast(items, x => x != null && x.ID == id);
                 int toRemove = Math.Min(lastStack.Amount, amountToGo);
 
                 lastStack.Amount -= toRemove;
                 amountToGo -= toRemove;
+                
+                AssertAmounts();
             }
-
-            AssertAmounts();
         }
 
         private void AddItemStack(ItemStack newStack) {
