@@ -3,15 +3,28 @@ using Microsoft.Xna.Framework.Input;
 namespace Celesteia.Game.Input {
     public interface IInputDefinition {
         float Test();
+        InputType GetInputType();
     }
 
-    public class KeyDefinition : IInputDefinition {
+    public interface IInputDefinition<T> : IInputDefinition {
+        T GetPositive();
+        T GetNegative();
+    }
+
+    public enum InputType {
+        Keyboard, Gamepad
+    }
+
+    public class KeyDefinition : IInputDefinition<Keys?> {
+        public InputType GetInputType() => InputType.Keyboard;
+        public readonly string Action;
         private readonly Keys? _negative;
         private readonly Keys? _positive;
         private float _current;
         private KeyDetectType _type;
 
-        public KeyDefinition(Keys? negative, Keys? positive, KeyDetectType type) {
+        public KeyDefinition(string action, Keys? negative, Keys? positive, KeyDetectType type) {
+            Action = action;
             _negative = negative;
             _positive = positive;
             _current = 0;
@@ -38,6 +51,9 @@ namespace Celesteia.Game.Input {
 
             return false;
         }
+
+        public Keys? GetPositive() => _positive;
+        public Keys? GetNegative() => _negative;
     }
 
     public enum KeyDetectType {

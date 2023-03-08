@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Game.Components.Items;
+using Celesteia.Game.Components.Player;
 using Celesteia.Game.Input;
 using Celesteia.Resources;
 using Celesteia.UI;
 using Celesteia.UI.Elements;
 using Celesteia.UI.Elements.Game;
+using Celesteia.UI.Elements.Game.Controls;
 using Celesteia.UI.Elements.Game.Tooltips;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
@@ -23,6 +25,8 @@ namespace Celesteia.GUIs.Game {
         public ItemStack CursorItem;
 
         private IContainer _pauseMenu;
+
+        public ControlTips Controls { get; private set; }
 
         private IContainer ItemManagement;
 
@@ -82,6 +86,13 @@ namespace Celesteia.GUIs.Game {
 
         public override void LoadContent(ContentManager Content)
         {
+            Root.AddChild(Controls = new ControlTips(new Rect(
+                AbsoluteUnit.WithValue(8f),
+                new RelativeUnit(0.5f, Root.GetRect(), RelativeUnit.Orientation.Vertical),
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(0f)
+            )));
+
             slotTexture = Content.Load<Texture2D>("sprites/ui/button");
             windowTexture = Content.Load<Texture2D>("sprites/ui/button");
             tooltipTexture = Content.Load<Texture2D>("sprites/ui/window");

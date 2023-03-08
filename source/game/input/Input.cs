@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Input.InputListeners;
-
 namespace Celesteia.Game.Input {
     public static class Input {
         public static GamepadWrapper Gamepad { get; private set; }
