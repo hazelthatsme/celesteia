@@ -52,6 +52,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new CameraZoomSystem(Camera))
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
+                .AddSystem(new LightingSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
                 //.AddSystem(new PhysicsCollisionDebugSystem(Camera, SpriteBatch, _gameWorld))
                 //.AddSystem(new EntityDebugSystem(Camera, SpriteBatch))

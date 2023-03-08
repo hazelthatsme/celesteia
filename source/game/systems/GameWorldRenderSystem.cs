@@ -1,4 +1,3 @@
-using System;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Celesteia.Resources;
@@ -14,6 +13,7 @@ namespace Celesteia.Game.Systems {
         private readonly SpriteBatch _spriteBatch;
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
         private int _renderDistance => 5;
+        public int RenderDistance => _renderDistance;
         private GameWorld _gameWorld;
         private BlockFrames _selectionSprite;
 
