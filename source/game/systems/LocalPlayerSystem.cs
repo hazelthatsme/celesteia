@@ -34,6 +34,8 @@ namespace Celesteia.Game.Systems {
                 attributes = _player.Get<EntityAttributes>();
                 input = _player.Get<PlayerInput>();
                 inventory = _player.Get<EntityInventory>();
+
+                UpdateControls();
             }
         }
         private LocalPlayer localPlayer;
@@ -182,6 +184,15 @@ namespace Celesteia.Game.Systems {
 
                 inventory.Inventory.AssertAmounts();
             }
+        }
+
+        private void UpdateControls() {
+            _gameGui.Controls.SetKeyboardControls(
+                input.Run.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
+                input.Jump.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
+                input.Inventory.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
+                input.Crafting.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition
+            );
         }
     }
 }

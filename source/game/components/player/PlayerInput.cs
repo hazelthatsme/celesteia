@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Celesteia.Game.Input;
 using Microsoft.Xna.Framework;

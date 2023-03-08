@@ -65,13 +65,12 @@ namespace Celesteia.Game.ECS {
             entity.Attach(new CollisionBox(1.5f, 3f));
 
             entity.Attach(new PlayerInput()
-                .AddHorizontal(new KeyDefinition(Keys.A, Keys.D, KeyDetectType.Held))
-                .AddVertical(new KeyDefinition(Keys.W, Keys.S, KeyDetectType.Held))
-                .AddRun(new KeyDefinition(null, Keys.LeftShift, KeyDetectType.Held))
-                .AddJump(new KeyDefinition(null, Keys.Space, KeyDetectType.Held))
-                .AddInventory(new KeyDefinition(null, Keys.B, KeyDetectType.Down))
-                .AddCrafting(new KeyDefinition(null, Keys.C, KeyDetectType.Down))
-                .AddPause(new KeyDefinition(null, Keys.Escape, KeyDetectType.Down))
+                .AddHorizontal(new KeyDefinition("Walk", Keys.A, Keys.D, KeyDetectType.Held))
+                .AddRun(new KeyDefinition("Run", null, Keys.LeftShift, KeyDetectType.Held))
+                .AddJump(new KeyDefinition("Jetpack", null, Keys.Space, KeyDetectType.Held))
+                .AddInventory(new KeyDefinition("Inventory", null, Keys.B, KeyDetectType.Down))
+                .AddCrafting(new KeyDefinition("Crafting", null, Keys.C, KeyDetectType.Down))
+                .AddPause(new KeyDefinition("Pause", null, Keys.Escape, KeyDetectType.Down))
             );
 
             entity.Attach(new LocalPlayer());
