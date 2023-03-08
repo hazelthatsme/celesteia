@@ -28,7 +28,7 @@ namespace Celesteia.Graphics {
         // The zoom value of the camera.
         public int Zoom {
             get { return _zoom; }
-            set { _zoom = MathHelper.Clamp(value, 3, 8); }
+            set { _zoom = MathHelper.Clamp(value, 1, 8); }
         }
         // Macro for zoom scaled to inverse sprite scaling.
         private float ScaledZoom => _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
