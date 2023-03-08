@@ -52,6 +52,7 @@ namespace Celesteia.GUIs {
             LoadMainScreen();
             LoadOptionsScreen();
             LoadNewWorldScreen();
+            LoadGlobals();
 
             base.LoadContent(Content);
         }
@@ -180,7 +181,7 @@ namespace Celesteia.GUIs {
                 .SetPivotPoint(new Vector2(0.5f, 0.5f))
                 .SetTextProperties(new TextProperties()
                     .SetColor(Color.White)
-                    .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
+                    .SetFont(ResourceManager.Fonts.DEFAULT)
                     .SetFontSize(24f)
                     .SetTextAlignment(TextAlignment.Center)
                 )
@@ -191,6 +192,51 @@ namespace Celesteia.GUIs {
             MainScreen.SetEnabled(false);
             OptionsScreen.SetEnabled(false);
             NewWorldScreen.SetEnabled(true);
+        }
+
+        private void LoadGlobals() {
+            Container copyPivot = new Container(new Rect(
+                AbsoluteUnit.WithValue(0f),
+                new RelativeUnit(1f, Root.GetRect(), RelativeUnit.Orientation.Vertical),
+                AbsoluteUnit.WithValue(0f),
+                AbsoluteUnit.WithValue(12f)
+            ));
+            copyPivot.SetPivot(new Vector2(0f, 1f));
+            Root.AddChild(copyPivot);
+
+            copyPivot.AddChild(new Label(
+                new Rect(
+                    AbsoluteUnit.WithValue(12f),
+                    AbsoluteUnit.WithValue(0f),
+                    new RelativeUnit(1f, Root.GetRect(), RelativeUnit.Orientation.Horizontal),
+                    new RelativeUnit(1f, copyPivot.GetRect(), RelativeUnit.Orientation.Vertical)
+                )
+            )
+                .SetTextProperties(new TextProperties()
+                    .SetFont(ResourceManager.Fonts.DEFAULT)
+                    .SetColor(Color.White)
+                    .SetFontSize(12f)
+                    .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Left)
+                )
+                .SetText("(c) leafal.io 2022-2023, all rights reserved.")
+                .SetPivotPoint(new Vector2(0f, 1f)));
+
+            copyPivot.AddChild(new Label(
+                new Rect(
+                    AbsoluteUnit.WithValue(12f),
+                    AbsoluteUnit.WithValue(-16f),
+                    new RelativeUnit(1f, Root.GetRect(), RelativeUnit.Orientation.Horizontal),
+                    new RelativeUnit(1f, copyPivot.GetRect(), RelativeUnit.Orientation.Vertical)
+                )
+            )
+                .SetTextProperties(new TextProperties()
+                    .SetFont(ResourceManager.Fonts.DEFAULT)
+                    .SetColor(Color.White)
+                    .SetFontSize(12f)
+                    .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Left)
+                )
+                .SetText($"Celesteia {GameInstance.Version}")
+                .SetPivotPoint(new Vector2(0f, 1f)));
         }
     }
 }
