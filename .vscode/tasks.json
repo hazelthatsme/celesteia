@@ -55,6 +55,26 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "Publish Linux x64",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "-c",
+                "Release",
+                "-r",
+                "linux-x64",
+                "--self-contained",
+                "/p:PublishReadyToRun=false",
+                "/p:TieredCompilation=false",
+                "/p:DebugType=none",
+                "/p:DebugSymbols=false",
+                "/p:PublishSingleFile=true",
+                "/p:IncludeNativeLibrariesForSelfExtract=true"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "watch",
             "command": "dotnet",
             "type": "process",
