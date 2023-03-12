@@ -31,7 +31,8 @@
                 "/p:PublishSingleFile=true",
                 "/p:IncludeNativeLibrariesForSelfExtract=true"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "dependsOn": ["Publish Windows x86"]
         },
         {
             "label": "Publish Windows x86",
