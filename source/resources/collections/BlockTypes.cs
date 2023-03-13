@@ -57,7 +57,15 @@ namespace Celesteia.Resources.Collections {
             AddStandardBlock("copper_ore", "Copper Ore", 7, 1, NamespacedKey.Base("copper_ore"), 10, new BlockLightProperties(new LightColor(112f, 63f, 46f), 4));
             AddStandardBlock("coal_ore", "Coal Ore", 14, 1, NamespacedKey.Base("coal"), 10);
             AddStandardBlock("wooden_planks", "Wooden Planks", 4, 1, NamespacedKey.Base("wooden_planks"), 4);
-            AddWalkthroughBlock("torch", "Torch", 9, 1, NamespacedKey.Base("torch"), 1, new BlockLightProperties(new LightColor(255f, 255f, 255f), 6));
+
+            AddKey(NamespacedKey.Base("torch"), AddType(
+                name: "Torch",
+                frameStart: 9,
+                frameCount: 1,
+                itemKey: NamespacedKey.Base("torch"),
+                light: new BlockLightProperties(new LightColor(255f, 255f, 255f), 6),
+                translucent: true
+            ));
 
             BakedTypes = Types.ToArray();
         }
@@ -69,15 +77,20 @@ namespace Celesteia.Resources.Collections {
 
         byte next = 0;
         BlockType curr;
-        private byte AddType(string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, RectangleF? boundingBox = null, int strength = 1, BlockLightProperties light = null) {
+        private byte AddType(string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, RectangleF? boundingBox = null, int strength = 1, BlockLightProperties light = null, bool translucent = false) {
             curr = new BlockType(next, name).SetStrength(strength);
 
             curr.MakeFrames(_atlas, frameStart, frameCount);
             if (itemKey.HasValue) curr.AddDrop(itemKey.Value);
             if (boundingBox.HasValue) curr.SetBoundingBox(boundingBox.Value);
             curr.SetLightProperties(light);
+            curr.SetTranslucent(translucent);
 
-            Types.Add(curr);
+            return AddType(curr);
+        }
+
+        private byte AddType(BlockType type) {
+            Types.Add(type);
             return next++;
         }
 
@@ -86,11 +99,12 @@ namespace Celesteia.Resources.Collections {
                 name: name,
                 frameStart: 0,
                 frameCount: 0,
-                light: new BlockLightProperties(LightColor.black, 0, false)
+                light: new BlockLightProperties(LightColor.black, 0, false),
+                translucent: true
             ));
         }
 
-        private void AddStandardBlock(string key, string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, int strength = 1, BlockLightProperties light = null) {
+        private void AddStandardBlock(string key, string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, int strength = 1, BlockLightProperties light = null, bool translucent = false) {
             AddKey(NamespacedKey.Base(key), AddType(
                 name: name,
                 frameStart: frameStart,
@@ -101,7 +115,7 @@ namespace Celesteia.Resources.Collections {
                 light: light));
         }
 
-        private void AddWalkthroughBlock(string key, string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, int strength = 1, BlockLightProperties light = null) {
+        private void AddWalkthroughBlock(string key, string name, int frameStart, int frameCount = 1, NamespacedKey? itemKey = null, int strength = 1, BlockLightProperties light = null, bool translucent = false) {
             AddKey(NamespacedKey.Base(key), AddType(name, frameStart, frameCount, itemKey, null, strength, light));
         }
 
@@ -125,6 +139,7 @@ namespace Celesteia.Resources.Collections {
         public RectangleF? BoundingBox { get; private set; }
         public int Strength { get; private set; }
         public BlockLightProperties Light { get; private set; }
+        public bool Translucent { get; private set; }
 
         public BlockType(byte id, string name) {
             BlockID = id;
@@ -156,6 +171,11 @@ namespace Celesteia.Resources.Collections {
         public BlockType SetLightProperties(BlockLightProperties properties) {
             Light = properties;
             if (Light == null) Light = new BlockLightProperties();
+            return this;
+        }
+
+        public BlockType SetTranslucent(bool translucent) {
+            Translucent = translucent;
             return this;
         }
 

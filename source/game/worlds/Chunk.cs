@@ -109,39 +109,50 @@ namespace Celesteia.Game.Worlds {
 
         Vector2 v;
         bool wall;
-        BlockType type;
-        BlockFrame frame;
-        float breakProgress;
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 v.X = i;
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     v.Y = j;
-                    wall = tileMap[i, j] == 0;
-                    type = wall ? ResourceManager.Blocks.GetBlock(wallTileMap[i, j]) : ResourceManager.Blocks.GetBlock(tileMap[i, j]);
-                    
-                    frame = type.Frames.GetFrame(0);
-                    if (frame == null) continue;
-
-                    breakProgress = wall ? ((float)wallTileBreakProgressMap[i, j] / (float)type.Strength) : ((float)tileBreakProgressMap[i, j] / (float)type.Strength);
-
-                    if (wall) {             // If the tile here is empty, draw the wall instead.
-                        DrawWallTile(i, j, frame, spriteBatch, camera);
-                        if (breakProgress > 0f) DrawWallTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
-                    }
-                    else {                  // If there is a tile that isn't empty, draw the tile.
-                        DrawTile(i, j, frame, spriteBatch, camera);
-                        if (breakProgress > 0f) DrawTile(i, j, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(breakProgress), spriteBatch, camera);
-                    }
+                    DrawAllAt(i, j, gameTime, spriteBatch, camera);
                 }
             }
         }
 
+        BlockType front;
+        BlockType back;
+        float frontBreakProgress;
+        float backBreakProgress;
+        bool translucent;
+        private void DrawAllAt(int x, int y, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
+            front = ResourceManager.Blocks.GetBlock(tileMap[x, y]);
+            translucent = front.Translucent;
+
+            if (translucent) {
+                back = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]);
+                if (back != null && back.Frames != null) {
+                    backBreakProgress = ((float)wallTileBreakProgressMap[x, y] / (float)back.Strength);
+                    DrawWallTile(x, y, back.Frames.GetFrame(0), spriteBatch, camera);
+                    if (backBreakProgress > 0f)
+                        DrawWallTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(backBreakProgress), spriteBatch, camera);
+                }
+            }
+
+            if (front != null && front.Frames != null) {
+                frontBreakProgress = ((float)tileBreakProgressMap[x, y] / (float)front.Strength);
+                DrawTile(x, y, front.Frames.GetFrame(0), spriteBatch, camera);
+                if (frontBreakProgress > 0f) 
+                    DrawTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(frontBreakProgress), spriteBatch, camera);
+            }
+        }
+
         public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
+            if (frame == null) return;
             frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White, 0.4f);
         }
 
         public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
+            if (frame == null) return;
             frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.DarkGray, 0.5f);
         }
     }

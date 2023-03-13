@@ -29,7 +29,7 @@ namespace Celesteia.Game {
             return Assert(gameTime, world, cursor, user, true) && Place(world, cursor, true);
         }
 
-        public bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
+        public virtual bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
             if (_block == 0) return false;
             if (!CheckUseTime(gameTime)) return false;
 
