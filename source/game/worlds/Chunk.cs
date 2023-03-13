@@ -4,7 +4,7 @@ using Celesteia.Resources;
 using Celesteia.Graphics;
 using System;
 using Celesteia.Game.Worlds.Generators;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
 

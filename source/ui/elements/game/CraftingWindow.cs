@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Celesteia.Game.Components.Items;
 using Celesteia.GUIs.Game;
 using Celesteia.Resources;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

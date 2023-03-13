@@ -4,7 +4,7 @@ using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds.Generators;
 using Celesteia.Resources;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 

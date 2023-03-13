@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Celesteia.Game.Components.Items;
 using Microsoft.Xna.Framework.Content;
 
-namespace Celesteia.Resources.Collections {
+namespace Celesteia.Resources.Management {
     public class CraftingRecipes {        
         private List<CraftingRecipe> Recipes;
 

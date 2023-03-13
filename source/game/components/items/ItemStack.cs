@@ -1,5 +1,5 @@
 using Celesteia.Resources;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 
 namespace Celesteia.Game.Components.Items {
     public class ItemStack {

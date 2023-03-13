@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Celesteia.Game.Input;
 using Celesteia.Game.Components;
 using Microsoft.Xna.Framework.Input;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Items;
 

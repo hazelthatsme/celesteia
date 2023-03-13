@@ -1,5 +1,5 @@
 using System;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.Graphics.Lighting {

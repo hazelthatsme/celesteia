@@ -12,7 +12,7 @@ using Celesteia.Game.Components;
 using Celesteia.Game.Systems.Physics;
 using Celesteia.GUIs.Game;
 using Celesteia.Game.Systems.UI;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 
 namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {

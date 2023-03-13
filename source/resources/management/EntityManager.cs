@@ -6,10 +6,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 
-namespace Celesteia.Resources.Collections {
-    public class EntityTypes : IResourceCollection {
-        public EntityType PLAYER;
-
+namespace Celesteia.Resources.Management {
+    public class EntityManager : IResourceManager {
         public List<EntityType> Types;
         private EntityType[] BakedTypes;
         private Dictionary<string, byte> keys = new Dictionary<string, byte>();

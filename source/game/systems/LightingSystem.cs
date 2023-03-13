@@ -3,7 +3,7 @@ using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;

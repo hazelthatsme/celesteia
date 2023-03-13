@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources.Sprites;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celesteia.Resources.Collections {
+namespace Celesteia.Resources.Management {
     public abstract class BlockSpriteProperties {
         public const int SIZE = 8; 
     }
 
-    public class BlockTypes : IResourceCollection {        
+    public class BlockManager : IResourceManager {        
         private List<BlockType> Types;
         private BlockType[] BakedTypes;
         private Dictionary<string, byte> keys = new Dictionary<string, byte>();
@@ -24,19 +25,10 @@ namespace Celesteia.Resources.Collections {
         public BlockFrames Selection;
 
         public void LoadContent(ContentManager Content) {
+            LoadBreakingAnimation(Content);
+            LoadSelector(Content);
+
             Debug.WriteLine($"Loading block types...");
-
-            BreakAnimation = new BlockFrames(TextureAtlas.Create("blockbreak",
-                Content.Load<Texture2D>("sprites/blockbreak"),
-                BlockSpriteProperties.SIZE,
-                BlockSpriteProperties.SIZE
-            ), 0, 3);
-
-            Selection = new BlockFrames(TextureAtlas.Create("selection",
-                Content.Load<Texture2D>("sprites/blockselection"),
-                BlockSpriteProperties.SIZE,
-                BlockSpriteProperties.SIZE
-            ), 0, 1);
 
             Types = new List<BlockType>();
 
@@ -68,6 +60,22 @@ namespace Celesteia.Resources.Collections {
             ));
 
             BakedTypes = Types.ToArray();
+        }
+
+        private void LoadBreakingAnimation(ContentManager Content) {
+            Debug.WriteLine($"Loading block break animation...");
+            BreakAnimation = new BlockFrames(TextureAtlas.Create("blockbreak", Content.Load<Texture2D>("sprites/blockbreak"),
+                BlockSpriteProperties.SIZE,
+                BlockSpriteProperties.SIZE
+            ), 0, 3);
+        }
+
+        private void LoadSelector(ContentManager Content) {
+            Debug.WriteLine($"Loading block selector...");
+            Selection = new BlockFrames(TextureAtlas.Create("selection", Content.Load<Texture2D>("sprites/blockselection"), 
+                BlockSpriteProperties.SIZE,
+                BlockSpriteProperties.SIZE
+            ), 0, 1);
         }
 
         private void AddKey(NamespacedKey key, byte id) {
@@ -126,74 +134,6 @@ namespace Celesteia.Resources.Collections {
         public IResourceType GetResource(NamespacedKey key) {
             if (!keys.ContainsKey(key.Qualify())) throw new NullReferenceException();
             return BakedTypes[keys[key.Qualify()]];
-        }
-    }
-
-    public class BlockType : IResourceType {
-        public readonly byte BlockID;
-        public byte GetID() => BlockID;
-
-        public readonly string Name;
-        public BlockFrames Frames { get; private set; }
-        public NamespacedKey? DropKey { get; private set; }
-        public RectangleF? BoundingBox { get; private set; }
-        public int Strength { get; private set; }
-        public BlockLightProperties Light { get; private set; }
-        public bool Translucent { get; private set; }
-
-        public BlockType(byte id, string name) {
-            BlockID = id;
-            Name = name;
-
-            Light = new BlockLightProperties();
-        }
-
-        public BlockType MakeFrames(TextureAtlas atlas, int frameStart, int frameCount) {
-            Frames = new BlockFrames(atlas, frameStart, frameCount);
-            return this;
-        }
-
-        public BlockType AddDrop(NamespacedKey dropKey) {
-            DropKey = dropKey;
-            return this;
-        }
-
-        public BlockType SetBoundingBox(RectangleF boundingBox) {
-            BoundingBox = boundingBox;
-            return this;
-        }
-
-        public BlockType SetStrength(int strength) {
-            Strength = strength;
-            return this;
-        }
-
-        public BlockType SetLightProperties(BlockLightProperties properties) {
-            Light = properties;
-            if (Light == null) Light = new BlockLightProperties();
-            return this;
-        }
-
-        public BlockType SetTranslucent(bool translucent) {
-            Translucent = translucent;
-            return this;
-        }
-
-        public ItemType GetDrops() => DropKey.HasValue ? ResourceManager.Items.GetResource(DropKey.Value) as ItemType : null;
-    }
-
-    public class BlockLightProperties {
-        public readonly bool Emits = false;
-        public readonly bool Occludes = true;
-        public readonly int Propagation = 0;
-        public readonly LightColor Color = LightColor.black;
-
-        public BlockLightProperties() {}
-        public BlockLightProperties(LightColor color, int propagation = 0, bool occludes = true) {
-            Emits = !color.Equals(LightColor.black);
-            Propagation = propagation;
-            Occludes = occludes;
-            Color = color;
         }
     }
 }

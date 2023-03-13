@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Celesteia.Resources.Collections {
+namespace Celesteia.Resources.Management {
     public abstract class FontProperties {
         public const int STANDARD_SIZE = 12;
     }
