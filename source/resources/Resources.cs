@@ -1,12 +1,14 @@
-using Celesteia.Resources.Collections;
+using System.Collections.Generic;
+using Celesteia.Resources.Management;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework.Content;
 
 namespace Celesteia.Resources {
     public static class ResourceManager {
-        public static ItemTypes Items = new ItemTypes();
-        public static BlockTypes Blocks = new BlockTypes();
+        public static ItemManager Items = new ItemManager();
+        public static BlockManager Blocks = new BlockManager();
         public static CraftingRecipes Recipes = new CraftingRecipes();
-        public static EntityTypes Entities = new EntityTypes();
+        public static EntityManager Entities = new EntityManager();
         public static FontTypes Fonts = new FontTypes();
         public static SkyboxAssets Skybox = new SkyboxAssets();
 
@@ -45,7 +47,12 @@ namespace Celesteia.Resources {
         public byte GetID();
     }
 
-    public interface IResourceCollection {
+    public interface IResourceManager {
         public IResourceType GetResource(NamespacedKey namespacedKey);
+    }
+
+    public interface IResourceCollection {
+        public Dictionary<NamespacedKey, BlockType> GetBlocks();
+        public Dictionary<NamespacedKey, ItemType> GetItems();
     }
 }
