@@ -32,6 +32,11 @@ namespace Celesteia.Resources.Collections {
                 (ResourceManager.Items.GetResource(NamespacedKey.Base("iron_ingot")) as ItemType).GetStack(10),
                 (ResourceManager.Items.GetResource(NamespacedKey.Base("copper_ingot")) as ItemType).GetStack(5)
             );
+
+            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("torch")) as ItemType).GetStack(1), 
+                (ResourceManager.Items.GetResource(NamespacedKey.Base("plank")) as ItemType).GetStack(1),
+                (ResourceManager.Items.GetResource(NamespacedKey.Base("coal")) as ItemType).GetStack(1)
+            );
         }
 
         byte next = 0;

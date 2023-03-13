@@ -43,6 +43,7 @@ namespace Celesteia.Resources.Collections {
             AddIngredientItem("copper_ingot", "Copper Ingot", atlas.GetRegion(17), "Conducts currents.");
             AddIngredientItem("iron_ingot", "Iron Ingot", atlas.GetRegion(18), "Strong and sturdy.");
             AddUpgradeItem("jetpack_tank", "Jetpack Tank", atlas.GetRegion(16), "Upgrades jetpack fuel.", EntityAttribute.JumpFuel, .1f, 1f);
+            AddBlockItem("torch", "Torch", atlas.GetRegion(1), NamespacedKey.Base("torch"), "Light it up!");
 
             BakedTypes = Types.ToArray();
         }

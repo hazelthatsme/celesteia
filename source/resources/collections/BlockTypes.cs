@@ -52,11 +52,12 @@ namespace Celesteia.Resources.Collections {
             AddStandardBlock("grown_soil", "Grown Soil", 0, 1, NamespacedKey.Base("soil"), 5);
             AddStandardBlock("deepstone", "Deepstone", 3, 1, NamespacedKey.Base("deepstone"), -1);
             AddStandardBlock("log", "Wooden Log", 10, 1, NamespacedKey.Base("log"), 3);
-            AddWalkthroughBlock("leaves", "Leaves", 11);
+            AddWalkthroughBlock("leaves", "Leaves", 11, 1, null, 1, new BlockLightProperties(LightColor.black, 0, false));
             AddStandardBlock("iron_ore", "Iron Ore", 8, 1, NamespacedKey.Base("iron_ore"), 10, new BlockLightProperties(new LightColor(63f, 63f, 63f), 4));
             AddStandardBlock("copper_ore", "Copper Ore", 7, 1, NamespacedKey.Base("copper_ore"), 10, new BlockLightProperties(new LightColor(112f, 63f, 46f), 4));
             AddStandardBlock("coal_ore", "Coal Ore", 14, 1, NamespacedKey.Base("coal"), 10);
             AddStandardBlock("wooden_planks", "Wooden Planks", 4, 1, NamespacedKey.Base("wooden_planks"), 4);
+            AddWalkthroughBlock("torch", "Torch", 9, 1, NamespacedKey.Base("torch"), 1, new BlockLightProperties(new LightColor(255f, 255f, 255f), 6));
 
             BakedTypes = Types.ToArray();
         }
