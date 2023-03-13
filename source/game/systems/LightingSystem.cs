@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended;
+using System.Diagnostics;
 
 namespace Celesteia.Game.Systems {
     public class LightingSystem : IUpdateSystem, IDrawSystem
@@ -42,15 +43,21 @@ namespace Celesteia.Game.Systems {
         private double lastUpdate = 0;
         public void Update(GameTime gameTime)
         {
-            if (drawTexture) UpdateTexture();
-
-            if (gameTime.TotalGameTime.TotalSeconds - lastUpdate > _lightUpdateRate) {
-                if (calculationDone) {
-                    _position = _offset;
-                    _semaphore.Release();
-                    lastUpdate = gameTime.TotalGameTime.TotalSeconds;
-                }
+            if (drawTexture) {
+                UpdateTexture();
             }
+
+            if (gameTime.TotalGameTime.TotalSeconds - lastUpdate > _lightUpdateRate && calculationDone) {
+                _position = UpdatePosition();
+                _semaphore.Release();
+                lastUpdate = gameTime.TotalGameTime.TotalSeconds;
+            }
+        }
+        
+        private Point _position;
+        private Vector2 _drawPosition;
+        private Point UpdatePosition() {
+            return ChunkVector.FromVector2(_camera.Center).Resolve() - new Point(_lightRenderDistance);
         }
 
         private int _lightRenderDistance = 150;
@@ -63,28 +70,18 @@ namespace Celesteia.Game.Systems {
         private void UpdateTexture() {
             _texture.SetData<Color>(_lightMap.GetColors(), 0, _lightMap.GetColorCount());
             drawTexture = false;
-        }
-        
-        private Vector2 _position;
-        private Vector2 UpdatePosition() {
-            _position = new Vector2(
-                (int)System.Math.Floor(_camera.Center.X - _lightRenderDistance),
-                (int)System.Math.Floor(_camera.Center.Y - _lightRenderDistance)
-            );
-            return _position;
+            _drawPosition = _position.ToVector2();
         }
 
         private Thread updateLightThread;
-        private Vector2 _offset;
         private void StartLightMapUpdates() {
             updateLightThread = new Thread(() => {
                 while (true) {
                     _semaphore.WaitOne();
                     calculationDone = false;
 
-                    _lightMap.SetPosition(UpdatePosition());
-
                     UpdateEmission();
+                    _lightMap.Propagate();
                     _lightMap.CreateColorMap();
 
                     calculationDone = true;
@@ -96,33 +93,46 @@ namespace Celesteia.Game.Systems {
             updateLightThread.Start();
         }
 
-        private Vector2 _lookAt;
+        private int x;
+        private int y;
         private byte _blockID;
         private BlockType _block;
         private byte _wallID;
         private BlockType _wall;
         private void UpdateEmission() {
             for (int i = 0; i < _lightMap.Width; i++) {
-                _lookAt.X = i;
+                x = i + _position.X;
                 for (int j = 0; j < _lightMap.Height; j++) {
-                    _lookAt.Y = j;
+                    y = j + _position.Y;
 
-                    _blockID = _gameWorld.GetBlock(_lightMap.Position + _lookAt);
-                    _block = ResourceManager.Blocks.GetBlock(_blockID);
+                    _blockID = _gameWorld.GetBlock(x, y);
 
-                    if (_block.Light.Emits) _lightMap.AddLight(i, j, _block);
-                    else {
-                        if (_block.Light.Occludes) _lightMap.AddDarkness(i, j);
+                    if (_blockID != 0) {
+                        _block = ResourceManager.Blocks.GetBlock(_blockID);
+                        if (_block.Light.Emits) {
+                            _lightMap.AddLight(i, j, _block); continue;
+                        }
                         else {
-                            _wallID = _gameWorld.GetWallBlock(_lightMap.Position + _lookAt);
-                            _wall = ResourceManager.Blocks.GetBlock(_wallID);
-
                             if (_block.Light.Occludes) {
-                                if (_block.Light.Emits) _lightMap.AddLight(i, j, _block);
-                                else _lightMap.AddDarkness(i, j);
-                            } else _lightMap.AddLight(i, j, true, LightColor.ambient, 4);
+                                _lightMap.AddDarkness(i, j); continue;
+                            }
                         }
                     }
+
+                    _wallID = _gameWorld.GetWallBlock(x, y);
+                    if (_wallID != 0) {
+                        _wall = ResourceManager.Blocks.GetBlock(_wallID);
+                        if (_wall.Light.Occludes) {
+                            if (_wall.Light.Emits) {
+                                _lightMap.AddLight(i, j, _wall); continue;
+                            }
+                            else {
+                                _lightMap.AddDarkness(i, j); continue;
+                            }
+                        }
+                    }
+
+                    _lightMap.AddLight(i, j, true, LightColor.ambient, 4);
                 }
             }
 
@@ -130,11 +140,17 @@ namespace Celesteia.Game.Systems {
 
         private Vector2 origin = new Vector2(0.5f);
         private Color lightColor = new Color(255, 255, 255, 255);
+        private BlendState multiply = new BlendState() {
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.DestinationColor,
+            ColorDestinationBlend = Blend.Zero,
+        };
+
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, null, null, null, _camera.GetViewMatrix());
+            _spriteBatch.Begin(SpriteSortMode.Immediate, multiply, SamplerState.LinearClamp, null, null, null, _camera.GetViewMatrix());
 
-            _spriteBatch.Draw(_texture, _position, lightColor);
+            _spriteBatch.Draw(_texture, _drawPosition, lightColor);
 
             _spriteBatch.End();
         }
