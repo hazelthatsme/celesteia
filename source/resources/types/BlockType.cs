@@ -18,8 +18,8 @@ namespace Celesteia.Resources.Types {
         public NamespacedKey? DropKey = null;
         public RectangleF? BoundingBox = new RectangleF(0f, 0f, 1f, 1f);
         public int Strength = 1;
-        public BlockLightProperties Light = new BlockLightProperties();
         public bool Translucent = false;
+        public BlockLightProperties Light = new BlockLightProperties();
 
 
         public BlockType MakeFrames(TextureAtlas atlas, int frameStart, int frameCount) {

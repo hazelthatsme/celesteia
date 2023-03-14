@@ -95,6 +95,7 @@ namespace Celesteia.Graphics.Lighting {
 
     public struct LightColor {
         public static LightColor black = new LightColor(0, 0, 0);
+        public static LightColor white = new LightColor(255f, 255f, 255f);
         public static LightColor ambient = new LightColor(255f, 255f, 255f);
         public static LightColor cave = new LightColor(10f, 10f, 10f);
 

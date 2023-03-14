@@ -54,5 +54,6 @@ namespace Celesteia.Resources {
     public interface IResourceCollection {
         public Dictionary<NamespacedKey, BlockType> GetBlocks();
         public Dictionary<NamespacedKey, ItemType> GetItems();
+        public NamespacedKey GetKey(string index);
     }
 }
