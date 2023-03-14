@@ -90,15 +90,15 @@ namespace Celesteia.Game.Worlds.Generators {
             byte[] values = prev;
 
             float coalValue = GetOreValue(x, y, 498538f, 985898f);
-            if (coalValue > 0.9f) values[0] = 9;
+            if (coalValue > 0.95f) values[0] = 9;
             else {
                 float copperValue = GetOreValue(x, y, 3089279f, 579486f);
-                if (copperValue > 0.9f) values[0] = 8;
+                if (copperValue > 0.95f) values[0] = 8;
 
                 else
                 {
                     float ironValue = GetOreValue(x, y, 243984f, 223957f);
-                    if (ironValue > 0.9f) values[0] = 7;
+                    if (ironValue > 0.95f) values[0] = 7;
                 }
             }
 
