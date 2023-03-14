@@ -19,6 +19,7 @@ namespace Celesteia.Resources.Types.Builders {
         public BlockTypeBuilder Walkthrough() => WithTemplate(BlockTypeTemplate.Walkthrough);
 
         public BlockTypeBuilder WithTemplate(BlockTypeTemplate template) {
+            current.Translucent = template.Translucent;
             current.BoundingBox = template.BoundingBox;
             current.DropKey = template.DropKey;
             current.SetLightProperties(template.LightProperties);

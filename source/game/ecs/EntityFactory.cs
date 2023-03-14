@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using Celesteia.Resources.Management;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Items;
+using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.ECS {
     /*
@@ -38,6 +39,8 @@ namespace Celesteia.Game.ECS {
                 .AddComponent(ResourceManager.Skybox.GetAsset(name).Frames.Clone().SetColor(color).SetDepth(depth))
                 .Build();
         }
+
+        public Entity CreateEntity(NamespacedKey key) => CreateEntity(ResourceManager.Entities.GetResource(key) as EntityType);
 
         public Entity CreateEntity(EntityType type)
         {

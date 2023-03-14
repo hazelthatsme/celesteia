@@ -49,29 +49,25 @@ namespace Celesteia.Game.Components.Items {
             items[slot] = stack;
         }
 
-        public bool ContainsStack(ItemStack stack) {
-            return GetAmountOfType(stack.ID) >= stack.Amount;
+        public bool ContainsAmount(NamespacedKey key, int amount) {
+            return GetAmount(key) >= amount;
         }
 
-        public void RemoveStack(ItemStack stack) {
-            RemoveAmountOfType(stack.ID, stack.Amount);
-        }
-
-        public int GetAmountOfType(byte id) {
+        public int GetAmount(NamespacedKey key) {
             int amount = 0;
 
-            ItemStack[] stacksOfItem = Array.FindAll(items, x => x != null && x.ID == id);
+            ItemStack[] stacksOfItem = Array.FindAll(items, x => x != null && x.Key.Equals(key));
             foreach (ItemStack stackOfItem in stacksOfItem) amount += stackOfItem.Amount;
             
             return amount;
         }
 
-        public void RemoveAmountOfType(byte id, int amount) {
+        public void RemoveAmount(NamespacedKey key, int amount) {
             int amountToGo = amount;
             
             ItemStack lastStack;
             while (amountToGo > 0) {
-                lastStack = Array.FindLast(items, x => x != null && x.ID == id);
+                lastStack = Array.FindLast(items, x => x != null && x.Key.Equals(key));
                 int toRemove = Math.Min(lastStack.Amount, amountToGo);
 
                 lastStack.Amount -= toRemove;

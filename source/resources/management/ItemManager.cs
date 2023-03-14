@@ -11,7 +11,7 @@ namespace Celesteia.Resources.Management {
         private ItemType[] BakedTypes;
         private Dictionary<string, byte> keys = new Dictionary<string, byte>();
 
-        private List<IResourceCollection> _collections;
+        private List<IResourceCollection> _collections = new List<IResourceCollection>();
         public void AddCollection(IResourceCollection collection) => _collections.Add(collection);
 
         public void LoadContent(ContentManager Content) {
@@ -26,20 +26,17 @@ namespace Celesteia.Resources.Management {
         }
 
         private void LoadCollection(IResourceCollection collection) {
-            foreach (NamespacedKey key in collection.GetBlocks().Keys) {
-                AddType(key, collection.GetBlocks()[key]);
+            foreach (NamespacedKey key in collection.GetItems().Keys) {
+                AddType(key, collection.GetItems()[key]);
             }
         }
 
         private byte next = 0;
-        private void AddType(NamespacedKey key, IResourceType type) {
+        private void AddType(NamespacedKey key, ItemType type) {
             type.SetID(next++);
             keys.Add(key.Qualify(), type.GetID());
-        }
 
-        private void AddKey(NamespacedKey key, byte id) {
-            keys.Add(key.Qualify(), id);
-            Debug.WriteLine($"  Loading block '{key.Qualify()}' ({id})...");
+            Types.Add(type);
         }
 
         public IResourceType GetResource(NamespacedKey key) {

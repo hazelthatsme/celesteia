@@ -1,5 +1,5 @@
 using System;
-using Celesteia.Resources.Management;
+using Celesteia.Resources.Types;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,8 +21,8 @@ namespace Celesteia.UI.Elements.Game {
         }
 
         // RECIPE REFERENCE PROPERTIES
-        private CraftingRecipe _recipe;
-        public CraftingRecipeSlot SetRecipe(CraftingRecipe recipe) {
+        private Recipe _recipe;
+        public CraftingRecipeSlot SetRecipe(Recipe recipe) {
             _recipe = recipe;
             return this;
         }
@@ -64,7 +64,7 @@ namespace Celesteia.UI.Elements.Game {
 
         private ClickEvent _onMouseDown = null;
         private ClickEvent _onMouseUp = null;
-        public delegate void CraftHoverEvent(CraftingRecipe recipe);
+        public delegate void CraftHoverEvent(Recipe recipe);
         private CraftHoverEvent _onMouseIn = null;
         private HoverEvent _onMouseOut = null;
 
@@ -134,7 +134,7 @@ namespace Celesteia.UI.Elements.Game {
             if (_patches != null) ImageUtilities.DrawPatched(spriteBatch, rectangle, _patches, _patchSize, Color.White);
             else spriteBatch.Draw(GetTexture(spriteBatch), rectangle, null, Color.White);
 
-            spriteBatch.Draw(_recipe.Result.Type.Sprite, itemRectangle, Color.White);
+            spriteBatch.Draw(_recipe.Result.GetItemType().Sprite, itemRectangle, Color.White);
             TextUtilities.DrawAlignedText(spriteBatch, textRectangle, _text.GetFont(), _recipe.Result.Amount + "", _text.GetColor(), _text.GetAlignment(), _text.GetFontSize());
         }
 

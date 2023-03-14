@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.Game.ECS;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Entities;
 
 namespace Celesteia.Resources.Management {
     public class EntityManager : IResourceManager {
@@ -12,54 +10,37 @@ namespace Celesteia.Resources.Management {
         private EntityType[] BakedTypes;
         private Dictionary<string, byte> keys = new Dictionary<string, byte>();
 
+        private List<IResourceCollection> _collections = new List<IResourceCollection>();
+        public void AddCollection(IResourceCollection collection) => _collections.Add(collection);
+
         public void LoadContent(ContentManager Content) {
             Debug.WriteLine($"Loading entity types...");
 
             Types = new List<EntityType>();
 
-            AddEntity("player", "Player", (entity) => EntityFactory.BuildPlayer(entity, Content.Load<Texture2D>("sprites/entities/player/astronaut")));
+            foreach (IResourceCollection collection in _collections)
+                LoadCollection(collection);
 
             BakedTypes = Types.ToArray();
         }
 
-        private void AddKey(NamespacedKey key, byte id) {
-            keys.Add(key.Qualify(), id);
-            Debug.WriteLine($"  Loading block '{key.Qualify()}' ({id})...");
+        private void LoadCollection(IResourceCollection collection) {
+            foreach (NamespacedKey key in collection.GetEntities().Keys) {
+                AddType(key, collection.GetEntities()[key]);
+            }
         }
 
-        private byte next;
-        private byte AddType(string name, Action<Entity> instantiate) {
-            Types.Add(new EntityType(next, name, instantiate));
-            return next++;
-        }
+        private byte next = 0;
+        private void AddType(NamespacedKey key, EntityType type) {
+            type.SetID(next++);
+            keys.Add(key.Qualify(), type.GetID());
 
-        private void AddEntity(string key, string name, Action<Entity> instantiate) {
-            AddKey(NamespacedKey.Base(key), AddType(name, instantiate));
+            Types.Add(type);
         }
 
         public IResourceType GetResource(NamespacedKey key) {
             if (!keys.ContainsKey(key.Qualify())) throw new NullReferenceException();
             return BakedTypes[keys[key.Qualify()]];
         }
-    }
-
-    public class EntityType : IResourceType {
-        public readonly byte EntityID;
-        public readonly string EntityName;
-        private readonly Action<Entity> InstantiateAction;
-
-        public EntityType(byte id, string name, Action<Entity> instantiate) {
-            EntityID = id;
-            EntityName = name;
-            InstantiateAction = instantiate;
-
-            Debug.WriteLine($"  Entity '{name}' ({id}) loaded.");
-        }
-
-        public void Instantiate(Entity entity) {
-            InstantiateAction.Invoke(entity);
-        }
-
-        public byte GetID() => EntityID;
     }
 }

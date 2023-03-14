@@ -1,81 +1,34 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.Game.Components.Items;
 using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework.Content;
 
 namespace Celesteia.Resources.Management {
-    public class CraftingRecipes {        
-        private List<CraftingRecipe> Recipes;
+    public class RecipeManager : IResourceManager {        
+        public List<Recipe> Recipes;
+
+        private List<IResourceCollection> _collections = new List<IResourceCollection>();
+        public void AddCollection(IResourceCollection collection) => _collections.Add(collection);
 
         public void LoadContent(ContentManager Content) {
-            Debug.WriteLine($"Loading block types...");
+            Debug.WriteLine($"Loading crafting recipes...");
 
-            Recipes = new List<CraftingRecipe>();
+            Recipes = new List<Recipe>();
 
-            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("plank")) as ItemType).GetStack(4),
-                (ResourceManager.Items.GetResource(NamespacedKey.Base("log")) as ItemType).GetStack(1)
-            );
-
-            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("wooden_planks")) as ItemType).GetStack(1),
-                (ResourceManager.Items.GetResource(NamespacedKey.Base("plank")) as ItemType).GetStack(2)
-            );
-
-            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("copper_ingot")) as ItemType).GetStack(1),
-                (ResourceManager.Items.GetResource(NamespacedKey.Base("copper_ore")) as ItemType).GetStack(1)
-            );
-
-            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("iron_ingot")) as ItemType).GetStack(1),
-                (ResourceManager.Items.GetResource(NamespacedKey.Base("iron_ore")) as ItemType).GetStack(1)
-            );
-
-            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("jetpack_tank")) as ItemType).GetStack(1), 
-                (ResourceManager.Items.GetResource(NamespacedKey.Base("iron_ingot")) as ItemType).GetStack(10),
-                (ResourceManager.Items.GetResource(NamespacedKey.Base("copper_ingot")) as ItemType).GetStack(5)
-            );
-
-            AddRecipe((ResourceManager.Items.GetResource(NamespacedKey.Base("torch")) as ItemType).GetStack(1), 
-                (ResourceManager.Items.GetResource(NamespacedKey.Base("plank")) as ItemType).GetStack(1),
-                (ResourceManager.Items.GetResource(NamespacedKey.Base("coal")) as ItemType).GetStack(1)
-            );
+            foreach (IResourceCollection collection in _collections)
+                LoadCollection(collection);
         }
 
-        byte next = 0;
-        private void AddRecipe(ItemStack result, params ItemStack[] ingredients) {
-            Recipes.Add(new CraftingRecipe(next, result, ingredients));
-            next++;
+        private void LoadCollection(IResourceCollection collection) {
+            foreach (NamespacedKey key in collection.GetRecipes().Keys) {
+                AddType(collection.GetRecipes()[key]);
+            }
         }
 
-        public List<CraftingRecipe> GetRecipes() {
-            return Recipes;
-        }
-    }
-
-    public class CraftingRecipe {
-        public readonly byte RecipeID;
-        public readonly List<ItemStack> Ingredients;
-        public readonly ItemStack Result;
-
-        public CraftingRecipe(byte id, ItemStack result, params ItemStack[] ingredients) {
-            Debug.WriteLine($"  Loading recipe for '{result.Type.Name}' ({id})...");
-
-            RecipeID = id;
-            Result = result;
-            Ingredients = new List<ItemStack>(ingredients);
+        private void AddType(Recipe recipe) {
+            Recipes.Add(recipe);
         }
 
-        public void TryCraft(Inventory inventory) {
-            bool canCraft = true;
-
-            foreach (ItemStack ingredient in Ingredients)
-                if (!inventory.ContainsStack(ingredient)) canCraft = false;
-
-            if (!canCraft) return;
-
-            foreach (ItemStack ingredient in Ingredients)
-                inventory.RemoveStack(ingredient);
-
-            inventory.AddItem(Result.Clone());
-        }
+        public IResourceType GetResource(NamespacedKey namespacedKey) => null;
     }
 }

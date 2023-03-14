@@ -7,7 +7,7 @@ namespace Celesteia.Resources {
     public static class ResourceManager {
         public static ItemManager Items = new ItemManager();
         public static BlockManager Blocks = new BlockManager();
-        public static CraftingRecipes Recipes = new CraftingRecipes();
+        public static RecipeManager Recipes = new RecipeManager();
         public static EntityManager Entities = new EntityManager();
         public static FontTypes Fonts = new FontTypes();
         public static SkyboxAssets Skybox = new SkyboxAssets();
@@ -17,13 +17,17 @@ namespace Celesteia.Resources {
 
         public static void AddCollection(IResourceCollection collection) {
             Blocks.AddCollection(collection);
+            Items.AddCollection(collection);
+            Recipes.AddCollection(collection);
+            Entities.AddCollection(collection);
         }
 
         public static void LoadContent(ContentManager content) {
-            Items.LoadContent(content);
             Blocks.LoadContent(content);
+            Items.LoadContent(content);
             Recipes.LoadContent(content);
             Entities.LoadContent(content);
+            
             Fonts.LoadContent(content);
             Skybox.LoadContent(content);
         }
@@ -70,6 +74,8 @@ namespace Celesteia.Resources {
     public interface IResourceCollection {
         public Dictionary<NamespacedKey, BlockType> GetBlocks();
         public Dictionary<NamespacedKey, ItemType> GetItems();
+        public Dictionary<NamespacedKey, Recipe> GetRecipes();
+        public Dictionary<NamespacedKey, EntityType> GetEntities();
         public NamespacedKey GetKey(string index);
     }
 }

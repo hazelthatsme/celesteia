@@ -1,6 +1,6 @@
 using System;
 using Celesteia.Game.Components.Items;
-using Celesteia.Resources.Management;
+using Celesteia.Resources.Types;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

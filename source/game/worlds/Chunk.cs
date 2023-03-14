@@ -87,6 +87,7 @@ namespace Celesteia.Game.Worlds {
 
         private NamespacedKey? dropKey;
         public void AddBreakProgress(int x, int y, int power, bool wall, out ItemStack drops) {
+            dropKey = null;
             drops = null;
             if (!IsInChunk(x, y)) return;
 
@@ -108,7 +109,6 @@ namespace Celesteia.Game.Worlds {
         }
 
         Vector2 v;
-        bool wall;
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 v.X = i;
@@ -148,12 +148,12 @@ namespace Celesteia.Game.Worlds {
 
         public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White, 0.4f);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector.X + x, _truePositionVector.Y + y), Color.White, 0.4f);
         }
 
         public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.DarkGray, 0.5f);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector.X + x, _truePositionVector.Y + y), Color.DarkGray, 0.5f);
         }
     }
 

@@ -67,6 +67,14 @@ namespace Celesteia.Graphics {
             );
         }
 
+        // Round drawing positions to the closest scaled zoom, to preserve pixel perfect graphics.
+        public Vector2 GetDrawingPosition(float x, float y) {
+            return new Vector2(
+                (int)Math.Round(x * ScaledZoom) / ScaledZoom,
+                (int)Math.Round(y * ScaledZoom) / ScaledZoom
+            );
+        }
+
         // Forward to ScreenToWorld(Vector2)
         public Vector2 ScreenToWorld(Point point) {
             return ScreenToWorld(new Vector2(point.X, point.Y));

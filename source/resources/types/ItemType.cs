@@ -1,6 +1,4 @@
-using System.Diagnostics;
 using Celesteia.Game;
-using Celesteia.Game.Components.Items;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.Resources.Types {

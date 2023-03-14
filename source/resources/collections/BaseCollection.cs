@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Celesteia.Game;
 using Celesteia.Game.Components;
+using Celesteia.Game.ECS;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources.Types;
 using Celesteia.Resources.Types.Builders;
@@ -21,9 +22,8 @@ namespace Celesteia.Resources.Collections {
             _content = Content;
         }
 
-        public Dictionary<NamespacedKey, BlockType> GetBlocks() => LoadBlocks();
-        public Dictionary<NamespacedKey, ItemType> GetItems() => LoadItems();
 
+        public Dictionary<NamespacedKey, BlockType> GetBlocks() => LoadBlocks();
         private Dictionary<NamespacedKey, BlockType> blocks;
         private Dictionary<NamespacedKey, BlockType> LoadBlocks(int pixelSize = 8) {
             if (blocks != null) return blocks;
@@ -36,15 +36,15 @@ namespace Celesteia.Resources.Collections {
             blocks = new Dictionary<NamespacedKey, BlockType>();
             AddBlock("air", builder.WithName("Air").Invisible().Get());
             AddBlock("grown_soil", builder.WithName("Grown Soil").Full().Frames(0).Properties(
-                strength: 3, 
+                strength: 5, 
                 drop: GetKey("soil")
             ).Get());
             AddBlock("soil", builder.WithName("Soil").Full().Frames(1).Properties(
-                strength: 3, 
+                strength: 5, 
                 drop: GetKey("soil")
             ).Get());
             AddBlock("stone", builder.WithName("Stone").Full().Frames(2).Properties(
-                strength: 5, 
+                strength: 7, 
                 drop: GetKey("stone")
             ).Get());
             AddBlock("deepstone", builder.WithName("Deepstone").Full().Frames(3).Properties(
@@ -60,14 +60,14 @@ namespace Celesteia.Resources.Collections {
                 light: new BlockLightProperties(LightColor.black, 0, false)
             ).Get());
             AddBlock("iron_ore", builder.WithName("Iron Ore").Full().Frames(8).Properties(
-                strength: 15, 
+                strength: 15,
                 drop: GetKey("iron_ore"),
-                light: new BlockLightProperties(new LightColor(63f, 63f, 63f), 3, true)
+                light: new BlockLightProperties(new LightColor(63f, 63f, 63f), 1, true)
             ).Get());
             AddBlock("copper_ore", builder.WithName("Copper Ore").Full().Frames(7).Properties(
                 strength: 10, 
                 drop: GetKey("copper_ore"),
-                light: new BlockLightProperties(new LightColor(112f, 63f, 46f), 3, true)
+                light: new BlockLightProperties(new LightColor(112f, 63f, 46f), 1, true)
             ).Get());
             AddBlock("coal_ore", builder.WithName("Coal Ore").Full().Frames(14).Properties(
                 strength: 10, 
@@ -87,6 +87,7 @@ namespace Celesteia.Resources.Collections {
             return blocks;
         }
 
+        public Dictionary<NamespacedKey, ItemType> GetItems() => LoadItems();
         private Dictionary<NamespacedKey, ItemType> items;
         private Dictionary<NamespacedKey, ItemType> LoadItems(int pixelSize = 16) {
             if (items != null) return items;
@@ -99,11 +100,12 @@ namespace Celesteia.Resources.Collections {
             items = new Dictionary<NamespacedKey, ItemType>();
             if (blocks != null) {
                 foreach (KeyValuePair<NamespacedKey, BlockType> pair in blocks) {
+                    if (pair.Value.Frames == null) continue;
                     AddItem(pair.Key.Index, builder.WithName(pair.Value.Name).Block(pair.Key).Frame(pair.Value.Frames.GetFrame(0).GetRegion()).Get());
                 }
             }
             
-            AddItem("iron_pickaxe", builder.WithName("Iron Pickaxe").Pickaxe(4).Frame(1).Get());
+            AddItem("iron_pickaxe", builder.WithName("Iron Pickaxe").Pickaxe(4).Frame(0).Get());
             AddItem("wooden_log", builder.WithName("Wooden Log").Frame(1).Block(NamespacedKey.Base("log")).Get());
             AddItem("coal", builder.WithName("Coal Lump").Frame(2).Get());
             AddItem("plank", builder.WithName("Plank").Frame(3).Get());
@@ -113,6 +115,37 @@ namespace Celesteia.Resources.Collections {
             AddItem("wooden_torch", builder.WithName("Wooden Torch").Frame(7).Actions(new TorchItemActions(NamespacedKey.Base("torch"))).Get());
 
             return items;
+        }
+
+        public Dictionary<NamespacedKey, Recipe> GetRecipes() => LoadRecipes();
+        private Dictionary<NamespacedKey, Recipe> recipes;
+        private Dictionary<NamespacedKey, Recipe> LoadRecipes() {
+            if (recipes != null) return recipes;
+            
+            void AddRecipe(string index, Recipe type) => recipes.Add(GetKey(index), type);
+            
+            recipes = new Dictionary<NamespacedKey, Recipe>();
+            AddRecipe("plank_ingredient", new Recipe(new Part(GetKey("plank"), 4), new Part(GetKey("log"), 1)));
+            AddRecipe("plank_block", new Recipe(new Part(GetKey("wooden_planks"), 1), new Part(GetKey("plank"), 2)));
+            AddRecipe("copper_smelt", new Recipe(new Part(GetKey("copper_ingot"), 1), new Part(GetKey("copper_ore"), 1)));
+            AddRecipe("iron_smelt", new Recipe(new Part(GetKey("iron_ingot"), 1), new Part(GetKey("iron_ore"), 1)));
+            AddRecipe("fuel_tank", new Recipe(new Part(GetKey("fuel_tank"), 1), new Part(GetKey("iron_ingot"), 10), new Part(GetKey("copper_ingot"), 5)));
+            AddRecipe("torches", new Recipe(new Part(GetKey("torch"), 1), new Part(GetKey("plank"), 1), new Part(GetKey("coal"), 1)));
+
+            return recipes;
+        }
+        
+        public Dictionary<NamespacedKey, EntityType> GetEntities() => LoadEntities();
+        private Dictionary<NamespacedKey, EntityType> entities;
+        private Dictionary<NamespacedKey, EntityType> LoadEntities() {
+            if (entities != null) return entities;
+            
+            void AddEntity(string index, EntityType type) => entities.Add(GetKey(index), type);
+            
+            entities = new Dictionary<NamespacedKey, EntityType>();
+            AddEntity("player", new EntityType((e) => EntityFactory.BuildPlayer(e, _content.Load<Texture2D>("sprites/entities/player/astronaut"))));
+
+            return entities;
         }
     }
 }

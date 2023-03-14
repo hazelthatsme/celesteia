@@ -36,7 +36,7 @@ namespace Celesteia.Resources.Management {
             ), 0, 1);
         }
 
-        private List<IResourceCollection> _collections;
+        private List<IResourceCollection> _collections = new List<IResourceCollection>();
         public void AddCollection(IResourceCollection collection) => _collections.Add(collection);
 
         public void LoadContent(ContentManager Content) {
@@ -60,9 +60,11 @@ namespace Celesteia.Resources.Management {
         }
 
         private byte next = 0;
-        private void AddType(NamespacedKey key, IResourceType type) {
+        private void AddType(NamespacedKey key, BlockType type) {
             type.SetID(next++);
             keys.Add(key.Qualify(), type.GetID());
+
+            Types.Add(type);
         }
 
         public BlockType GetBlock(byte id) {

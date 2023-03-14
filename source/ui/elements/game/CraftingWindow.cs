@@ -4,6 +4,7 @@ using Celesteia.Game.Components.Items;
 using Celesteia.GUIs.Game;
 using Celesteia.Resources;
 using Celesteia.Resources.Management;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -33,10 +34,10 @@ namespace Celesteia.UI.Elements.Game {
             int i = 0;
             for (int row = 0; row < rows; row++)
                 for (int column = 0; column < columns; column++) {
-                    if (i >= ResourceManager.Recipes.GetRecipes().Count) break;
+                    if (i >= ResourceManager.Recipes.Recipes.Count) break;
 
                     int slotNumber = i;
-                    CraftingRecipe recipe = ResourceManager.Recipes.GetRecipes()[index];
+                    Recipe recipe = ResourceManager.Recipes.Recipes[index];
                     CraftingRecipeSlot slot = template.Clone()
                         .SetNewRect(template.GetRect()
                             .SetX(AbsoluteUnit.WithValue(column * CraftingRecipeSlot.SLOT_SIZE + (column * CraftingRecipeSlot.SLOT_SPACING) + o))

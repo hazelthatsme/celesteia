@@ -1,6 +1,6 @@
 using System;
 using Celesteia.Resources;
-using Celesteia.Resources.Management;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;

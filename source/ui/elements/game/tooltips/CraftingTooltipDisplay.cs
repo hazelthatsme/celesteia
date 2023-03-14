@@ -1,4 +1,4 @@
-using Celesteia.Resources.Management;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -60,9 +60,9 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
             SetEnabled(false);
         }
 
-        public void SetRecipe(CraftingRecipe recipe) {
-            Item.SetItem(recipe.Result.Type);
-            Title.SetText(recipe.Result.Type.Name);
+        public void SetRecipe(Recipe recipe) {
+            Item.SetItem(recipe.Result.GetItemType());
+            Title.SetText(recipe.Result.GetItemType().Name);
 
             if (Recipe != null) Recipe.Dispose();
             Recipe = new Container(new Rect(
@@ -79,7 +79,7 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
                     AbsoluteUnit.WithValue(0f),
                     AbsoluteUnit.WithValue(32f),
                     AbsoluteUnit.WithValue(32f)
-                )).SetItem(recipe.Ingredients[i].Type).SetAmount(recipe.Ingredients[i].Amount));
+                )).SetItem(recipe.Ingredients[i].GetItemType()).SetAmount(recipe.Ingredients[i].Amount));
             
             Content.AddChild(Recipe);
         }
