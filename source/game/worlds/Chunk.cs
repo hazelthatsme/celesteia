@@ -4,9 +4,10 @@ using Celesteia.Resources;
 using Celesteia.Graphics;
 using System;
 using Celesteia.Game.Worlds.Generators;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
+using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Worlds {
     public class Chunk {
@@ -84,31 +85,30 @@ namespace Celesteia.Game.Worlds {
             wallTileBreakProgressMap[x, y] = 0;
         }
 
-        ItemType dropType;
+        private NamespacedKey? dropKey;
         public void AddBreakProgress(int x, int y, int power, bool wall, out ItemStack drops) {
+            dropKey = null;
             drops = null;
-            dropType = null;
             if (!IsInChunk(x, y)) return;
 
             if (wall) {
                 wallTileBreakProgressMap[x, y] += power;
                 if (wallTileBreakProgressMap[x, y] > ResourceManager.Blocks.GetBlock(wallTileMap[x, y]).Strength) {
-                    dropType = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]).GetDrops();
+                    dropKey = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]).DropKey;
                     SetWallBlock(x, y, 0);
                 }
             } else {
                 tileBreakProgressMap[x, y] += power;
                 if (tileBreakProgressMap[x, y] > ResourceManager.Blocks.GetBlock(tileMap[x, y]).Strength) {
-                    dropType = ResourceManager.Blocks.GetBlock(tileMap[x, y]).GetDrops();
+                    dropKey = ResourceManager.Blocks.GetBlock(tileMap[x, y]).DropKey;
                     SetBlock(x, y, 0);
                 }
             }
 
-            if (dropType != null) drops = dropType.GetStack(1);
+            if (dropKey.HasValue) drops = new ItemStack(dropKey.Value, 1);
         }
 
         Vector2 v;
-        bool wall;
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 v.X = i;
@@ -148,12 +148,12 @@ namespace Celesteia.Game.Worlds {
 
         public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.White, 0.4f);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector.X + x, _truePositionVector.Y + y), Color.White, 0.4f);
         }
 
         public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector + v), Color.DarkGray, 0.5f);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector.X + x, _truePositionVector.Y + y), Color.DarkGray, 0.5f);
         }
     }
 

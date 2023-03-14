@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
@@ -63,5 +63,7 @@ namespace Celesteia.Resources.Sprites {
 
             Debug.WriteLine($"  > Created texture.");
         }
+        
+        public TextureRegion2D GetRegion() => _region;
     }
 }

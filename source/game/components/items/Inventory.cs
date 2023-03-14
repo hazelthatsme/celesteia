@@ -1,4 +1,5 @@
 using System;
+using Celesteia.Resources;
 
 namespace Celesteia.Game.Components.Items {
     public class Inventory {
@@ -12,7 +13,7 @@ namespace Celesteia.Game.Components.Items {
 
         // Try adding an item to the inventory, return false if the inventory has no capacity for this action.
         public bool AddItem(ItemStack stack) {
-            ItemStack existingStack = GetItemStackWithID(stack.ID);
+            ItemStack existingStack = GetLastItemStack(stack.Key);
 
             // If an item stack with this ID already exists, add the amount to that stack.
             if (existingStack != null) {
@@ -34,6 +35,10 @@ namespace Celesteia.Game.Components.Items {
             return Array.FindLast(items, x => x != null && x.ID == id && x.Amount < x.Type.MaxStackSize);
         }
 
+        public ItemStack GetLastItemStack(NamespacedKey key) {
+            return Array.FindLast(items, x => x != null && x.Key.Equals(key) && x.Amount < x.Type.MaxStackSize);
+        }
+
         public ItemStack GetSlot(int slot) {
             if (slot < 0 || slot > Capacity - 1) throw new ArgumentException($"Slot {slot} falls outside of the inventory's capacity.");
             return items[slot];
@@ -44,29 +49,25 @@ namespace Celesteia.Game.Components.Items {
             items[slot] = stack;
         }
 
-        public bool ContainsStack(ItemStack stack) {
-            return GetAmountOfType(stack.ID) >= stack.Amount;
+        public bool ContainsAmount(NamespacedKey key, int amount) {
+            return GetAmount(key) >= amount;
         }
 
-        public void RemoveStack(ItemStack stack) {
-            RemoveAmountOfType(stack.ID, stack.Amount);
-        }
-
-        public int GetAmountOfType(byte id) {
+        public int GetAmount(NamespacedKey key) {
             int amount = 0;
 
-            ItemStack[] stacksOfItem = Array.FindAll(items, x => x != null && x.ID == id);
+            ItemStack[] stacksOfItem = Array.FindAll(items, x => x != null && x.Key.Equals(key));
             foreach (ItemStack stackOfItem in stacksOfItem) amount += stackOfItem.Amount;
             
             return amount;
         }
 
-        public void RemoveAmountOfType(byte id, int amount) {
+        public void RemoveAmount(NamespacedKey key, int amount) {
             int amountToGo = amount;
             
             ItemStack lastStack;
             while (amountToGo > 0) {
-                lastStack = Array.FindLast(items, x => x != null && x.ID == id);
+                lastStack = Array.FindLast(items, x => x != null && x.Key.Equals(key));
                 int toRemove = Math.Min(lastStack.Amount, amountToGo);
 
                 lastStack.Amount -= toRemove;

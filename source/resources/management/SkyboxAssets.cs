@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
 
-namespace Celesteia.Resources.Collections {
+namespace Celesteia.Resources.Management {
     public class SkyboxAssets {        
         private List<SkyboxAsset> Assets;
 

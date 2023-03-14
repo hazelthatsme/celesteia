@@ -3,13 +3,14 @@ using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended;
 using System.Diagnostics;
+using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Systems {
     public class LightingSystem : IUpdateSystem, IDrawSystem
@@ -110,7 +111,7 @@ namespace Celesteia.Game.Systems {
                     if (_blockID != 0) {
                         _block = ResourceManager.Blocks.GetBlock(_blockID);
                         if (_block.Light.Emits) {
-                            _lightMap.AddLight(i, j, _block); continue;
+                            _lightMap.AddLight(i, j, _block.Light); continue;
                         }
                         else {
                             if (_block.Light.Occludes) {
@@ -124,7 +125,7 @@ namespace Celesteia.Game.Systems {
                         _wall = ResourceManager.Blocks.GetBlock(_wallID);
                         if (_wall.Light.Occludes) {
                             if (_wall.Light.Emits) {
-                                _lightMap.AddLight(i, j, _wall); continue;
+                                _lightMap.AddLight(i, j, _wall.Light); continue;
                             }
                             else {
                                 _lightMap.AddDarkness(i, j); continue;
