@@ -1,5 +1,6 @@
 using System;
 using Celesteia.Resources.Management;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 
 namespace Celesteia.Graphics.Lighting {
@@ -20,8 +21,8 @@ namespace Celesteia.Graphics.Lighting {
             _propagation = new int[width, height];
         }
 
-        public void AddLight(int x, int y, BlockType blockType) {
-            AddLight(x, y, blockType.Light.Emits, blockType.Light.Color, blockType.Light.Propagation);
+        public void AddLight(int x, int y, BlockLightProperties blockLight) {
+            AddLight(x, y, blockLight.Emits, blockLight.Color, blockLight.Propagation);
         }
 
         public void AddLight(int x, int y, bool emit, LightColor color, int propagation) {
