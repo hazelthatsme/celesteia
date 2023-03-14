@@ -52,8 +52,6 @@ namespace Celesteia.Resources.Types {
             Translucent = translucent;
             return this;
         }
-
-        public ItemType GetDrops() => DropKey.HasValue ? ResourceManager.Items.GetResource(DropKey.Value) as ItemType : null;
     }
 
     public class BlockLightProperties {

@@ -1,10 +1,9 @@
 using System;
 using System.Diagnostics;
 using Celesteia.Game.Components.Items;
-using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds.Generators;
 using Celesteia.Resources;
-using Celesteia.Resources.Management;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 

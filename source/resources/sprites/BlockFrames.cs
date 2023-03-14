@@ -63,5 +63,7 @@ namespace Celesteia.Resources.Sprites {
 
             Debug.WriteLine($"  > Created texture.");
         }
+        
+        public TextureRegion2D GetRegion() => _region;
     }
 }

@@ -15,6 +15,10 @@ namespace Celesteia.Resources {
         public const float SPRITE_SCALING = 0.125f;
         public const float INVERSE_SPRITE_SCALING = 8f;
 
+        public static void AddCollection(IResourceCollection collection) {
+            Blocks.AddCollection(collection);
+        }
+
         public static void LoadContent(ContentManager content) {
             Items.LoadContent(content);
             Blocks.LoadContent(content);
@@ -27,27 +31,39 @@ namespace Celesteia.Resources {
 
     public struct NamespacedKey {
         public readonly string Namespace;
-        public readonly string Key;
+        public readonly string Index;
 
-        public NamespacedKey(string ns, string key) {
+        public NamespacedKey(string ns, string index) {
             Namespace = ns;
-            Key = key;
+            Index = index;
         }
 
-        public static NamespacedKey Base(string key) {
-            return new NamespacedKey("celesteia", key);
+        public static NamespacedKey Base(string index) {
+            return new NamespacedKey("celesteia", index);
         }
 
         public string Qualify() {
-            return $"{Namespace}:{Key}";
+            return $"{Namespace}:{Index}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is NamespacedKey && ((NamespacedKey)obj).Namespace == Namespace && ((NamespacedKey)obj).Index == Index;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 
     public interface IResourceType {
         public byte GetID();
+        public void SetID(byte id);
     }
 
     public interface IResourceManager {
+        public void AddCollection(IResourceCollection collection);
         public IResourceType GetResource(NamespacedKey namespacedKey);
     }
 

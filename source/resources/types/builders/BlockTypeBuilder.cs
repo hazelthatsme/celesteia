@@ -1,4 +1,3 @@
-using Celesteia.Graphics.Lighting;
 using MonoGame.Extended;
 using MonoGame.Extended.TextureAtlases;
 
@@ -15,8 +14,11 @@ namespace Celesteia.Resources.Types.Builders {
             return this;
         }
 
+        public BlockTypeBuilder Full() => WithTemplate(BlockTypeTemplate.Full);
+        public BlockTypeBuilder Invisible() => WithTemplate(BlockTypeTemplate.Invisible);
+        public BlockTypeBuilder Walkthrough() => WithTemplate(BlockTypeTemplate.Walkthrough);
+
         public BlockTypeBuilder WithTemplate(BlockTypeTemplate template) {
-            current.MakeFrames(_atlas, template.StartFrame, template.FrameCount);
             current.BoundingBox = template.BoundingBox;
             current.DropKey = template.DropKey;
             current.SetLightProperties(template.LightProperties);
@@ -25,38 +27,17 @@ namespace Celesteia.Resources.Types.Builders {
             return this;
         }
 
-        public BlockTypeBuilder SetFrames(int start, int count) {
+        public BlockTypeBuilder Frames(int start, int count = 1) {
             current.MakeFrames(_atlas, start, count);
             return this;
         }
 
-        public BlockTypeBuilder SetBoundingBox(RectangleF boundingBox) {
-            current.BoundingBox = boundingBox;
-            return this;
-        }
-
-        public BlockTypeBuilder SetDrop(NamespacedKey itemKey) {
-            current.DropKey = itemKey;
-            return this;
-        }
-
-        public BlockTypeBuilder SetStrength(int strength) {
-            current.Strength = strength;
-            return this;
-        }
-
-        public BlockTypeBuilder SetTranslucent(bool translucent) {
+        public BlockTypeBuilder Properties(bool translucent = false, int strength = 1, NamespacedKey? drop = null, BlockLightProperties light = null) {
             current.Translucent = translucent;
-            return this;
-        }
+            current.Strength = strength;
+            current.DropKey = drop;
+            current.SetLightProperties(light);
 
-        public BlockTypeBuilder SetLightProperties(BlockLightProperties lightProperties) {
-            current.SetLightProperties(lightProperties);
-            return this;
-        }
-
-        public BlockTypeBuilder SetLightProperties(bool occludes, int propagation, LightColor color) {
-            current.SetLightProperties(new BlockLightProperties(color, propagation, occludes));
             return this;
         }
 
@@ -67,12 +48,10 @@ namespace Celesteia.Resources.Types.Builders {
 
     public class BlockTypeTemplate
         {
-            public static BlockTypeTemplate Invisible = new BlockTypeTemplate(0, 0, null, null, 0, true);
-            public static BlockTypeTemplate Full = new BlockTypeTemplate(0, 1, new RectangleF(0f, 0f, 1f, 1f), null, 1, false, null);
-            public static BlockTypeTemplate Walkthrough = new BlockTypeTemplate(0, 1, new RectangleF(0f, 0f, 1f, 1f));
+            public static BlockTypeTemplate Invisible = new BlockTypeTemplate(null, null, 0, true);
+            public static BlockTypeTemplate Full = new BlockTypeTemplate(new RectangleF(0f, 0f, 1f, 1f), null, 1, false, null);
+            public static BlockTypeTemplate Walkthrough = new BlockTypeTemplate(new RectangleF(0f, 0f, 1f, 1f));
 
-            public int StartFrame;
-            public int FrameCount;
             public RectangleF? BoundingBox;
             public NamespacedKey? DropKey;
             public int Strength;
@@ -80,16 +59,12 @@ namespace Celesteia.Resources.Types.Builders {
             public BlockLightProperties LightProperties;
 
             public BlockTypeTemplate(
-                int start = 0,
-                int frameCount = 1,
                 RectangleF? boundingBox = null,
                 NamespacedKey? dropKey = null,
                 int strength = 1,
                 bool translucent = false,
                 BlockLightProperties lightProperties = null
             ) {
-                StartFrame = start;
-                FrameCount = frameCount;
                 BoundingBox = boundingBox;
                 DropKey = dropKey;
                 Strength = strength;

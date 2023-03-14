@@ -1,4 +1,5 @@
 using System;
+using Celesteia.Resources;
 
 namespace Celesteia.Game.Components.Items {
     public class Inventory {
@@ -12,7 +13,7 @@ namespace Celesteia.Game.Components.Items {
 
         // Try adding an item to the inventory, return false if the inventory has no capacity for this action.
         public bool AddItem(ItemStack stack) {
-            ItemStack existingStack = GetItemStackWithID(stack.ID);
+            ItemStack existingStack = GetLastItemStack(stack.Key);
 
             // If an item stack with this ID already exists, add the amount to that stack.
             if (existingStack != null) {
@@ -32,6 +33,10 @@ namespace Celesteia.Game.Components.Items {
 
         public ItemStack GetItemStackWithID(byte id) {
             return Array.FindLast(items, x => x != null && x.ID == id && x.Amount < x.Type.MaxStackSize);
+        }
+
+        public ItemStack GetLastItemStack(NamespacedKey key) {
+            return Array.FindLast(items, x => x != null && x.Key.Equals(key) && x.Amount < x.Type.MaxStackSize);
         }
 
         public ItemStack GetSlot(int slot) {

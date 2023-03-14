@@ -12,6 +12,7 @@ using System.Linq;
 using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
 using Celesteia.Game.Worlds;
+using Celesteia.Resources.Collections;
 
 namespace Celesteia
 {
@@ -102,6 +103,7 @@ namespace Celesteia
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
+            ResourceManager.AddCollection(new BaseCollection(Content));
             ResourceManager.LoadContent(Content);
 
             // Load global GUIs.

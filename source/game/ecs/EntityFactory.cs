@@ -58,7 +58,7 @@ namespace Celesteia.Game.ECS {
                 ResourceManager.SPRITE_SCALING
             ));
 
-            entity.Attach(new EntityInventory(36, new ItemStack(8, 1)));
+            entity.Attach(new EntityInventory(36, new ItemStack(NamespacedKey.Base("iron_pickaxe"), 1)));
 
             entity.Attach(new PhysicsEntity(1f, true));
 

@@ -5,30 +5,19 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.Resources.Types {
     public class ItemType : IResourceType {
-        public readonly byte ItemID;
+        private byte id;
         public readonly string Name;
-        public readonly string Lore;
-        public readonly TextureRegion2D Sprite;
-        public readonly int MaxStackSize;
-        public ItemActions Actions;
-        public readonly bool ConsumeOnUse;
+        public byte GetID() => id;
+        public void SetID(byte value) => id = value;
 
-        public ItemType(byte id, string name, string lore, TextureRegion2D sprite, ItemActions actions, bool consumeOnUse, int maxStack) {
-            Debug.WriteLine($"  Loading item '{name}' ({id})...");
-
-            ItemID = id;
+        public ItemType(string name) {
             Name = name;
-            Lore = lore;
-            Sprite = sprite;
-            Actions = actions;
-            MaxStackSize = maxStack;
-            ConsumeOnUse = consumeOnUse;
         }
 
-        public ItemStack GetStack(int amount) {
-            return new ItemStack(ItemID, amount);
-        }
-
-        public byte GetID() => ItemID;
+        public string Lore = "";
+        public TextureRegion2D Sprite = null;
+        public int MaxStackSize = 99;
+        public ItemActions Actions;
+        public bool ConsumeOnUse;
     }
 }

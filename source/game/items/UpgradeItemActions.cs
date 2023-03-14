@@ -10,10 +10,10 @@ namespace Celesteia.Game {
         private EntityAttribute _attribute;
         private float _max;
 
-        public UpgradeItemActions(float increase, EntityAttribute attr, float max) {
+        public UpgradeItemActions(EntityAttribute attribute, float increase, float max) {
             UseTime = 0.2;
+            _attribute = attribute;
             _increase = increase;
-            _attribute = attr;
             _max = max;
         }
         

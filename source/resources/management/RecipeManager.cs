@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Game.Components.Items;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework.Content;
 
 namespace Celesteia.Resources.Management {

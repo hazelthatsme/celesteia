@@ -7,6 +7,7 @@ using Celesteia.Game.Worlds.Generators;
 using Celesteia.Resources.Management;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
+using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Worlds {
     public class Chunk {
@@ -84,27 +85,26 @@ namespace Celesteia.Game.Worlds {
             wallTileBreakProgressMap[x, y] = 0;
         }
 
-        ItemType dropType;
+        private NamespacedKey? dropKey;
         public void AddBreakProgress(int x, int y, int power, bool wall, out ItemStack drops) {
             drops = null;
-            dropType = null;
             if (!IsInChunk(x, y)) return;
 
             if (wall) {
                 wallTileBreakProgressMap[x, y] += power;
                 if (wallTileBreakProgressMap[x, y] > ResourceManager.Blocks.GetBlock(wallTileMap[x, y]).Strength) {
-                    dropType = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]).GetDrops();
+                    dropKey = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]).DropKey;
                     SetWallBlock(x, y, 0);
                 }
             } else {
                 tileBreakProgressMap[x, y] += power;
                 if (tileBreakProgressMap[x, y] > ResourceManager.Blocks.GetBlock(tileMap[x, y]).Strength) {
-                    dropType = ResourceManager.Blocks.GetBlock(tileMap[x, y]).GetDrops();
+                    dropKey = ResourceManager.Blocks.GetBlock(tileMap[x, y]).DropKey;
                     SetBlock(x, y, 0);
                 }
             }
 
-            if (dropType != null) drops = dropType.GetStack(1);
+            if (dropKey.HasValue) drops = new ItemStack(dropKey.Value, 1);
         }
 
         Vector2 v;
