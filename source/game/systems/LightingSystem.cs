@@ -3,13 +3,10 @@ using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources;
-using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended;
-using System.Diagnostics;
 using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Systems {
@@ -133,7 +130,7 @@ namespace Celesteia.Game.Systems {
                         }
                     }
 
-                    _lightMap.AddLight(i, j, true, LightColor.ambient, 4);
+                    _lightMap.AddLight(i, j, true, LightColor.ambient, 6);
                 }
             }
 

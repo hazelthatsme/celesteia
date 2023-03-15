@@ -51,7 +51,7 @@ namespace Celesteia.Resources.Types.Builders {
         {
             public static BlockTypeTemplate Invisible = new BlockTypeTemplate(null, null, 0, true);
             public static BlockTypeTemplate Full = new BlockTypeTemplate(new RectangleF(0f, 0f, 1f, 1f), null, 1, false, null);
-            public static BlockTypeTemplate Walkthrough = new BlockTypeTemplate(new RectangleF(0f, 0f, 1f, 1f));
+            public static BlockTypeTemplate Walkthrough = new BlockTypeTemplate(null);
 
             public RectangleF? BoundingBox;
             public NamespacedKey? DropKey;

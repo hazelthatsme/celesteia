@@ -80,7 +80,7 @@ namespace Celesteia.Resources.Collections {
             AddBlock("torch", builder.WithName("Torch").Walkthrough().Frames(9).Properties(
                 translucent: true, 
                 strength: 1, 
-                drop: GetKey("torch"),
+                drop: GetKey("wooden_torch"),
                 light: new BlockLightProperties(LightColor.white, 6, false)
             ).Get());
 
