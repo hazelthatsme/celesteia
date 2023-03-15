@@ -8,6 +8,7 @@ using Celesteia.Resources.Management;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
 using Celesteia.Resources.Types;
+using System.Diagnostics;
 
 namespace Celesteia.Game.Worlds {
     public class Chunk {
@@ -29,6 +30,7 @@ namespace Celesteia.Game.Worlds {
         private byte[,] wallTileMap;
         private int[,] tileBreakProgressMap;
         private int[,] wallTileBreakProgressMap;
+        private byte[,] drawState;
 
         private GraphicsDevice _graphicsDevice;
 
@@ -39,6 +41,7 @@ namespace Celesteia.Game.Worlds {
             wallTileMap = new byte[CHUNK_SIZE, CHUNK_SIZE];
             tileBreakProgressMap = new int[CHUNK_SIZE, CHUNK_SIZE];
             wallTileBreakProgressMap = new int[CHUNK_SIZE, CHUNK_SIZE];
+            drawState = new byte[CHUNK_SIZE, CHUNK_SIZE];
         }
 
         public Chunk SetPosition(ChunkVector cv) {
@@ -108,6 +111,37 @@ namespace Celesteia.Game.Worlds {
             if (dropKey.HasValue) drops = new ItemStack(dropKey.Value, 1);
         }
 
+        // DRAW STATES
+        // 0: draw nothing
+        // 1: draw back
+        // 2: draw front
+        // 3: draw both
+        private byte state;
+        private BlockType front;
+        private BlockType back;
+        public void Update(GameTime gameTime) {
+            for (int i = 0; i < CHUNK_SIZE; i++) {
+                v.X = i;
+                for (int j = 0; j < CHUNK_SIZE; j++) {
+                    v.Y = j;
+
+                    state = 0;
+
+                    front = ResourceManager.Blocks.GetBlock(tileMap[i, j]);
+                    back = ResourceManager.Blocks.GetBlock(wallTileMap[i, j]);
+
+                    if (front.Frames != null) {
+                        state = 2;
+                        if (front.Translucent && back.Frames != null) state += 1;
+                    } else {
+                        if (back.Frames != null) state = 1;
+                    }
+
+                    drawState[i, j] = state;
+                }
+            }
+        }
+
         Vector2 v;
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
@@ -119,30 +153,27 @@ namespace Celesteia.Game.Worlds {
             }
         }
 
-        BlockType front;
-        BlockType back;
-        float frontBreakProgress;
-        float backBreakProgress;
-        bool translucent;
+        private BlockType tile;
+        private float progress;
+        private BlockFrame breakFrame;
         private void DrawAllAt(int x, int y, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            front = ResourceManager.Blocks.GetBlock(tileMap[x, y]);
-            translucent = front.Translucent;
+            state = drawState[x, y];
+            if (state == 0) return;
 
-            if (translucent) {
-                back = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]);
-                if (back != null && back.Frames != null) {
-                    backBreakProgress = ((float)wallTileBreakProgressMap[x, y] / (float)back.Strength);
-                    DrawWallTile(x, y, back.Frames.GetFrame(0), spriteBatch, camera);
-                    if (backBreakProgress > 0f)
-                        DrawWallTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(backBreakProgress), spriteBatch, camera);
-                }
+            if (state == 1 || state == 3) {
+                tile = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]);
+                progress = ((float)wallTileBreakProgressMap[x, y] / (float)tile.Strength);
+
+                DrawWallTile(x, y, tile.Frames.GetFrame(0), spriteBatch, camera);
+                if (progress > 0f) DrawWallTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(progress), spriteBatch, camera);
             }
 
-            if (front != null && front.Frames != null) {
-                frontBreakProgress = ((float)tileBreakProgressMap[x, y] / (float)front.Strength);
-                DrawTile(x, y, front.Frames.GetFrame(0), spriteBatch, camera);
-                if (frontBreakProgress > 0f) 
-                    DrawTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(frontBreakProgress), spriteBatch, camera);
+            if (state == 2 || state == 3) {
+                tile = ResourceManager.Blocks.GetBlock(tileMap[x, y]);
+                progress = ((float)tileBreakProgressMap[x, y] / (float)tile.Strength);
+
+                DrawTile(x, y, tile.Frames.GetFrame(0), spriteBatch, camera);
+                if (progress > 0f) DrawTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(progress), spriteBatch, camera);
             }
         }
 

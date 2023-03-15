@@ -13,6 +13,7 @@ namespace Celesteia.Resources.Sprites {
         private BlockFrame[] _frames;
 
         private bool _doDraw;
+        public bool DoDraw => _doDraw;
 
         public BlockFrames(TextureAtlas atlas, int startIndex, int frameCount) {
             _doDraw = frameCount > 0;
