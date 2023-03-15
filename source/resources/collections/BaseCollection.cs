@@ -112,7 +112,8 @@ namespace Celesteia.Resources.Collections {
             AddItem("copper_ingot", builder.WithName("Copper Ingot").Frame(4).Get());
             AddItem("iron_ingot", builder.WithName("Iron Ingot").Frame(5).Get());
             AddItem("fuel_tank", builder.WithName("Fuel Tank").Frame(6).Upgrade(EntityAttribute.JumpFuel, 0.5f, 5f).Get());
-            AddItem("wooden_torch", builder.WithName("Wooden Torch").Frame(7).Actions(new TorchItemActions(NamespacedKey.Base("torch"))).Get());
+            AddItem("wooden_torch", builder.WithName("Wooden Torch").Template(new ItemTypeTemplate(99, true))
+                .Frame(7).Actions(new TorchItemActions(NamespacedKey.Base("torch"))).Get());
 
             return items;
         }
