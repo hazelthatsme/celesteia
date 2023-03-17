@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Celesteia.Resources;
+using System.Diagnostics;
 
 namespace Celesteia.Game.Worlds.Generators {
     public class TerranWorldGenerator : IWorldGenerator {
@@ -127,13 +128,14 @@ namespace Celesteia.Game.Worlds.Generators {
 
                 if (Math.Abs(i - GetSpawnpoint().X) < 10f) continue;            // Don't grow trees too close to spawn.
                 if (i < 10 || i > _world.GetWidthInBlocks() - 10) continue;     // Don't grow trees too close to world borders.
-                if (_world.GetBlock(i, j) != 3) continue;                       // Only grow trees on grass.
+                if (_world.GetBlock(i, j) != top) continue;                       // Only grow trees on grass.
                 if (i - lastTree < blocksBetweenTrees) continue;                // Force a certain number of blocks between trees.
 
                 lastTree = i;
 
                 randomNumber = rand.Next(0, 6);
 
+                Debug.WriteLine("> Growing tree at " + i + ", " + j);
                 if (randomNumber == 1) GrowTreeRecursively(i, j - 1, treeGrowthSteps - rand.Next(0, 7), rand, false);
             }
         }
