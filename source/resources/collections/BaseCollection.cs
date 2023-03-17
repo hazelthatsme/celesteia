@@ -131,7 +131,7 @@ namespace Celesteia.Resources.Collections {
             AddRecipe("copper_smelt", new Recipe(new Part(GetKey("copper_ingot"), 1), new Part(GetKey("copper_ore"), 1)));
             AddRecipe("iron_smelt", new Recipe(new Part(GetKey("iron_ingot"), 1), new Part(GetKey("iron_ore"), 1)));
             AddRecipe("fuel_tank", new Recipe(new Part(GetKey("fuel_tank"), 1), new Part(GetKey("iron_ingot"), 10), new Part(GetKey("copper_ingot"), 5)));
-            AddRecipe("torches", new Recipe(new Part(GetKey("torch"), 1), new Part(GetKey("plank"), 1), new Part(GetKey("coal"), 1)));
+            AddRecipe("torches", new Recipe(new Part(GetKey("wooden_torch"), 1), new Part(GetKey("plank"), 1), new Part(GetKey("coal"), 1)));
 
             return recipes;
         }

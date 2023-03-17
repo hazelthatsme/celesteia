@@ -128,7 +128,7 @@ namespace Celesteia.Game.Worlds.Generators {
 
                 if (Math.Abs(i - GetSpawnpoint().X) < 10f) continue;            // Don't grow trees too close to spawn.
                 if (i < 10 || i > _world.GetWidthInBlocks() - 10) continue;     // Don't grow trees too close to world borders.
-                if (_world.GetBlock(i, j) != top) continue;                       // Only grow trees on grass.
+                if (_world.GetBlock(i, j) != top) continue;                     // Only grow trees on grass.
                 if (i - lastTree < blocksBetweenTrees) continue;                // Force a certain number of blocks between trees.
 
                 lastTree = i;
