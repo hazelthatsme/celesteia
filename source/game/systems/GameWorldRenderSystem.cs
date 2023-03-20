@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Celesteia.Resources;
@@ -57,9 +58,7 @@ namespace Celesteia.Game.Systems {
                 }
             }
 
-            if (!_gameWorld.GetSelection().HasValue) drawSelection = false;
-            else if (_gameWorld.GetSelectedBlock().Frames == null) drawSelection = false;
-
+            drawSelection = _gameWorld.GetSelection().HasValue && _gameWorld.GetSelectedBlock().Frames != null;
             if (drawSelection) selectionColor = _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black;
         }
 
