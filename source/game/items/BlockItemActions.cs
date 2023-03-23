@@ -68,6 +68,8 @@ namespace Celesteia.Game {
             if (wall) world.SetWallBlock(cursor, _block);
             else world.SetBlock(cursor, _block);
 
+            world.GetChunk(ChunkVector.FromVector2(cursor)).DoUpdate = true;
+
             return true;
         }
     }

@@ -59,6 +59,8 @@ namespace Celesteia.Game {
         }
 
         public bool Place(GameWorld world, Vector2 cursor, bool wall) {
+
+            world.GetChunk(ChunkVector.FromVector2(cursor)).DoUpdate = true;
             return true;
         }
     }

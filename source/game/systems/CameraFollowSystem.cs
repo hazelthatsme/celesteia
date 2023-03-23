@@ -9,10 +9,8 @@ namespace Celesteia.Game.Systems {
     public class CameraFollowSystem : EntityUpdateSystem
     {
         private readonly Camera2D _camera;
-        private Vector2 _target;
 
         private ComponentMapper<Transform2> transformMapper;
-        private ComponentMapper<CameraFollow> followMapper;
 
         public CameraFollowSystem(Camera2D camera) : base(Aspect.All(typeof(TargetPosition), typeof(CameraFollow))) {
             _camera = camera;
@@ -21,19 +19,14 @@ namespace Celesteia.Game.Systems {
         public override void Initialize(IComponentMapperService mapperService)
         {
             transformMapper = mapperService.GetMapper<Transform2>();
-            followMapper = mapperService.GetMapper<CameraFollow>();
         }
 
         public override void Update(GameTime gameTime)
         {
-            Vector2 calculatedCenter = _camera.Center;
-
             foreach (int entityId in ActiveEntities) {
-                calculatedCenter = transformMapper.Get(entityId).Position;
+                _camera.MoveTo(transformMapper.Get(entityId).Position);
+                break;
             }
-
-            _target = calculatedCenter;
-            _camera.MoveTo(_target);
         }
     }
 }

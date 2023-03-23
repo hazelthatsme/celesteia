@@ -31,7 +31,7 @@ namespace Celesteia.Graphics {
             set { _zoom = MathHelper.Clamp(value, 1, 8); }
         }
         // Macro for zoom scaled to inverse sprite scaling.
-        private float ScaledZoom => _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
+        private int ScaledZoom => _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
 
         private float _rotation;
         // The rotation applied to the camera.
