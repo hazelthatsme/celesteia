@@ -4,11 +4,9 @@ using Celesteia.Resources;
 using Celesteia.Graphics;
 using System;
 using Celesteia.Game.Worlds.Generators;
-using Celesteia.Resources.Management;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
 using Celesteia.Resources.Types;
-using System.Diagnostics;
 
 namespace Celesteia.Game.Worlds {
     public class Chunk {
