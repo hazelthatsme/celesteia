@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Celesteia.Resources;
 using System.Diagnostics;
+using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Worlds.Generators {
     public class TerranWorldGenerator : IWorldGenerator {
@@ -21,11 +22,23 @@ namespace Celesteia.Game.Worlds.Generators {
         private byte soil;
         private byte stone;
         private byte deepstone;
+        private byte log;
+        private byte leaves;
+        private byte planks;
+        private byte coal_ore;
+        private byte copper_ore;
+        private byte iron_ore;
         private void LoadBlockIndices() {
             top = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID();
             soil = ResourceManager.Blocks.GetResource(NamespacedKey.Base("soil")).GetID();
             stone = ResourceManager.Blocks.GetResource(NamespacedKey.Base("stone")).GetID();
             deepstone = ResourceManager.Blocks.GetResource(NamespacedKey.Base("deepstone")).GetID();
+            log = ResourceManager.Blocks.GetResource(NamespacedKey.Base("log")).GetID();
+            leaves = ResourceManager.Blocks.GetResource(NamespacedKey.Base("leaves")).GetID();
+            planks = ResourceManager.Blocks.GetResource(NamespacedKey.Base("wooden_planks")).GetID();
+            coal_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("coal_ore")).GetID();
+            copper_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("copper_ore")).GetID();
+            iron_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("iron_ore")).GetID();
         }
 
         public byte[] GetNaturalBlocks(int x, int y)
@@ -91,15 +104,15 @@ namespace Celesteia.Game.Worlds.Generators {
             byte[] values = prev;
 
             float coalValue = GetOreValue(x, y, 498538f, 985898f);
-            if (coalValue > 0.95f) values[0] = 9;
+            if (coalValue > 0.95f) values[0] = coal_ore;
             else {
                 float copperValue = GetOreValue(x, y, 3089279f, 579486f);
-                if (copperValue > 0.95f) values[0] = 8;
+                if (copperValue > 0.95f) values[0] = copper_ore;
 
                 else
                 {
                     float ironValue = GetOreValue(x, y, 243984f, 223957f);
-                    if (ironValue > 0.95f) values[0] = 7;
+                    if (ironValue > 0.95f) values[0] = iron_ore;
                 }
             }
 
@@ -135,7 +148,6 @@ namespace Celesteia.Game.Worlds.Generators {
 
                 randomNumber = rand.Next(0, 6);
 
-                Debug.WriteLine("> Growing tree at " + i + ", " + j);
                 if (randomNumber == 1) GrowTreeRecursively(i, j - 1, treeGrowthSteps - rand.Next(0, 7), rand, false);
             }
         }
@@ -144,14 +156,14 @@ namespace Celesteia.Game.Worlds.Generators {
             if (steps == 0) {
                 for (int i = -2; i <= 2; i++)
                     for (int j = -2; j <= 2; j++) {
-                        if (_world.GetBlock(x + i, y + j) == 0) _world.SetBlock(x + i, y + j, 6);
+                        if (_world.GetBlock(x + i, y + j) == 0) _world.SetBlock(x + i, y + j, leaves);
                     }
                 return;
             }
 
             if (_world.GetBlock(x, y) != 0) return;
 
-            _world.SetBlock(x, y, 5);
+            _world.SetBlock(x, y, log);
 
             if (!branch) GrowTreeRecursively(x, y - 1, steps - 1, rand, false);     // Grow upwards.
             if (rand.Next(0, 6) > steps) GrowTreeRecursively(x - 1, y, steps - 1, rand, true);     // Grow to the left.
@@ -191,8 +203,6 @@ namespace Celesteia.Game.Worlds.Generators {
             for (int i = originX; i < maxX; i++) originY = Math.Max(originY, _world.BlockHeight - GetHeightValue(i));
             int maxY = originY + homeHeight;
 
-            byte planks = 10;
-
             for (int i = originX; i < maxX; i++)
                 for (int j = originY; j < maxY; j++) {
                     _world.SetWallBlock(i, j, planks);
@@ -203,7 +213,8 @@ namespace Celesteia.Game.Worlds.Generators {
                         continue;
                     }
 
-                    if (i == originX || i == maxX - 1 || j == originY || j == maxY - 1) _world.SetBlock(i, j, planks);
+                    if (j == originY || j == maxY - 1) _world.SetBlock(i, j, planks);
+                    if (i == originX || i == maxX - 1) _world.SetBlock(i, j, log);
                 }
         }
     }
