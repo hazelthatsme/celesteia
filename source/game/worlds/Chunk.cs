@@ -116,8 +116,6 @@ namespace Celesteia.Game.Worlds {
         // 1: draw back
         // 2: draw front
         // 3: draw both
-        private BlockType front;
-        private BlockType back;
         public void Update(GameTime gameTime) {
         }
 
@@ -132,7 +130,8 @@ namespace Celesteia.Game.Worlds {
             }
         }
 
-        private BlockType tile;
+        private BlockType front;
+        private BlockType back;
         private float progress;
         private byte state;
 
@@ -150,18 +149,16 @@ namespace Celesteia.Game.Worlds {
             if (state == 0) return;
 
             if (state == 1 || state == 3) {
-                tile = back;
-                progress = ((float)wallTileBreakProgressMap[x, y] / (float)tile.Strength);
+                progress = ((float)wallTileBreakProgressMap[x, y] / (float)back.Strength);
 
-                DrawWallTile(x, y, tile.Frames.GetFrame(0), spriteBatch, camera);
+                DrawWallTile(x, y, back.Frames.GetFrame(0), spriteBatch, camera);
                 if (progress > 0f) DrawWallTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(progress), spriteBatch, camera);
             }
 
             if (state == 2 || state == 3) {
-                tile = front;
-                progress = ((float)tileBreakProgressMap[x, y] / (float)tile.Strength);
+                progress = ((float)tileBreakProgressMap[x, y] / (float)front.Strength);
 
-                DrawTile(x, y, tile.Frames.GetFrame(0), spriteBatch, camera);
+                DrawTile(x, y, front.Frames.GetFrame(0), spriteBatch, camera);
                 if (progress > 0f) DrawTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(progress), spriteBatch, camera);
             }
         }
