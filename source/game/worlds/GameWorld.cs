@@ -31,6 +31,7 @@ namespace Celesteia.Game.Worlds {
 
             _selection = RoundSelection(_selection.Value);
             _selectedBlock = ResourceManager.Blocks.GetBlock(GetBlock(_selection.Value));
+            if (_selectedBlock.Frames == null) _selectedBlock = ResourceManager.Blocks.GetBlock(GetWallBlock(_selection.Value));
         }
         private Vector2 RoundSelection(Vector2 pos) {
             pos.X = (int)Math.Floor(pos.X);
@@ -100,8 +101,14 @@ namespace Celesteia.Game.Worlds {
             if (ChunkIsInWorld(cv)) return GetChunk(cv).GetBlock(x, y);
             else return 0;
         }
-        public byte GetBlock(Point pos) => GetBlock(pos.X, pos.Y);
-        public byte GetBlock(Vector2 v) => GetBlock(v.ToPoint());
+
+        public byte GetBlock(Vector2 v) {
+            return GetBlock(
+                (int)Math.Floor(v.X),
+                (int)Math.Floor(v.Y)
+            );
+        }
+
 
         public byte GetWallBlock(int x, int y) {
             ChunkVector cv = GetChunkVector(x, y);
@@ -111,13 +118,8 @@ namespace Celesteia.Game.Worlds {
             if (ChunkIsInWorld(cv)) return GetChunk(cv).GetWallBlock(x, y);
             else return 0;
         }
-
-        public byte GetWallBlock(Vector2 v) {
-            return GetWallBlock(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y)
-            );
-        }
+        public byte GetWallBlock(Point pos) => GetWallBlock(pos.X, pos.Y);
+        public byte GetWallBlock(Vector2 v) => GetWallBlock(v.ToPoint());
 
 
         public bool GetAnyBlock(int x, int y, bool includeWalls) {
@@ -129,14 +131,8 @@ namespace Celesteia.Game.Worlds {
 
             return (includeWalls && GetChunk(cv).GetWallBlock(x, y) != 0) || GetChunk(cv).GetBlock(x, y) != 0;
         }
-
-        public bool GetAnyBlock(Vector2 v, bool includeWalls) {
-            return GetAnyBlock(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y),
-                includeWalls
-            );
-        }
+        public bool GetAnyBlock(Point pos, bool includeWalls) => GetAnyBlock(pos.X, pos.Y, includeWalls);
+        public bool GetAnyBlock(Vector2 v, bool includeWalls) => GetAnyBlock(v.ToPoint(), includeWalls);
 
         public void SetBlock(int x, int y, byte id) {
             ChunkVector cv = GetChunkVector(x, y);
@@ -145,14 +141,8 @@ namespace Celesteia.Game.Worlds {
 
             if (ChunkIsInWorld(cv)) GetChunk(cv).SetBlock(x, y, id);
         }
-
-        public void SetBlock(Vector2 v, byte id) {
-            SetBlock(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y),
-                id
-            );
-        }
+        public void SetBlock(Point pos, byte id) => SetBlock(pos.X, pos.Y, id);
+        public void SetBlock(Vector2 v, byte id) => SetBlock(v.ToPoint(), id);
 
         public void SetWallBlock(int x, int y, byte id) {
             ChunkVector cv = GetChunkVector(x, y);
@@ -161,24 +151,8 @@ namespace Celesteia.Game.Worlds {
 
             if (ChunkIsInWorld(cv)) GetChunk(cv).SetWallBlock(x, y, id);
         }
-
-        public void SetWallBlock(Vector2 v, byte id) {
-            SetWallBlock(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y),
-                id
-            );
-        }
-        public void RemoveBlock(Vector2 v) {
-            RemoveBlock(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y)
-            );
-        }
-
-        public void RemoveBlock(int x, int y) {
-            SetBlock(x, y, 0);
-        }
+        public void SetWallBlock(Point pos, byte id) => SetWallBlock(pos.X, pos.Y, id);
+        public void SetWallBlock(Vector2 v, byte id) => SetWallBlock(v.ToPoint(), id);
 
         public bool AddBreakProgress(int x, int y, int power, bool wall, out ItemStack drops) {
             ChunkVector cv = GetChunkVector(x, y);
@@ -192,6 +166,8 @@ namespace Celesteia.Game.Worlds {
             GetChunk(cv).AddBreakProgress(x, y, power, wall, out drops);
             return true;
         }
+        public bool AddBreakProgress(Point pos, int power, bool wall, out ItemStack drops) => AddBreakProgress(pos.X, pos.Y, power, wall, out drops);
+        public bool AddBreakProgress(Vector2 v, int power, bool wall, out ItemStack drops) => AddBreakProgress(v.ToPoint(), power, wall, out drops);
 
         public bool AddBreakProgress(Vector2 v, int power, bool wall, out ItemStack drops) {
             return AddBreakProgress(
@@ -200,30 +176,33 @@ namespace Celesteia.Game.Worlds {
             power, wall, out drops);
         }
 
-        private ChunkVector GetChunkVector(int x, int y) => new ChunkVector(x / Chunk.CHUNK_SIZE, y / Chunk.CHUNK_SIZE);
-        public bool ChunkIsInWorld(ChunkVector cv) => cv.X >= 0 && cv.Y >= 0 && cv.X < Width && cv.Y < Height;
+        public ChunkVector GetChunkVector(int x, int y) {
+            ChunkVector cv = new ChunkVector(
+                x / Chunk.CHUNK_SIZE,
+                y / Chunk.CHUNK_SIZE
+            );
 
-        public RectangleF? GetBlockBoundingBox(int x, int y) {
-            return TestBoundingBox(x, y, GetBlock(x, y));
+            return cv;
         }
+
+        public bool ChunkIsInWorld(ChunkVector cv) {
+            return (cv.X >= 0 && cv.Y >= 0 && cv.X < _width && cv.Y < _height);
+        }
+
 
         public RectangleF? TestBoundingBox(int x, int y, byte id) {
             RectangleF? box = ResourceManager.Blocks.GetBlock(id).BoundingBox;
 
             if (!box.HasValue) return null;
+
             return new RectangleF(
                 x, y,
                 box.Value.Width, box.Value.Height
             );
         }
+        public RectangleF? TestBoundingBox(Point pos, byte id) => TestBoundingBox(pos.X, pos.Y, id);
+        public RectangleF? TestBoundingBox(int x, int y) => TestBoundingBox(x, y, GetBlock(x, y));
 
-        public RectangleF? TestBoundingBox(Vector2 v, byte id) {
-            return TestBoundingBox(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y),
-                id
-            );
-        }
 
         public Vector2 GetSpawnpoint() {
             return _generator.GetSpawnpoint();

@@ -1,6 +1,5 @@
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Physics;
-using Celesteia.Game.Worlds;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;

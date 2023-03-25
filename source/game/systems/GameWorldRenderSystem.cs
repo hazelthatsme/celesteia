@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Celesteia.Resources;
@@ -16,8 +15,7 @@ namespace Celesteia.Game.Systems {
         private readonly SpriteBatch _spriteBatch;
         private ChunkVector _lastChunkPos;
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
-        private int _renderDistance => 5;
-        public int RenderDistance => _renderDistance;
+        public int RenderDistance => 5;
         private GameWorld _gameWorld;
         private BlockFrame _selectionSprite;
 
@@ -31,16 +29,10 @@ namespace Celesteia.Game.Systems {
 
         public void Initialize(World world) {}
 
-        private void DrawChunk(ChunkVector cv, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            Chunk c = _gameWorld.GetChunk(cv);
-
-            if (c != null) c.Draw(gameTime, spriteBatch, camera);
-        }
-
         private ChunkVector _v;
         private List<ChunkVector> activeChunks = new List<ChunkVector>();
-        private bool drawSelection = false;
         private Color selectionColor;
+        private bool drawSelection = false;
         public void Update(GameTime gameTime)
         {
             if (_lastChunkPos != _pivotChunkPos) {
@@ -51,25 +43,37 @@ namespace Celesteia.Game.Systems {
                         _v.Y = _pivotChunkPos.Y + j;
 
                         if (!_gameWorld.ChunkIsInWorld(_v)) continue;
-
-                        _gameWorld.GetChunk(_v).Update(gameTime);
+                        _gameWorld.GetChunk(_v).DoUpdate = true;
                         activeChunks.Add(_v);
                     }
                 }
+
+                _lastChunkPos = _pivotChunkPos;
             }
 
+            foreach (ChunkVector cv in activeChunks) _gameWorld.GetChunk(_v).Update(gameTime);
+
             drawSelection = _gameWorld.GetSelection().HasValue && _gameWorld.GetSelectedBlock().Frames != null;
+            
             if (drawSelection) selectionColor = _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black;
         }
 
         public void Draw(GameTime gameTime) {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
 
+            // Draw every chunk in view.
             foreach (ChunkVector cv in activeChunks) DrawChunk(cv, gameTime, _spriteBatch, _camera);
-            
+
+            // Draw block selector.
             if (drawSelection) _selectionSprite.Draw(0, _spriteBatch, _gameWorld.GetSelection().Value, selectionColor);
 
             _spriteBatch.End();
+        }
+
+        private void DrawChunk(ChunkVector cv, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
+            Chunk c = _gameWorld.GetChunk(cv);
+
+            if (c != null) c.Draw(gameTime, spriteBatch, camera);
         }
 
         public void Dispose() {}

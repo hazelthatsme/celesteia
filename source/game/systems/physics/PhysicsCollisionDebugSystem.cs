@@ -1,9 +1,6 @@
-using System;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
-using Celesteia.Resources;
-using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -49,7 +46,7 @@ namespace Celesteia.Game.Systems.Physics {
 
                 for (int i = minX; i < maxX; i++)
                     for (int j = minY; j < maxY; j++) {
-                        RectangleF? blockBox = _gameWorld.GetBlockBoundingBox(i, j);
+                        RectangleF? blockBox = _gameWorld.TestBoundingBox(i, j);
                         if (blockBox.HasValue) {
                             _spriteBatch.DrawRectangle(new RectangleF(i, j, blockBox.Value.Width, blockBox.Value.Height), Color.Red, .05f, 0f);
                         } else {
