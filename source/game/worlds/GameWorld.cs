@@ -9,21 +9,17 @@ using MonoGame.Extended;
 
 namespace Celesteia.Game.Worlds {
     public class GameWorld : IDisposable {
-        private GameInstance _game;
-        private GameInstance Game => _game;
+        private GameInstance Game;
 
         private Chunk[,] chunkMap;
 
-        private int _width;
-        public int GetWidth() => _width;
-        public int GetWidthInBlocks() => _width * Chunk.CHUNK_SIZE;
-        
-        private int _height;
-        public int GetHeight() => _height;
-        public int GetHeightInBlocks() => _height * Chunk.CHUNK_SIZE;
+        public int Width { get; private set; }
+        public int BlockWidth => Width * Chunk.CHUNK_SIZE;
 
-        private int _seed;
-        public int GetSeed() => _seed;
+        public int Height { get; private set; }
+        public int BlockHeight => Height * Chunk.CHUNK_SIZE;
+
+        public int Seed { get; private set; }
 
         private Vector2? _selection;
         private BlockType _selectedBlock;
@@ -43,18 +39,18 @@ namespace Celesteia.Game.Worlds {
         }
 
         public GameWorld(int width, int height, GameInstance game) {
-            _game = game;
+            Game = game;
             
-            _width = width;
-            _height = height;
+            Width = width;
+            Height = height;
 
-            _seed = (int) System.DateTime.Now.Ticks;
+            Seed = (int) System.DateTime.Now.Ticks;
 
             chunkMap = new Chunk[width, height];
         }
 
         public GameWorld SetSeed(int seed) {
-            _seed = seed;
+            Seed = seed;
             return this;
         }
 
@@ -70,20 +66,16 @@ namespace Celesteia.Game.Worlds {
         private ChunkVector _gv;
         private Chunk _c;
         public void Generate(Action<string> progressReport = null) {
-            int count = 0;
-            int total = _width * _height;
             if (progressReport != null) progressReport("Generating chunks...");
-            for (int i = 0; i < _width; i++) {
+            for (int i = 0; i < Width; i++) {
                 _gv.X = i;
-                for (int j = 0; j < _height; j++) {
+                for (int j = 0; j < Height; j++) {
                     _gv.Y = j;
 
                     _c = new Chunk(_gv, Game.GraphicsDevice);
                     _c.Generate(_generator);
 
                     _c.Enabled = false;
-
-                    count++;
 
                     chunkMap[i, j] = _c;
                 }
@@ -108,14 +100,8 @@ namespace Celesteia.Game.Worlds {
             if (ChunkIsInWorld(cv)) return GetChunk(cv).GetBlock(x, y);
             else return 0;
         }
-
-        public byte GetBlock(Vector2 v) {
-            return GetBlock(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y)
-            );
-        }
-
+        public byte GetBlock(Point pos) => GetBlock(pos.X, pos.Y);
+        public byte GetBlock(Vector2 v) => GetBlock(v.ToPoint());
 
         public byte GetWallBlock(int x, int y) {
             ChunkVector cv = GetChunkVector(x, y);
@@ -139,8 +125,9 @@ namespace Celesteia.Game.Worlds {
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
-            if (ChunkIsInWorld(cv)) return (includeWalls && GetChunk(cv).GetWallBlock(x, y) != 0) || GetChunk(cv).GetBlock(x, y) != 0;
-            else return false;
+            if (!ChunkIsInWorld(cv)) return false;
+
+            return (includeWalls && GetChunk(cv).GetWallBlock(x, y) != 0) || GetChunk(cv).GetBlock(x, y) != 0;
         }
 
         public bool GetAnyBlock(Vector2 v, bool includeWalls) {
@@ -200,10 +187,10 @@ namespace Celesteia.Game.Worlds {
 
             drops = null;
 
-            if (ChunkIsInWorld(cv)) {
-                GetChunk(cv).AddBreakProgress(x, y, power, wall, out drops);
-                return true;
-            } else return false;
+            if (!ChunkIsInWorld(cv)) return false;
+
+            GetChunk(cv).AddBreakProgress(x, y, power, wall, out drops);
+            return true;
         }
 
         public bool AddBreakProgress(Vector2 v, int power, bool wall, out ItemStack drops) {
@@ -213,18 +200,8 @@ namespace Celesteia.Game.Worlds {
             power, wall, out drops);
         }
 
-        public ChunkVector GetChunkVector(int x, int y) {
-            ChunkVector cv = new ChunkVector(
-                x / Chunk.CHUNK_SIZE,
-                y / Chunk.CHUNK_SIZE
-            );
-
-            return cv;
-        }
-
-        public bool ChunkIsInWorld(ChunkVector cv) {
-            return (cv.X >= 0 && cv.Y >= 0 && cv.X < _width && cv.Y < _height);
-        }
+        private ChunkVector GetChunkVector(int x, int y) => new ChunkVector(x / Chunk.CHUNK_SIZE, y / Chunk.CHUNK_SIZE);
+        public bool ChunkIsInWorld(ChunkVector cv) => cv.X >= 0 && cv.Y >= 0 && cv.X < Width && cv.Y < Height;
 
         public RectangleF? GetBlockBoundingBox(int x, int y) {
             return TestBoundingBox(x, y, GetBlock(x, y));
