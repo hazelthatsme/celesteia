@@ -169,25 +169,8 @@ namespace Celesteia.Game.Worlds {
         public bool AddBreakProgress(Point pos, int power, bool wall, out ItemStack drops) => AddBreakProgress(pos.X, pos.Y, power, wall, out drops);
         public bool AddBreakProgress(Vector2 v, int power, bool wall, out ItemStack drops) => AddBreakProgress(v.ToPoint(), power, wall, out drops);
 
-        public bool AddBreakProgress(Vector2 v, int power, bool wall, out ItemStack drops) {
-            return AddBreakProgress(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y),
-            power, wall, out drops);
-        }
-
-        public ChunkVector GetChunkVector(int x, int y) {
-            ChunkVector cv = new ChunkVector(
-                x / Chunk.CHUNK_SIZE,
-                y / Chunk.CHUNK_SIZE
-            );
-
-            return cv;
-        }
-
-        public bool ChunkIsInWorld(ChunkVector cv) {
-            return (cv.X >= 0 && cv.Y >= 0 && cv.X < _width && cv.Y < _height);
-        }
+        public ChunkVector GetChunkVector(int x, int y) => new ChunkVector(x / Chunk.CHUNK_SIZE, y / Chunk.CHUNK_SIZE);
+        public bool ChunkIsInWorld(ChunkVector cv) => cv.X >= 0 && cv.Y >= 0 && cv.X < Width && cv.Y < Height;
 
 
         public RectangleF? TestBoundingBox(int x, int y, byte id) {
