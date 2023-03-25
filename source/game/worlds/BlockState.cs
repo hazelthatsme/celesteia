@@ -1,4 +1,5 @@
 using Celesteia.Resources;
+using Celesteia.Resources.Sprites;
 using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Worlds {
@@ -8,15 +9,21 @@ namespace Celesteia.Game.Worlds {
             get => _id;
             set {
                 _id = value;
-                _type = ResourceManager.Blocks.GetBlock(BlockID) as BlockType;
+                Type = ResourceManager.Blocks.GetBlock(BlockID) as BlockType;
+
+                Translucent = Type.Translucent;
+                Frames = Type.Frames;
             }
         }
 
-        private BlockType _type;
-        public BlockType Type => _type;
+        public BlockType Type { get; private set; }
+        public bool Translucent { get; private set; }
+        public BlockFrames Frames { get; private set; }
         
         public int BreakProgress;
 
-        public bool DoDraw() => _type.Frames != null;
+        public bool Draw;
+        public bool DoDraw() => Draw && HasFrames();
+        public bool HasFrames() => Frames != null;
     }
 }
