@@ -1,9 +1,7 @@
 using Celesteia.Resources;
-using Celesteia.Game.Systems.MainMenu;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
-using Celesteia.Game.Skybox;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Player;
 using MonoGame.Extended.TextureAtlases;
@@ -11,9 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Celesteia.Game.Input;
 using Celesteia.Game.Components;
 using Microsoft.Xna.Framework.Input;
-using Celesteia.Resources.Management;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Items;
+using Celesteia.Game.Components.Skybox;
 using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.ECS {
