@@ -83,11 +83,7 @@ namespace Celesteia.Resources.Collections {
                 drop: GetKey("wooden_torch"),
                 light: new BlockLightProperties(LightColor.white, 6, false)
             ).Get());
-            AddBlock("test_tile_entity", builder.WithName("Test Tile Entity").Walkthrough().Properties(
-                translucent: true,
-                strength: -1
-            ).Get());
-            AddBlock("crashed_capsule", builder.WithName("").Walkthrough().Properties(
+            AddBlock("test_tile_entity", builder.WithName("Test Tile Entity").Frames(5).Walkthrough().Properties(
                 translucent: true,
                 strength: -1
             ).Get());
@@ -122,8 +118,8 @@ namespace Celesteia.Resources.Collections {
             AddItem("fuel_tank", builder.WithName("Fuel Tank").Frame(6).Upgrade(EntityAttribute.JumpFuel, 0.5f, 5f).Get());
             AddItem("wooden_torch", builder.WithName("Wooden Torch").Template(new ItemTypeTemplate(99, true))
                 .Frame(7).Actions(new TorchItemActions(NamespacedKey.Base("torch"))).Get());
-            AddItem("test_tile_entity", builder.WithName("Test Tile Entity").Template(new ItemTypeTemplate(1, false))
-                .Frame(7).Actions(new TileEntityItemActions(NamespacedKey.Base("torch"))).Get());
+            AddItem("tile_entity", builder.WithName("Test Tile Entity").Template(new ItemTypeTemplate(1, false))
+                .Frame(8).Actions(new TileEntityItemActions(NamespacedKey.Base("test_tile_entity"))).Get());
 
             return items;
         }

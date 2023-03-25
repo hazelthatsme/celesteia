@@ -61,8 +61,9 @@ namespace Celesteia.Game.ECS {
 
             entity.Attach(new EntityInventory(36, 
                 new ItemStack(NamespacedKey.Base("iron_pickaxe"), 1),
-                new ItemStack(NamespacedKey.Base("wooden_torch"), 10))
-            );
+                new ItemStack(NamespacedKey.Base("wooden_torch"), 10),
+                new ItemStack(NamespacedKey.Base("tile_entity"), 1)
+            ));
 
             entity.Attach(new PhysicsEntity(1f, true));
 
