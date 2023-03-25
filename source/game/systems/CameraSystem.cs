@@ -1,18 +1,20 @@
 using Celesteia.Game.Components;
+using Celesteia.Game.Input;
 using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
 namespace Celesteia.Game.Systems {
-    public class CameraFollowSystem : EntityUpdateSystem
+    public class CameraSystem : EntityUpdateSystem
     {
         private readonly Camera2D _camera;
 
         private ComponentMapper<Transform2> transformMapper;
 
-        public CameraFollowSystem(Camera2D camera) : base(Aspect.All(typeof(TargetPosition), typeof(CameraFollow))) {
+        public CameraSystem(Camera2D camera) : base(Aspect.All(typeof(TargetPosition), typeof(CameraFollow))) {
             _camera = camera;
         }
 
@@ -27,6 +29,8 @@ namespace Celesteia.Game.Systems {
                 _camera.MoveTo(transformMapper.Get(entityId).Position);
                 break;
             }
+            
+            if (KeyboardWrapper.GetKeyHeld(Keys.LeftControl)) _camera.Zoom += MouseWrapper.GetScrollDelta();
         }
     }
 }

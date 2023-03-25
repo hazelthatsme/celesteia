@@ -110,13 +110,8 @@ namespace Celesteia.Game.Worlds {
             else return 0;
         }
 
-        public byte GetBlock(Point pos) {
-            return GetBlock(pos.X, pos.Y);
-        }
-
-        public byte GetBlock(Vector2 v) {
-            return GetBlock(v.ToPoint());
-        }
+        public byte GetBlock(Point pos) => GetBlock(pos.X, pos.Y);
+        public byte GetBlock(Vector2 v) => GetBlock(v.ToPoint());
 
         public byte GetWallBlock(int x, int y) {
             ChunkVector cv = GetChunkVector(x, y);
@@ -179,27 +174,20 @@ namespace Celesteia.Game.Worlds {
         private ChunkVector GetChunkVector(int x, int y) => new ChunkVector(x / Chunk.CHUNK_SIZE, y / Chunk.CHUNK_SIZE);
         public bool ChunkIsInWorld(ChunkVector cv) => cv.X >= 0 && cv.Y >= 0 && cv.X < _width && cv.Y < _height;
 
-        public RectangleF? GetBlockBoundingBox(int x, int y) {
-            return TestBoundingBox(x, y, GetBlock(x, y));
-        }
 
         public RectangleF? TestBoundingBox(int x, int y, byte id) {
             RectangleF? box = ResourceManager.Blocks.GetBlock(id).BoundingBox;
 
             if (!box.HasValue) return null;
+
             return new RectangleF(
                 x, y,
                 box.Value.Width, box.Value.Height
             );
         }
+        public RectangleF? TestBoundingBox(Point pos, byte id) => TestBoundingBox(pos.X, pos.Y, id);
+        public RectangleF? TestBoundingBox(int x, int y) => TestBoundingBox(x, y, GetBlock(x, y));
 
-        public RectangleF? TestBoundingBox(Vector2 v, byte id) {
-            return TestBoundingBox(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y),
-                id
-            );
-        }
 
         public Vector2 GetSpawnpoint() {
             return _generator.GetSpawnpoint();

@@ -42,7 +42,7 @@ namespace Celesteia.Game {
 
             if (!forWall && user.Has<CollisionBox>()) {
                 Rectangle box = user.Get<CollisionBox>().Rounded;
-                RectangleF? rect = world.TestBoundingBox(cursor, _block);
+                RectangleF? rect = world.TestBoundingBox(cursor.ToPoint(), _block);
                 if (rect.HasValue) {
                     bool intersect = rect.Intersects(new RectangleF(box.X, box.Y, box.Width, box.Height));
                     if (intersect) return false;
