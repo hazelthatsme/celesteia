@@ -50,11 +50,6 @@ namespace Celesteia.Game.Worlds {
             chunkMap = new Chunk[width, height];
         }
 
-        public GameWorld SetSeed(int seed) {
-            Seed = seed;
-            return this;
-        }
-
         private IWorldGenerator _generator;
         public GameWorld SetGenerator(IWorldGenerator generator) {
             _generator = generator;
@@ -88,34 +83,25 @@ namespace Celesteia.Game.Worlds {
             Debug.WriteLine("World generated.");
         }
 
-        public Chunk GetChunk(ChunkVector cv) {
-            return chunkMap[cv.X, cv.Y];
-        }
-
+        public Chunk GetChunk(ChunkVector cv) => chunkMap[cv.X, cv.Y];
 
         public byte GetBlock(int x, int y) {
             ChunkVector cv = GetChunkVector(x, y);
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
-            if (ChunkIsInWorld(cv)) return GetChunk(cv).GetBlock(x, y);
+            if (ChunkIsInWorld(cv)) return GetChunk(cv).GetForeground(x, y);
             else return 0;
         }
-
-        public byte GetBlock(Vector2 v) {
-            return GetBlock(
-                (int)Math.Floor(v.X),
-                (int)Math.Floor(v.Y)
-            );
-        }
-
+        public byte GetBlock(Point pos) => GetBlock(pos.X, pos.Y);
+        public byte GetBlock(Vector2 v) => GetBlock(v.ToPoint());
 
         public byte GetWallBlock(int x, int y) {
             ChunkVector cv = GetChunkVector(x, y);
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
-            if (ChunkIsInWorld(cv)) return GetChunk(cv).GetWallBlock(x, y);
+            if (ChunkIsInWorld(cv)) return GetChunk(cv).GetBackground(x, y);
             else return 0;
         }
         public byte GetWallBlock(Point pos) => GetWallBlock(pos.X, pos.Y);
@@ -129,7 +115,7 @@ namespace Celesteia.Game.Worlds {
 
             if (!ChunkIsInWorld(cv)) return false;
 
-            return (includeWalls && GetChunk(cv).GetWallBlock(x, y) != 0) || GetChunk(cv).GetBlock(x, y) != 0;
+            return (includeWalls && GetChunk(cv).GetBackground(x, y) != 0) || GetChunk(cv).GetForeground(x, y) != 0;
         }
         public bool GetAnyBlock(Point pos, bool includeWalls) => GetAnyBlock(pos.X, pos.Y, includeWalls);
         public bool GetAnyBlock(Vector2 v, bool includeWalls) => GetAnyBlock(v.ToPoint(), includeWalls);
@@ -139,7 +125,7 @@ namespace Celesteia.Game.Worlds {
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
-            if (ChunkIsInWorld(cv)) GetChunk(cv).SetBlock(x, y, id);
+            if (ChunkIsInWorld(cv)) GetChunk(cv).SetForeground(x, y, id);
         }
         public void SetBlock(Point pos, byte id) => SetBlock(pos.X, pos.Y, id);
         public void SetBlock(Vector2 v, byte id) => SetBlock(v.ToPoint(), id);
@@ -149,7 +135,7 @@ namespace Celesteia.Game.Worlds {
             x %= Chunk.CHUNK_SIZE;
             y %= Chunk.CHUNK_SIZE;
 
-            if (ChunkIsInWorld(cv)) GetChunk(cv).SetWallBlock(x, y, id);
+            if (ChunkIsInWorld(cv)) GetChunk(cv).SetBackground(x, y, id);
         }
         public void SetWallBlock(Point pos, byte id) => SetWallBlock(pos.X, pos.Y, id);
         public void SetWallBlock(Vector2 v, byte id) => SetWallBlock(v.ToPoint(), id);

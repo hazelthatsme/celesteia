@@ -67,9 +67,7 @@ namespace Celesteia.Resources.Management {
             Types.Add(type);
         }
 
-        public BlockType GetBlock(byte id) {
-            return BakedTypes[id];
-        }
+        public BlockType GetBlock(byte id) => BakedTypes[id];
 
         public IResourceType GetResource(NamespacedKey key) {
             if (!keys.ContainsKey(key.Qualify())) throw new NullReferenceException();

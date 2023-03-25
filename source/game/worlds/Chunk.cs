@@ -11,43 +11,30 @@ using Celesteia.Resources.Types;
 namespace Celesteia.Game.Worlds {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
-        public static bool IsInChunk(int x, int y) {
-            return (x >= 0 && y >= 0 && y < CHUNK_SIZE && y < CHUNK_SIZE);
-        }
+        public static bool IsInChunk(int x, int y) => x >= 0 && y >= 0 && y < CHUNK_SIZE && y < CHUNK_SIZE;
 
-        private bool _enabled = false;
-        public bool Enabled {
-            get => _enabled;
-            set => _enabled = value;
-        }
-
+        public bool Enabled = false;
         public bool DoUpdate = false;
 
         private ChunkVector _position;
         private Point _truePosition;
-        private Vector2 _truePositionVector;
-        private byte[,] tileMap;
-        private byte[,] wallTileMap;
-        private int[,] tileBreakProgressMap;
-        private int[,] wallTileBreakProgressMap;
-        private byte[,] drawState;
+
+        private BlockState[,] foreground;
+        private BlockState[,] background;
 
         private GraphicsDevice _graphicsDevice;
 
         public Chunk(ChunkVector cv, GraphicsDevice graphicsDevice) {
             SetPosition(cv);
             _graphicsDevice = graphicsDevice;
-            tileMap = new byte[CHUNK_SIZE, CHUNK_SIZE];
-            wallTileMap = new byte[CHUNK_SIZE, CHUNK_SIZE];
-            tileBreakProgressMap = new int[CHUNK_SIZE, CHUNK_SIZE];
-            wallTileBreakProgressMap = new int[CHUNK_SIZE, CHUNK_SIZE];
-            drawState = new byte[CHUNK_SIZE, CHUNK_SIZE];
+
+            foreground = new BlockState[CHUNK_SIZE, CHUNK_SIZE];
+            background = new BlockState[CHUNK_SIZE, CHUNK_SIZE];
         }
 
         public Chunk SetPosition(ChunkVector cv) {
             _position = cv;
             _truePosition = cv.Resolve();
-            _truePositionVector = new Vector2(_truePosition.X, _truePosition.Y);
 
             return this;
         }
@@ -56,55 +43,48 @@ namespace Celesteia.Game.Worlds {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     byte[] natural = generator.GetNaturalBlocks(_truePosition.X + i, _truePosition.Y + j);
-                    SetBlock(i, j, natural[0]);
-                    SetWallBlock(i, j, natural[1]);
+
+                    foreground[i, j].BlockID = natural[0];
+                    background[i, j].BlockID = natural[1];
                 }
             }
         }
 
-        public byte GetBlock(int x, int y) {
-            if (!IsInChunk(x, y)) return 0;
+        public byte GetForeground(int x, int y) => IsInChunk(x, y) ? foreground[x, y].BlockID : (byte)0;
+        public byte GetBackground(int x, int y) => IsInChunk(x, y) ? foreground[x, y].BlockID : (byte)0;
 
-            return tileMap[x, y];
+        public void SetForeground(int x, int y, byte id) {
+            if (IsInChunk(x, y)) {
+                foreground[x, y].BlockID = id;
+                foreground[x, y].BreakProgress = 0;
+            }
         }
 
-        public void SetBlock(int x, int y, byte id) {
-            if (!IsInChunk(x, y)) return;
-
-            tileMap[x, y] = id;
-            tileBreakProgressMap[x, y] = 0;
-        }
-
-        public byte GetWallBlock(int x, int y) {
-            if (!IsInChunk(x, y)) return 0;
-
-            return wallTileMap[x, y];
-        }
-
-        public void SetWallBlock(int x, int y, byte id) {
-            if (!IsInChunk(x, y)) return;
-
-            wallTileMap[x, y] = id;
-            wallTileBreakProgressMap[x, y] = 0;
+        public void SetBackground(int x, int y, byte id) {
+            if (IsInChunk(x, y)) {
+                background[x, y].BlockID = id;
+                background[x, y].BreakProgress = 0;
+            }
         }
 
         private NamespacedKey? dropKey;
         public void AddBreakProgress(int x, int y, int power, bool wall, out ItemStack drops) {
             dropKey = null;
             drops = null;
+            
             if (!IsInChunk(x, y)) return;
 
             if (wall) {
-                wallTileBreakProgressMap[x, y] += power;
-                if (wallTileBreakProgressMap[x, y] > ResourceManager.Blocks.GetBlock(wallTileMap[x, y]).Strength) {
-                    dropKey = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]).DropKey;
-                    SetWallBlock(x, y, 0);
+                background[x, y].BreakProgress += power;
+                if (background[x, y].BreakProgress > background[x, y].Type.Strength) {
+                    dropKey = background[x, y].Type.DropKey;
+                    SetBackground(x, y, 0);
                 }
             } else {
-                tileBreakProgressMap[x, y] += power;
-                if (tileBreakProgressMap[x, y] > ResourceManager.Blocks.GetBlock(tileMap[x, y]).Strength) {
-                    dropKey = ResourceManager.Blocks.GetBlock(tileMap[x, y]).DropKey;
-                    SetBlock(x, y, 0);
+                foreground[x, y].BreakProgress += power;
+                if (foreground[x, y].BreakProgress > foreground[x, y].Type.Strength) {
+                    dropKey = foreground[x, y].Type.DropKey;
+                    SetForeground(x, y, 0);
                 }
             }
 
@@ -130,47 +110,42 @@ namespace Celesteia.Game.Worlds {
             }
         }
 
-        private BlockType front;
-        private BlockType back;
         private float progress;
         private byte state;
 
         private void DrawAllAt(int x, int y, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
             state = 0;
 
-            front = ResourceManager.Blocks.GetBlock(tileMap[x, y]);
-            back = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]);
-
-            if (front.Frames != null) {
+            if (foreground[x, y].DoDraw()) {
                 state = 2;
-                if (front.Translucent && back.Frames != null) state += 1;
-            } else if (back.Frames != null) state = 1;
+                if (foreground[x, y].Type.Translucent && background[x, y].DoDraw()) state += 1;
+            } else if (background[x, y].DoDraw()) state = 1;
 
             if (state == 0) return;
 
             if (state == 1 || state == 3) {
-                progress = ((float)wallTileBreakProgressMap[x, y] / (float)back.Strength);
+                progress = background[x, y].BreakProgress / (float) background[x, y].Type.Strength;
 
-                DrawWallTile(x, y, back.Frames.GetFrame(0), spriteBatch, camera);
+                DrawWallTile(x, y, background[x, y].Type.Frames.GetFrame(0), spriteBatch, camera);
                 if (progress > 0f) DrawWallTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(progress), spriteBatch, camera);
             }
 
             if (state == 2 || state == 3) {
-                progress = ((float)tileBreakProgressMap[x, y] / (float)front.Strength);
+                progress = foreground[x, y].BreakProgress / (float) foreground[x, y].Type.Strength;
 
-                DrawTile(x, y, front.Frames.GetFrame(0), spriteBatch, camera);
+                DrawTile(x, y, foreground[x, y].Type.Frames.GetFrame(0), spriteBatch, camera);
                 if (progress > 0f) DrawTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(progress), spriteBatch, camera);
             }
         }
 
         public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector.X + x, _truePositionVector.Y + y), Color.White, 0.4f);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePosition.X + x, _truePosition.Y + y), Color.White, 0.4f);
         }
 
         public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePositionVector.X + x, _truePositionVector.Y + y), Color.DarkGray, 0.5f);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePosition.X + x, _truePosition.Y + y), Color.DarkGray, 0.5f);
         }
     }
 
