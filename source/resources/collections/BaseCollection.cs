@@ -87,6 +87,19 @@ namespace Celesteia.Resources.Collections {
                 translucent: true,
                 strength: -1
             ).Get());
+            AddBlock("stone_bricks", builder.WithName("Stone Bricks").Frames(6).Full().Properties(
+                strength: 7, 
+                drop: GetKey("stone_bricks")
+            ).Get());
+            AddBlock("unyx_bricks", builder.WithName("Unyx Bricks").Frames(12).Full().Properties(
+                strength: 10,
+                drop: GetKey("unyx_bricks")
+            ).Get());
+            AddBlock("unyx_eyestone", builder.WithName("Unyx Eyestone").Frames(13).Full().Properties(
+                strength: 10,
+                drop: GetKey("unyx_eyestone"),
+                light: new BlockLightProperties(new LightColor(230f, 74f, 255f), 5, true)
+            ).Get());
 
             return blocks;
         }
@@ -138,6 +151,7 @@ namespace Celesteia.Resources.Collections {
             AddRecipe("iron_smelt", new Recipe(new Part(GetKey("iron_ingot"), 1), new Part(GetKey("iron_ore"), 1)));
             AddRecipe("fuel_tank", new Recipe(new Part(GetKey("fuel_tank"), 1), new Part(GetKey("iron_ingot"), 10), new Part(GetKey("copper_ingot"), 5)));
             AddRecipe("torches", new Recipe(new Part(GetKey("wooden_torch"), 1), new Part(GetKey("plank"), 1), new Part(GetKey("coal"), 1)));
+            AddRecipe("stone_brick", new Recipe(new Part(GetKey("stone_bricks"), 4), new Part(GetKey("stone"), 4)));
 
             return recipes;
         }
