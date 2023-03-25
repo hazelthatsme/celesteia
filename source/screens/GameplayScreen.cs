@@ -47,8 +47,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new PhysicsWorldCollisionSystem(_gameWorld))
                 .AddSystem(localPlayerSystem = new LocalPlayerSystem(_gameGui, Camera, _gameWorld))
                 .AddSystem(new TargetPositionSystem(_gameWorld))
-                .AddSystem(new CameraFollowSystem(Camera))
-                .AddSystem(new CameraZoomSystem(Camera))
+                .AddSystem(new CameraSystem(Camera))
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
                 .AddSystem(new LightingSystem(Camera, SpriteBatch, _gameWorld))
@@ -65,10 +64,7 @@ namespace Celesteia.Screens {
             localPlayerSystem.Player = player;
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            _world.Update(gameTime);
-        }
+        public override void Update(GameTime gameTime) => _world.Update(gameTime);
 
         public override void Draw(GameTime gameTime)
         {

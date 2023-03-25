@@ -13,7 +13,7 @@ namespace Celesteia.Resources {
         public static SkyboxAssets Skybox = new SkyboxAssets();
 
         public const float SPRITE_SCALING = 0.125f;
-        public const float INVERSE_SPRITE_SCALING = 8f;
+        public const int INVERSE_SPRITE_SCALING = 8;
 
         public static void AddCollection(IResourceCollection collection) {
             Blocks.AddCollection(collection);

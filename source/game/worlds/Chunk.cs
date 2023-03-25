@@ -4,11 +4,9 @@ using Celesteia.Resources;
 using Celesteia.Graphics;
 using System;
 using Celesteia.Game.Worlds.Generators;
-using Celesteia.Resources.Management;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
 using Celesteia.Resources.Types;
-using System.Diagnostics;
 
 namespace Celesteia.Game.Worlds {
     public class Chunk {
@@ -22,6 +20,8 @@ namespace Celesteia.Game.Worlds {
             get => _enabled;
             set => _enabled = value;
         }
+
+        public bool DoUpdate = false;
 
         private ChunkVector _position;
         private Point _truePosition;
@@ -116,30 +116,9 @@ namespace Celesteia.Game.Worlds {
         // 1: draw back
         // 2: draw front
         // 3: draw both
-        private byte state;
         private BlockType front;
         private BlockType back;
         public void Update(GameTime gameTime) {
-            for (int i = 0; i < CHUNK_SIZE; i++) {
-                v.X = i;
-                for (int j = 0; j < CHUNK_SIZE; j++) {
-                    v.Y = j;
-
-                    state = 0;
-
-                    front = ResourceManager.Blocks.GetBlock(tileMap[i, j]);
-                    back = ResourceManager.Blocks.GetBlock(wallTileMap[i, j]);
-
-                    if (front.Frames != null) {
-                        state = 2;
-                        if (front.Translucent && back.Frames != null) state += 1;
-                    } else {
-                        if (back.Frames != null) state = 1;
-                    }
-
-                    drawState[i, j] = state;
-                }
-            }
         }
 
         Vector2 v;
@@ -155,13 +134,23 @@ namespace Celesteia.Game.Worlds {
 
         private BlockType tile;
         private float progress;
-        private BlockFrame breakFrame;
+        private byte state;
+
         private void DrawAllAt(int x, int y, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            state = drawState[x, y];
+            state = 0;
+
+            front = ResourceManager.Blocks.GetBlock(tileMap[x, y]);
+            back = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]);
+
+            if (front.Frames != null) {
+                state = 2;
+                if (front.Translucent && back.Frames != null) state += 1;
+            } else if (back.Frames != null) state = 1;
+
             if (state == 0) return;
 
             if (state == 1 || state == 3) {
-                tile = ResourceManager.Blocks.GetBlock(wallTileMap[x, y]);
+                tile = back;
                 progress = ((float)wallTileBreakProgressMap[x, y] / (float)tile.Strength);
 
                 DrawWallTile(x, y, tile.Frames.GetFrame(0), spriteBatch, camera);
@@ -169,7 +158,7 @@ namespace Celesteia.Game.Worlds {
             }
 
             if (state == 2 || state == 3) {
-                tile = ResourceManager.Blocks.GetBlock(tileMap[x, y]);
+                tile = front;
                 progress = ((float)tileBreakProgressMap[x, y] / (float)tile.Strength);
 
                 DrawTile(x, y, tile.Frames.GetFrame(0), spriteBatch, camera);
