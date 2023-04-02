@@ -1,53 +1,71 @@
-using System;
+using System.Collections.Generic;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Celesteia.Resources;
 using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
 namespace Celesteia.Game.Systems {
-    public class GameWorldRenderSystem : DrawSystem
+    public class GameWorldRenderSystem : IUpdateSystem, IDrawSystem
     {
         private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
+        private ChunkVector _lastChunkPos;
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
-        private int _renderDistance => 5;
+        public int RenderDistance => 5;
         private GameWorld _gameWorld;
-        private BlockFrames _selectionSprite;
+        private BlockFrame _selectionSprite;
 
         public GameWorldRenderSystem(Camera2D camera, SpriteBatch spriteBatch, GameWorld world) {
             _camera = camera;
             _spriteBatch = spriteBatch;
             _gameWorld = world;
 
-            _selectionSprite = ResourceManager.Blocks.Selection;
+            _selectionSprite = ResourceManager.Blocks.Selection.GetFrame(0);
         }
 
+        public void Initialize(World world) {}
+
         private ChunkVector _v;
-        public override void Draw(GameTime gameTime) {
+        private List<ChunkVector> activeChunks = new List<ChunkVector>();
+        private Color selectionColor;
+        private bool drawSelection = false;
+        public void Update(GameTime gameTime)
+        {
+            if (_lastChunkPos != _pivotChunkPos) {
+                activeChunks.Clear();
+                for (int i = -RenderDistance; i <= RenderDistance; i++) {
+                    _v.X = _pivotChunkPos.X + i;
+                    for (int j = -RenderDistance; j <= RenderDistance; j++) {
+                        _v.Y = _pivotChunkPos.Y + j;
+
+                        if (!_gameWorld.ChunkIsInWorld(_v)) continue;
+                        _gameWorld.GetChunk(_v).DoUpdate = true;
+                        activeChunks.Add(_v);
+                    }
+                }
+
+                _lastChunkPos = _pivotChunkPos;
+            }
+
+            foreach (ChunkVector cv in activeChunks) _gameWorld.GetChunk(_v).Update(gameTime);
+
+            drawSelection = _gameWorld.GetSelection().HasValue && _gameWorld.GetSelectedBlock().Frames != null;
+            
+            if (drawSelection) selectionColor = _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black;
+        }
+
+        public void Draw(GameTime gameTime) {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
 
-            int minX = _pivotChunkPos.X - _renderDistance;
-            int maxX = _pivotChunkPos.X + _renderDistance;
+            // Draw every chunk in view.
+            foreach (ChunkVector cv in activeChunks) DrawChunk(cv, gameTime, _spriteBatch, _camera);
 
-            int minY = _pivotChunkPos.Y - _renderDistance;
-            int maxY = _pivotChunkPos.Y + _renderDistance;
-            
-            for (int i = minX; i <= maxX; i++) {
-                _v.X = i;
-                for (int j = minY; j <= maxY; j++) {
-                    _v.Y = j;
-
-                    if (!_gameWorld.ChunkIsInWorld(_v)) continue;
-                    
-                    DrawChunk(_v, gameTime, _spriteBatch, _camera);
-                }
-            }
-            
-            if (_gameWorld.GetSelection().HasValue && _gameWorld.GetSelectedBlock() != null)
-                _selectionSprite.GetFrame(0).Draw(0, _spriteBatch, _gameWorld.GetSelection().Value, _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black);
+            // Draw block selector.
+            if (drawSelection) _selectionSprite.Draw(0, _spriteBatch, _gameWorld.GetSelection().Value, selectionColor);
 
             _spriteBatch.End();
         }
@@ -57,5 +75,7 @@ namespace Celesteia.Game.Systems {
 
             if (c != null) c.Draw(gameTime, spriteBatch, camera);
         }
+
+        public void Dispose() {}
     }
 }

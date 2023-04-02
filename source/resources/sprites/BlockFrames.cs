@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
@@ -13,6 +13,7 @@ namespace Celesteia.Resources.Sprites {
         private BlockFrame[] _frames;
 
         private bool _doDraw;
+        public bool DoDraw => _doDraw;
 
         public BlockFrames(TextureAtlas atlas, int startIndex, int frameCount) {
             _doDraw = frameCount > 0;
@@ -63,5 +64,7 @@ namespace Celesteia.Resources.Sprites {
 
             Debug.WriteLine($"  > Created texture.");
         }
+        
+        public TextureRegion2D GetRegion() => _region;
     }
 }

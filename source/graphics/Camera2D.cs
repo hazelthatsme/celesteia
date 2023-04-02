@@ -28,10 +28,10 @@ namespace Celesteia.Graphics {
         // The zoom value of the camera.
         public int Zoom {
             get { return _zoom; }
-            set { _zoom = MathHelper.Clamp(value, 3, 8); }
+            set { _zoom = MathHelper.Clamp(value, 1, 8); }
         }
         // Macro for zoom scaled to inverse sprite scaling.
-        private float ScaledZoom => _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
+        private int ScaledZoom => _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
 
         private float _rotation;
         // The rotation applied to the camera.
@@ -64,6 +64,14 @@ namespace Celesteia.Graphics {
             return new Vector2(
                 (int)Math.Round(position.X * ScaledZoom) / ScaledZoom,
                 (int)Math.Round(position.Y * ScaledZoom) / ScaledZoom
+            );
+        }
+
+        // Round drawing positions to the closest scaled zoom, to preserve pixel perfect graphics.
+        public Vector2 GetDrawingPosition(float x, float y) {
+            return new Vector2(
+                (int)Math.Round(x * ScaledZoom) / ScaledZoom,
+                (int)Math.Round(y * ScaledZoom) / ScaledZoom
             );
         }
 

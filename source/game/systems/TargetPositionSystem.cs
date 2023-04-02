@@ -28,7 +28,9 @@ namespace Celesteia.Game.Systems {
                 TargetPosition targetPosition = targetPositionMapper.Get(entityId);
                 Transform2 transform = transformMapper.Get(entityId);
 
-                targetPosition.Target.X = MathHelper.Clamp(targetPosition.Target.X, 0f, _gameWorld.GetWidthInBlocks());
+                if (targetPosition.Target.X < 0 || targetPosition.Target.X > _gameWorld.BlockWidth)
+                    targetPosition.Target.X = MathHelper.Clamp(targetPosition.Target.X, 0f, _gameWorld.BlockWidth);
+                
                 transform.Position = targetPosition.Target;
             }
         }

@@ -12,12 +12,13 @@ using System.Linq;
 using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
 using Celesteia.Game.Worlds;
+using Celesteia.Resources.Collections;
 
 namespace Celesteia
 {
     public class GameInstance : Microsoft.Xna.Framework.Game
     {
-        public static readonly string Version = "Alpha 1.2.4_02";
+        public static readonly string Version = "Alpha 1.3";
         public static bool DebugMode { get; private set; }
         
         private readonly List<string> cmdArgs;
@@ -102,6 +103,7 @@ namespace Celesteia
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
+            ResourceManager.AddCollection(new BaseCollection(Content));
             ResourceManager.LoadContent(Content);
 
             // Load global GUIs.

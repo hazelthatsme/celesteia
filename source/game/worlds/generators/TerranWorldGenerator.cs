@@ -1,6 +1,8 @@
 using System;
 using Microsoft.Xna.Framework;
 using Celesteia.Resources;
+using System.Diagnostics;
+using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Worlds.Generators {
     public class TerranWorldGenerator : IWorldGenerator {
@@ -11,7 +13,7 @@ namespace Celesteia.Game.Worlds.Generators {
 
         public TerranWorldGenerator(GameWorld world) {
             SetWorld(world);
-            _noise = new FastNoiseLite(world.GetSeed());
+            _noise = new FastNoiseLite(world.Seed);
 
             LoadBlockIndices();
         }
@@ -20,11 +22,23 @@ namespace Celesteia.Game.Worlds.Generators {
         private byte soil;
         private byte stone;
         private byte deepstone;
+        private byte log;
+        private byte leaves;
+        private byte planks;
+        private byte coal_ore;
+        private byte copper_ore;
+        private byte iron_ore;
         private void LoadBlockIndices() {
             top = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID();
             soil = ResourceManager.Blocks.GetResource(NamespacedKey.Base("soil")).GetID();
             stone = ResourceManager.Blocks.GetResource(NamespacedKey.Base("stone")).GetID();
             deepstone = ResourceManager.Blocks.GetResource(NamespacedKey.Base("deepstone")).GetID();
+            log = ResourceManager.Blocks.GetResource(NamespacedKey.Base("log")).GetID();
+            leaves = ResourceManager.Blocks.GetResource(NamespacedKey.Base("leaves")).GetID();
+            planks = ResourceManager.Blocks.GetResource(NamespacedKey.Base("wooden_planks")).GetID();
+            coal_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("coal_ore")).GetID();
+            copper_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("copper_ore")).GetID();
+            iron_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("iron_ore")).GetID();
         }
 
         public byte[] GetNaturalBlocks(int x, int y)
@@ -33,7 +47,7 @@ namespace Celesteia.Game.Worlds.Generators {
         }
 
         public void GenerateStructures(Action<string> progressReport = null) {
-            Random rand = new Random(_world.GetSeed());
+            Random rand = new Random(_world.Seed);
 
             if (progressReport != null) progressReport("Planting trees...");
             GenerateTrees(rand);
@@ -45,8 +59,8 @@ namespace Celesteia.Game.Worlds.Generators {
         {
             float x;
             Vector2 spawn = new Vector2(
-                x = (float)Math.Floor(_world.GetWidthInBlocks() / 2f) + 0.5f,
-                (_world.GetHeightInBlocks()) - GetHeightValue((int)Math.Floor(x)) - 2f
+                x = (float)Math.Floor(_world.BlockWidth / 2f) + 0.5f,
+                (_world.BlockHeight) - GetHeightValue((int)Math.Floor(x)) - 2f
             );
             return spawn;
         }
@@ -57,13 +71,13 @@ namespace Celesteia.Game.Worlds.Generators {
             values[0] = 0;
             values[1] = 0;
 
-            if (y > _world.GetHeightInBlocks() - 5) { values[0] = deepstone; values[1] = deepstone; }
+            if (y > _world.BlockHeight - 5) { values[0] = deepstone; values[1] = deepstone; }
             else {
                 int h = GetHeightValue(x);
 
-                if (_world.GetHeightInBlocks() - y <= h) {
-                    if (_world.GetHeightInBlocks() - y == h) { values[0] = top; values[1] = soil; }
-                    else if (_world.GetHeightInBlocks() - y >= h - 3) { values[0] = soil; values[1] = soil; }
+                if (_world.BlockHeight - y <= h) {
+                    if (_world.BlockHeight - y == h) { values[0] = top; values[1] = soil; }
+                    else if (_world.BlockHeight - y >= h - 3) { values[0] = soil; values[1] = soil; }
                     else { values[0] = stone; values[1] = stone; }
                 }
             }
@@ -90,22 +104,22 @@ namespace Celesteia.Game.Worlds.Generators {
             byte[] values = prev;
 
             float coalValue = GetOreValue(x, y, 498538f, 985898f);
-            if (coalValue > 0.9f) values[0] = 9;
+            if (coalValue > 0.95f) values[0] = coal_ore;
             else {
                 float copperValue = GetOreValue(x, y, 3089279f, 579486f);
-                if (copperValue > 0.9f) values[0] = 8;
+                if (copperValue > 0.95f) values[0] = copper_ore;
 
                 else
                 {
                     float ironValue = GetOreValue(x, y, 243984f, 223957f);
-                    if (ironValue > 0.9f) values[0] = 7;
+                    if (ironValue > 0.95f) values[0] = iron_ore;
                 }
             }
 
             return values;
         }
 
-        private int defaultOffset => _world.GetHeightInBlocks() / 3;
+        private int defaultOffset => _world.BlockHeight / 3;
         public int GetHeightValue(int x) {
             return (int)Math.Round((_noise.GetNoise(x / 1f, 0f) * 24f) + defaultOffset);
         }
@@ -122,12 +136,12 @@ namespace Celesteia.Game.Worlds.Generators {
             int j = 0;
             int randomNumber = 0;
             int lastTree = 0;
-            for (int i = 0; i < _world.GetWidthInBlocks(); i++) {
-                j = _world.GetHeightInBlocks() - GetHeightValue(i);
+            for (int i = 0; i < _world.BlockWidth; i++) {
+                j = _world.BlockHeight - GetHeightValue(i);
 
                 if (Math.Abs(i - GetSpawnpoint().X) < 10f) continue;            // Don't grow trees too close to spawn.
-                if (i < 10 || i > _world.GetWidthInBlocks() - 10) continue;     // Don't grow trees too close to world borders.
-                if (_world.GetBlock(i, j) != 3) continue;                       // Only grow trees on grass.
+                if (i < 10 || i > _world.BlockWidth - 10) continue;     // Don't grow trees too close to world borders.
+                if (_world.GetBlock(i, j) != top) continue;                     // Only grow trees on grass.
                 if (i - lastTree < blocksBetweenTrees) continue;                // Force a certain number of blocks between trees.
 
                 lastTree = i;
@@ -142,14 +156,14 @@ namespace Celesteia.Game.Worlds.Generators {
             if (steps == 0) {
                 for (int i = -2; i <= 2; i++)
                     for (int j = -2; j <= 2; j++) {
-                        if (_world.GetBlock(x + i, y + j) == 0) _world.SetBlock(x + i, y + j, 6);
+                        if (_world.GetBlock(x + i, y + j) == 0) _world.SetBlock(x + i, y + j, leaves);
                     }
                 return;
             }
 
             if (_world.GetBlock(x, y) != 0) return;
 
-            _world.SetBlock(x, y, 5);
+            _world.SetBlock(x, y, log);
 
             if (!branch) GrowTreeRecursively(x, y - 1, steps - 1, rand, false);     // Grow upwards.
             if (rand.Next(0, 6) > steps) GrowTreeRecursively(x - 1, y, steps - 1, rand, true);     // Grow to the left.
@@ -161,11 +175,11 @@ namespace Celesteia.Game.Worlds.Generators {
             int j = 0;
             int randomNumber = 0;
             int lastHome = 0;
-            for (int i = 0; i < _world.GetWidthInBlocks(); i++) {
-                j = _world.GetHeightInBlocks() - GetHeightValue(i);
+            for (int i = 0; i < _world.BlockWidth; i++) {
+                j = _world.BlockHeight - GetHeightValue(i);
 
                 if (Math.Abs(i - GetSpawnpoint().X) < 10f) continue;            // Don't grow trees too close to spawn.
-                if (i < 10 || i > _world.GetWidthInBlocks() - 10) continue;     // Don't grow trees too close to world borders.
+                if (i < 10 || i > _world.BlockWidth - 10) continue;     // Don't grow trees too close to world borders.
                 if (i - lastHome < blocksBetweenHomes) continue;                // Force a certain number of blocks between trees.
 
                 int homeWidth = rand.Next(10, 15);
@@ -186,10 +200,8 @@ namespace Celesteia.Game.Worlds.Generators {
         public void BuildAbandonedHome(int originX, int originY, int homeWidth, int homeHeight, Random rand) {
             int maxX = originX + homeWidth;
 
-            for (int i = originX; i < maxX; i++) originY = Math.Max(originY, _world.GetHeightInBlocks() - GetHeightValue(i));
+            for (int i = originX; i < maxX; i++) originY = Math.Max(originY, _world.BlockHeight - GetHeightValue(i));
             int maxY = originY + homeHeight;
-
-            byte planks = 10;
 
             for (int i = originX; i < maxX; i++)
                 for (int j = originY; j < maxY; j++) {
@@ -201,7 +213,8 @@ namespace Celesteia.Game.Worlds.Generators {
                         continue;
                     }
 
-                    if (i == originX || i == maxX - 1 || j == originY || j == maxY - 1) _world.SetBlock(i, j, planks);
+                    if (j == originY || j == maxY - 1) _world.SetBlock(i, j, planks);
+                    if (i == originX || i == maxX - 1) _world.SetBlock(i, j, log);
                 }
         }
     }

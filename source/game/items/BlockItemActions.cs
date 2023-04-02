@@ -29,7 +29,7 @@ namespace Celesteia.Game {
             return Assert(gameTime, world, cursor, user, true) && Place(world, cursor, true);
         }
 
-        public bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
+        public virtual bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
             if (_block == 0) return false;
             if (!CheckUseTime(gameTime)) return false;
 
@@ -42,7 +42,7 @@ namespace Celesteia.Game {
 
             if (!forWall && user.Has<CollisionBox>()) {
                 Rectangle box = user.Get<CollisionBox>().Rounded;
-                RectangleF? rect = world.TestBoundingBox(cursor, _block);
+                RectangleF? rect = world.TestBoundingBox(cursor.ToPoint(), _block);
                 if (rect.HasValue) {
                     bool intersect = rect.Intersects(new RectangleF(box.X, box.Y, box.Width, box.Height));
                     if (intersect) return false;
@@ -67,6 +67,8 @@ namespace Celesteia.Game {
         public bool Place(GameWorld world, Vector2 cursor, bool wall) {
             if (wall) world.SetWallBlock(cursor, _block);
             else world.SetBlock(cursor, _block);
+
+            world.GetChunk(ChunkVector.FromVector2(cursor)).DoUpdate = true;
 
             return true;
         }

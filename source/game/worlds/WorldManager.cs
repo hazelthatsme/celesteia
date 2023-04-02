@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Celesteia.Game.Worlds.Generators;
 using Microsoft.Xna.Framework;

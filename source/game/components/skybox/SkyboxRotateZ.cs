@@ -1,4 +1,4 @@
-namespace Celesteia.Game.Skybox {
+namespace Celesteia.Game.Components.Skybox {
     public class SkyboxRotateZ {
         public float _magnitude = 1f;
         // Amount to rotate by.

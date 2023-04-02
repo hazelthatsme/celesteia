@@ -1,9 +1,7 @@
 using Celesteia.Resources;
-using Celesteia.Game.Systems.MainMenu;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
-using Celesteia.Game.Skybox;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Player;
 using MonoGame.Extended.TextureAtlases;
@@ -11,9 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Celesteia.Game.Input;
 using Celesteia.Game.Components;
 using Microsoft.Xna.Framework.Input;
-using Celesteia.Resources.Collections;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Items;
+using Celesteia.Game.Components.Skybox;
+using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.ECS {
     /*
@@ -39,6 +38,8 @@ namespace Celesteia.Game.ECS {
                 .Build();
         }
 
+        public Entity CreateEntity(NamespacedKey key) => CreateEntity(ResourceManager.Entities.GetResource(key) as EntityType);
+
         public Entity CreateEntity(EntityType type)
         {
             Entity entity = World.CreateEntity();
@@ -58,7 +59,10 @@ namespace Celesteia.Game.ECS {
                 ResourceManager.SPRITE_SCALING
             ));
 
-            entity.Attach(new EntityInventory(36, new ItemStack(8, 1)));
+            entity.Attach(new EntityInventory(36, 
+                new ItemStack(NamespacedKey.Base("iron_pickaxe"), 1),
+                new ItemStack(NamespacedKey.Base("wooden_torch"), 10)
+            ));
 
             entity.Attach(new PhysicsEntity(1f, true));
 
