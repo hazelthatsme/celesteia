@@ -55,7 +55,7 @@ namespace Celesteia.Game.ECS {
 
             entity.Attach(new EntityFrames(
                 TextureAtlas.Create("player", sprites, 24, 24),
-                0, 1,
+                0, 2,
                 ResourceManager.SPRITE_SCALING
             ));
 

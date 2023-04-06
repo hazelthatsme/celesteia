@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
@@ -125,13 +127,25 @@ namespace Celesteia.Game.Systems {
         }
 
         float h;
+        private bool _moving;
+        private double _startedMoving;
         private void UpdateMovement(GameTime gameTime, PlayerInput input, PhysicsEntity physicsEntity, EntityFrames frames, EntityAttributes.EntityAttributeMap attributes, TargetPosition targetPosition) {
             h = input.TestHorizontal();
             Vector2 movement = new Vector2(h, 0f);
 
+            if (movement != Vector2.Zero && !_moving) {
+                // Player has started moving, animate.
+                _startedMoving = gameTime.TotalGameTime.TotalSeconds;
+            }
+
+            _moving = movement != Vector2.Zero;
+
             if (movement.X != 0f) {
                 frames.Effects = movement.X < 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             }
+
+            // If the player is moving, change the frame every .25 seconds, else return the standing frame.
+            frames.Frame = _moving ? (int)((gameTime.TotalGameTime.TotalSeconds - _startedMoving) / 0.25) : 0;
 
             if (h == 0f) return;
 
