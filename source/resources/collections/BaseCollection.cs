@@ -164,7 +164,7 @@ namespace Celesteia.Resources.Collections {
             void AddEntity(string index, EntityType type) => entities.Add(GetKey(index), type);
             
             entities = new Dictionary<NamespacedKey, EntityType>();
-            AddEntity("player", new EntityType((e) => EntityFactory.BuildPlayer(e, _content.Load<Texture2D>("sprites/entities/player/astronaut"))));
+            AddEntity("player", new EntityType((w, e) => EntityFactory.BuildPlayer(e, _content.Load<Texture2D>("sprites/entities/player/astronaut"))));
 
             return entities;
         }

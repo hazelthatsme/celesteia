@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Celesteia.Game.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,10 +37,10 @@ namespace Celesteia.UI.Elements {
                 element.Update(gameTime, out clickedAnything);
             }
 
-            _mousePosition = MouseWrapper.GetPosition();
+            /*_mousePosition = MouseWrapper.GetPosition();
 
             if (MouseWrapper.GetMouseDown(MouseButton.Left)) clickedAnything = ResolveMouseDown(MouseButton.Left);
-            if (MouseWrapper.GetMouseUp(MouseButton.Left)) clickedAnything = ResolveMouseUp(MouseButton.Left);
+            if (MouseWrapper.GetMouseUp(MouseButton.Left)) clickedAnything = ResolveMouseUp(MouseButton.Left);*/
 
             ResolveMouseOver();
         }

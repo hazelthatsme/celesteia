@@ -43,7 +43,7 @@ namespace Celesteia.Game.ECS {
         public Entity CreateEntity(EntityType type)
         {
             Entity entity = World.CreateEntity();
-            type.Instantiate(entity);
+            type.Instantiate(World, entity);
             
             return entity;
         }
@@ -61,8 +61,7 @@ namespace Celesteia.Game.ECS {
 
             entity.Attach(new EntityInventory(36, 
                 new ItemStack(NamespacedKey.Base("iron_pickaxe"), 1),
-                new ItemStack(NamespacedKey.Base("wooden_torch"), 10),
-                new ItemStack(NamespacedKey.Base("stone"), 1000)
+                new ItemStack(NamespacedKey.Base("wooden_torch"), 10)
             ));
 
             entity.Attach(new PhysicsEntity(1f, true));
@@ -70,12 +69,12 @@ namespace Celesteia.Game.ECS {
             entity.Attach(new CollisionBox(1.5f, 3f));
 
             entity.Attach(new PlayerInput()
-                .AddHorizontal(new KeyDefinition("Walk", Keys.A, Keys.D, KeyDetectType.Held))
-                .AddRun(new KeyDefinition("Run", null, Keys.LeftShift, KeyDetectType.Held))
-                .AddJump(new KeyDefinition("Jetpack", null, Keys.Space, KeyDetectType.Held))
-                .AddInventory(new KeyDefinition("Inventory", null, Keys.B, KeyDetectType.Down))
-                .AddCrafting(new KeyDefinition("Crafting", null, Keys.C, KeyDetectType.Down))
-                .AddPause(new KeyDefinition("Pause", null, Keys.Escape, KeyDetectType.Down))
+                .AddHorizontal(new KeyDefinition(InputManager.Instance.Keyboard, "Walk", Keys.A, Keys.D, KeyDetectType.Held))
+                .AddRun(new KeyDefinition(InputManager.Instance.Keyboard, "Run", null, Keys.LeftShift, KeyDetectType.Held))
+                .AddJump(new KeyDefinition(InputManager.Instance.Keyboard, "Jetpack", null, Keys.Space, KeyDetectType.Held))
+                .AddInventory(new KeyDefinition(InputManager.Instance.Keyboard, "Inventory", null, Keys.B, KeyDetectType.Down))
+                .AddCrafting(new KeyDefinition(InputManager.Instance.Keyboard, "Crafting", null, Keys.C, KeyDetectType.Down))
+                .AddPause(new KeyDefinition(InputManager.Instance.Keyboard, "Pause", null, Keys.Escape, KeyDetectType.Down))
             );
 
             entity.Attach(new LocalPlayer());

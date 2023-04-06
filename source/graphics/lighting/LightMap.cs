@@ -1,5 +1,4 @@
 using System;
-using Celesteia.Resources.Management;
 using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 
@@ -87,7 +86,7 @@ namespace Celesteia.Graphics.Lighting {
 
             for (int y = 0; y < Height; y++)
                 for (int x = 0; x < Width; x++)
-                    _colorMap[y * Width + x] = _lightColors[x, y].GetColor();
+                    _colorMap[y * Width + x] = _lightColors[x, y].Color;
         }
 
         public Color[] GetColors() => _colorMap;
@@ -104,32 +103,18 @@ namespace Celesteia.Graphics.Lighting {
         public float G;
         public float B;
 
+        public Color Color => new Color(R / 255f, G / 255f, B / 255f);
+
         public LightColor(float r, float g, float b) {
             R = Math.Clamp(r, 0, 255f);
             G = Math.Clamp(g, 0, 255f);
             B = Math.Clamp(b, 0, 255f);
         }
 
-        public Color GetColor() {
-            return new Color(R / 255f, G / 255f, B / 255f);
-        }
-
-        public bool IsCutoff(float cutoff) {
-            return R > cutoff || G > cutoff || B > cutoff;
-        }
-
-        public bool Overpowers(LightColor other) {
-            return R > other.R || G > other.G || B > other.B;
-        }
-
-        public bool Equals(LightColor other)
-        {
-            return R == other.R && G == other.G && B == other.B;
-        }
-
-        public static LightColor FromColor(Color color) {
-            return new LightColor(color.R, color.G, color.B);
-        }
+        public bool IsCutoff(float cutoff) => R > cutoff || G > cutoff || B > cutoff;
+        public bool Overpowers(LightColor other) => R > other.R || G > other.G || B > other.B;
+        public bool Equals(LightColor other) => R == other.R && G == other.G && B == other.B;
+        public static LightColor FromColor(Color color) => new LightColor(color.R, color.G, color.B);
 
         public static LightColor operator *(LightColor a, LightColor b) {
             a.R *= b.R;

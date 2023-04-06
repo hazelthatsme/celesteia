@@ -1,5 +1,5 @@
 namespace Celesteia.Game.Components {
     public class CameraFollow {
-        public float weight = 1f;
+        public float Weight = 1f;
     }
 }

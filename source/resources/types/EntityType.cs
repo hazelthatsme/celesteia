@@ -7,14 +7,14 @@ namespace Celesteia.Resources.Types {
         public byte GetID() => id;
         public void SetID(byte value) => id = value;
 
-        private Action<Entity> InstantiateAction;
+        private Action<World, Entity> InstantiateAction;
 
-        public EntityType(Action<Entity> instantiate) {
+        public EntityType(Action<World, Entity> instantiate) {
             InstantiateAction = instantiate;
         }
 
-        public void Instantiate(Entity entity) {
-            InstantiateAction.Invoke(entity);
+        public void Instantiate(World world, Entity entity) {
+            InstantiateAction.Invoke(world, entity);
         }
     }
 }

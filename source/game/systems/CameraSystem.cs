@@ -10,12 +10,14 @@ using MonoGame.Extended.Entities.Systems;
 namespace Celesteia.Game.Systems {
     public class CameraSystem : EntityUpdateSystem
     {
-        private readonly Camera2D _camera;
+        private Camera2D _camera;
+        private InputManager _input;
 
         private ComponentMapper<Transform2> transformMapper;
 
-        public CameraSystem(Camera2D camera) : base(Aspect.All(typeof(TargetPosition), typeof(CameraFollow))) {
+        public CameraSystem(Camera2D camera, InputManager input) : base(Aspect.All(typeof(TargetPosition), typeof(CameraFollow))) {
             _camera = camera;
+            _input = input;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -30,7 +32,7 @@ namespace Celesteia.Game.Systems {
                 break;
             }
             
-            if (KeyboardWrapper.GetKeyHeld(Keys.LeftControl)) _camera.Zoom += MouseWrapper.GetScrollDelta();
+            if (_input.Keyboard.GetKeyHeld(Keys.LeftControl)) _camera.Zoom += _input.Mouse.ScrollDelta != 0 ? (_input.Mouse.ScrollDelta > 0 ? 1 : -1) : 0;
         }
     }
 }

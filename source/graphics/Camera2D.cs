@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

@@ -24,7 +24,7 @@ namespace Celesteia.UI.Elements.Game.Controls {
         public void SetKeyboardControls(
             params KeyDefinition[] defs
         ) {
-            foreach (KeyDefinition def in defs) _keyboardControls.Add(def.GetPositive().Value, def.Action);
+            foreach (KeyDefinition def in defs) _keyboardControls.Add(def.GetPositive().Value, def.Name);
             UpdateLines();
         }
 

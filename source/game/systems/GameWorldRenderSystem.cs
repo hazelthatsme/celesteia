@@ -52,10 +52,8 @@ namespace Celesteia.Game.Systems {
             }
 
             foreach (ChunkVector cv in activeChunks) _gameWorld.GetChunk(_v).Update(gameTime);
-
-            drawSelection = _gameWorld.GetSelection().HasValue && _gameWorld.GetSelectedBlock().Frames != null;
             
-            if (drawSelection) selectionColor = _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black;
+            if (_gameWorld.GetSelection().HasValue) selectionColor = _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black;
         }
 
         public void Draw(GameTime gameTime) {
@@ -65,7 +63,7 @@ namespace Celesteia.Game.Systems {
             foreach (ChunkVector cv in activeChunks) DrawChunk(cv, gameTime, _spriteBatch, _camera);
 
             // Draw block selector.
-            if (drawSelection) _selectionSprite.Draw(0, _spriteBatch, _gameWorld.GetSelection().Value, selectionColor);
+            if (_gameWorld.GetSelection().HasValue) _selectionSprite.Draw(0, _spriteBatch, _gameWorld.GetSelection().Value, selectionColor);
 
             _spriteBatch.End();
         }

@@ -45,15 +45,13 @@ namespace Celesteia.Screens {
                 .AddSystem(new PhysicsGravitySystem(_gameWorld))
                 .AddSystem(new PhysicsSystem())
                 .AddSystem(new PhysicsWorldCollisionSystem(_gameWorld))
-                .AddSystem(localPlayerSystem = new LocalPlayerSystem(_gameGui, Camera, _gameWorld))
+                .AddSystem(localPlayerSystem = new LocalPlayerSystem(_gameWorld, Camera, _gameGui, Game.Input))
                 .AddSystem(new TargetPositionSystem(_gameWorld))
-                .AddSystem(new CameraSystem(Camera))
+                .AddSystem(new CameraSystem(Camera, Game.Input))
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
                 .AddSystem(new LightingSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
-                //.AddSystem(new PhysicsCollisionDebugSystem(Camera, SpriteBatch, _gameWorld))
-                //.AddSystem(new EntityDebugSystem(Camera, SpriteBatch))
                 .Build();
 
             _entityFactory = new EntityFactory(_world, Game);
