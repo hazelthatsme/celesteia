@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 
-namespace Celesteia {
+namespace Celesteia.Game.Music {
     public class MusicManager : GameComponent {
         private new GameInstance Game => (GameInstance) base.Game;
         public MusicManager(GameInstance Game) : base(Game) {}

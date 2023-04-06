@@ -54,7 +54,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
                 .Build();
 
-            _entityFactory = new EntityFactory(_world, Game);
+            _entityFactory = new EntityFactory(_world);
 
             Entity player = _entityFactory.CreateEntity(NamespacedKey.Base("player"));
             player.Get<TargetPosition>().Target = _gameWorld.GetSpawnpoint();

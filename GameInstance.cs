@@ -13,6 +13,7 @@ using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
 using Celesteia.Game.Worlds;
 using Celesteia.Resources.Collections;
+using Celesteia.Game.Music;
 
 namespace Celesteia
 {
@@ -27,7 +28,7 @@ namespace Celesteia
 
         private List<GUI> globalGUIs;
 
-        private GraphicsManager _graphics;
+        private readonly GraphicsManager _graphics;
         private readonly ScreenManager _screenManager;
         public readonly MusicManager Music;
         public readonly WorldManager Worlds;

@@ -37,7 +37,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new MainMenuRenderSystem(Camera, Game.SpriteBatch))
                 .Build();
 
-            _entityFactory = new EntityFactory(_world, Game);
+            _entityFactory = new EntityFactory(_world);
 
             _entityFactory.CreateSkyboxPortion("stars", Color.White, -0.1f, .9f);
             _entityFactory.CreateSkyboxPortion("shadow", Color.Black, 5f, .7f);

@@ -22,11 +22,9 @@ namespace Celesteia.Game.ECS {
 
     public class EntityFactory {
         private readonly World World;
-        private readonly GameInstance Game;
 
-        public EntityFactory(World world, GameInstance game) {
+        public EntityFactory(World world) {
             World = world;
-            Game = game;
         }
 
         public Entity CreateSkyboxPortion(string name, Color color, float rotation, float depth)
