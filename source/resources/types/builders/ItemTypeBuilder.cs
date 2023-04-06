@@ -49,7 +49,7 @@ namespace Celesteia.Resources.Types.Builders {
 
     public class ItemTypeTemplate
         {
-            public static ItemTypeTemplate Block = new ItemTypeTemplate(99, true);
+            public static ItemTypeTemplate Block = new ItemTypeTemplate(1000, true);
             public static ItemTypeTemplate Tool = new ItemTypeTemplate(1, false);
             public static ItemTypeTemplate Upgrade = new ItemTypeTemplate(1, false);
 

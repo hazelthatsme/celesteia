@@ -113,7 +113,7 @@ namespace Celesteia.GUIs.Game {
                     .SetColor(Color.White)
                     .SetFont(ResourceManager.Fonts.GetFontType("Hobo"))
                     .SetFontSize(16f)
-                    .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+                    .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Center)
                 )
                 .SetOnMouseIn((item) => {
                     if ((int)State < 1) return;

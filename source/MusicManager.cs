@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 
@@ -17,9 +16,7 @@ namespace Celesteia {
 
         public override void Update(GameTime gameTime)
         {
-            if (_elapsedTransitionTime >= _transitionDuration) {
-                _volume = 1f;
-            }
+            if (_elapsedTransitionTime >= _transitionDuration) _volume = 1f;
             else {
                 _elapsedTransitionTime += ((float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000f);
 
@@ -27,9 +24,8 @@ namespace Celesteia {
                     if (_nextUp != null) {
                         MediaPlayer.Play(_nextUp);
                         _nextUp = null;
-                    } else {
-                        Stop();
-                    }
+                    } else Stop();
+                    
                     _transitionComplete = true;
                 }
 
