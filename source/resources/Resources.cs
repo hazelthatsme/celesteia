@@ -14,6 +14,7 @@ namespace Celesteia.Resources {
 
         public const float SPRITE_SCALING = 0.125f;
         public const int INVERSE_SPRITE_SCALING = 8;
+        
 
         public static void AddCollection(IResourceCollection collection) {
             Blocks.AddCollection(collection);
