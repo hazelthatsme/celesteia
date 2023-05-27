@@ -53,8 +53,8 @@ namespace Celesteia.Game.Items {
             ItemStack drops = null;
             world.AddBreakProgress(cursor, _power, wall, out drops);
 
-            if (drops != null && user.Has<EntityInventory>())
-                user.Get<EntityInventory>().Inventory.AddItem(drops);
+            if (drops != null && user.Has<Inventory>())
+                user.Get<Inventory>().AddItem(drops);
 
             return true;
         }

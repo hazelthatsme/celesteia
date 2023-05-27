@@ -6,9 +6,10 @@ namespace Celesteia.Game.Components.Items {
         private ItemStack[] items;
         public readonly int Capacity;
 
-        public Inventory(int slots = 27) {
+        public Inventory(int slots = 27, params ItemStack[] startingItems) {
             Capacity = slots;
-            items = new ItemStack[slots];
+            if (startingItems != null) items = startingItems;
+            else items = new ItemStack[slots];
         }
 
         // Try adding an item to the inventory, return false if the inventory has no capacity for this action.

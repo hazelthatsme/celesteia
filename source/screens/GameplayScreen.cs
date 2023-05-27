@@ -12,6 +12,7 @@ using Celesteia.Game.Components;
 using Celesteia.Game.Systems.Physics;
 using Celesteia.GUIs.Game;
 using Celesteia.Game.Systems.UI;
+using Celesteia.Game.Components.Items;
 
 namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
@@ -58,7 +59,7 @@ namespace Celesteia.Screens {
 
             Entity player = _entityFactory.CreateEntity(NamespacedKey.Base("player"));
             player.Get<TargetPosition>().Target = _gameWorld.GetSpawnpoint();
-            _gameGui.SetReferenceInventory(player.Get<EntityInventory>().Inventory);
+            _gameGui.SetReferenceInventory(player.Get<Inventory>());
             localPlayerSystem.Player = player;
         }
 

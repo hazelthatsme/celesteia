@@ -63,7 +63,7 @@ namespace Celesteia.Game.ECS {
                 ResourceManager.SPRITE_SCALING
             ));
 
-            entity.Attach(new EntityInventory(36, 
+            entity.Attach(new Inventory(36, 
                 new ItemStack(NamespacedKey.Base("iron_pickaxe"), 1),
                 new ItemStack(NamespacedKey.Base("wooden_torch"), 10)
             ));

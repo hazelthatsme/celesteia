@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Player;
 using Celesteia.Game.Input;
+using Celesteia.Game.Items;
 using Celesteia.Game.Worlds;
 using Celesteia.Graphics;
 using Celesteia.GUIs.Game;
@@ -16,7 +16,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Input;
 
 namespace Celesteia.Game.Systems {
     public class LocalPlayerSystem : UpdateSystem
@@ -37,7 +36,7 @@ namespace Celesteia.Game.Systems {
                 frames = _player.Get<EntityFrames>();
                 attributes = _player.Get<EntityAttributes>();
                 input = _player.Get<PlayerInput>();
-                inventory = _player.Get<EntityInventory>();
+                inventory = _player.Get<Inventory>();
             }
         }
         private LocalPlayer localPlayer;
@@ -46,7 +45,7 @@ namespace Celesteia.Game.Systems {
         private EntityFrames frames;
         private EntityAttributes attributes;
         private TargetPosition targetPosition;
-        private EntityInventory inventory;
+        private Inventory inventory;
 
         private InputManager _input;
 
@@ -186,25 +185,25 @@ namespace Celesteia.Game.Systems {
         }
 
 
-        bool mouseClick = false;
+        bool success = false;
         ItemStack stack = null;
+        IItemActions actions = null;
         private void UpdateClick(GameTime gameTime, PlayerInput input) {
-            mouseClick = MouseHelper.IsDown(MouseButton.Left) || MouseHelper.IsDown(MouseButton.Right);
-
-            if (!mouseClick) return;
+            if (!input.PrimaryUse.Poll() || input.SecondaryUse.Poll()) return;
+            if (_gameGui.GetSelectedItem() == null) return;
 
             stack = _gameGui.GetSelectedItem();
+            if(stack.Type == null || stack.Type.Actions == null) return;
 
-            if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
+            actions = stack.Type.Actions;
 
-            bool success = false;
-                        
-            if (input.PrimaryUse.Poll()) success = stack.Type.Actions.Primary(gameTime, _world, point, _player);
-            else if (input.SecondaryUse.Poll()) success = stack.Type.Actions.Secondary(gameTime, _world, point, _player);
+            success =
+                (input.PrimaryUse.Poll() && actions.Primary(gameTime, _world, point, _player)) ||
+                (input.SecondaryUse.Poll() && stack.Type.Actions.Secondary(gameTime, _world, point, _player));
 
             if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
 
-            inventory.Inventory.AssertAmounts();
+            inventory.AssertAmounts();
         }
     }
 }
