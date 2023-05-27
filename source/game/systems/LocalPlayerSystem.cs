@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Celesteia.Game.Components;
@@ -73,7 +74,7 @@ namespace Celesteia.Game.Systems {
                 UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
             }
             
-            UpdateMouse(gameTime, clicked);
+            UpdateMouse(gameTime, input, clicked);
         }
 
         private static Dictionary<int, int> hotbarMappings = new Dictionary<int, int>() {
@@ -95,8 +96,8 @@ namespace Celesteia.Game.Systems {
                 }
             }
             
-            if (!KeyboardHelper.IsDown(Keys.LeftControl) && _input.Mouse.ScrollDelta != 0f) {
-                int change = _input.Mouse.ScrollDelta > 0f ? -1 : 1;
+            if (!KeyboardHelper.IsDown(Keys.LeftControl) && MouseHelper.ScrollDelta != 0f) {
+                int change = (int) -Math.Clamp(MouseHelper.ScrollDelta, -1f, 1f);
                 int selection = _gameGui.HotbarSelection;
 
                 selection += change;
@@ -112,9 +113,9 @@ namespace Celesteia.Game.Systems {
         bool _craftingPress;
         bool _pausePress;
         private void UpdateGUI(GameTime gameTime, PlayerInput input, out bool clicked) {
-            _inventoryPress = input.TestInventory() > 0f;
-            _craftingPress = input.TestCrafting() > 0f;
-            _pausePress = input.TestPause() > 0f;
+            _inventoryPress = input.Inventory.Poll();
+            _craftingPress = input.Crafting.Poll();
+            _pausePress = input.Pause.Poll();
 
             if (_inventoryPress || _craftingPress || _pausePress) {
                 switch (_gameGui.State) {
@@ -141,7 +142,7 @@ namespace Celesteia.Game.Systems {
         private bool _moving;
         private double _startedMoving;
         private void UpdateMovement(GameTime gameTime, PlayerInput input, PhysicsEntity physicsEntity, EntityFrames frames, EntityAttributes.EntityAttributeMap attributes, TargetPosition targetPosition) {
-            h = input.TestHorizontal();
+            h = input.Horizontal.Poll();
             Vector2 movement = new Vector2(h, 0f);
 
             if (h != 0f && !_moving) {
@@ -157,7 +158,7 @@ namespace Celesteia.Game.Systems {
 
             if (h == 0f) return;
 
-            movement *= 1f + (input.TestRun() * 1.5f);
+            movement *= 1f + (input.Run.Poll() ? 1.5f : 0);
             movement *= attributes.Get(EntityAttribute.MovementSpeed);
             movement *= gameTime.GetElapsedSeconds();
 
@@ -167,7 +168,7 @@ namespace Celesteia.Game.Systems {
         private void UpdateJump(GameTime gameTime, LocalPlayer localPlayer, PlayerInput input, PhysicsEntity physicsEntity, EntityAttributes.EntityAttributeMap attributes)
         {
             if (localPlayer.JumpRemaining > 0f) {
-                if (input.TestJump() > 0f) {
+                if (input.Jump.Poll()) {
                     physicsEntity.SetVelocity(physicsEntity.Velocity.X, -attributes.Get(EntityAttribute.JumpForce));
                     localPlayer.JumpRemaining -= gameTime.GetElapsedSeconds();
                 }
@@ -175,20 +176,20 @@ namespace Celesteia.Game.Systems {
         }
 
         Vector2 point = Vector2.Zero;
-        private void UpdateMouse(GameTime gameTime, bool clicked) {
-            point = _camera.ScreenToWorld(_input.Mouse.Position);
+        private void UpdateMouse(GameTime gameTime, PlayerInput input, bool clicked) {
+            point = _camera.ScreenToWorld(MouseHelper.Position);
             
             if (IsGameActive) _world.SetSelection(point);
             else _world.SetSelection(null);
 
-            if (!clicked && IsGameActive) UpdateClick(gameTime);
+            if (!clicked && IsGameActive) UpdateClick(gameTime, input);
         }
 
 
         bool mouseClick = false;
         ItemStack stack = null;
-        private void UpdateClick(GameTime gameTime) {
-            mouseClick = _input.Mouse.GetMouseHeld(MouseButton.Left) || _input.Mouse.GetMouseHeld(MouseButton.Right);
+        private void UpdateClick(GameTime gameTime, PlayerInput input) {
+            mouseClick = MouseHelper.IsDown(MouseButton.Left) || MouseHelper.IsDown(MouseButton.Right);
 
             if (!mouseClick) return;
 
@@ -196,16 +197,14 @@ namespace Celesteia.Game.Systems {
 
             if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
 
-            if (mouseClick) {
-                bool success = false;
+            bool success = false;
                         
-                if (_input.Mouse.GetMouseHeld(MouseButton.Left)) success = stack.Type.Actions.OnLeftClick(gameTime, _world, point, _player);
-                else if (_input.Mouse.GetMouseHeld(MouseButton.Right)) success = stack.Type.Actions.OnRightClick(gameTime, _world, point, _player);
+            if (input.PrimaryUse.Poll()) success = stack.Type.Actions.Primary(gameTime, _world, point, _player);
+            else if (input.SecondaryUse.Poll()) success = stack.Type.Actions.Secondary(gameTime, _world, point, _player);
 
-                if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
+            if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
 
-                inventory.Inventory.AssertAmounts();
-            }
+            inventory.Inventory.AssertAmounts();
         }
     }
 }

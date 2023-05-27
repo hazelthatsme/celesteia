@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Celesteia.Game.Input.Definitions;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 
@@ -37,16 +38,14 @@ namespace Celesteia.Game.Input {
         // Was true, now false.
         public static bool Released(Keys keys) => _prev.IsKeyDown(keys) && !_curr.IsKeyDown(keys);
 
-        public static bool Poll(Keys keys, KeyPollType type) => type switch {
-            KeyPollType.Held => Held(keys),
-            KeyPollType.IsDown => IsDown(keys),
-            KeyPollType.Pressed => Pressed(keys),
-            KeyPollType.Released => Released(keys),
+        public static bool Poll(Keys keys, InputPollType type) => type switch {
+            InputPollType.Held => Held(keys),
+            InputPollType.IsDown => IsDown(keys),
+            InputPollType.Pressed => Pressed(keys),
+            InputPollType.Released => Released(keys),
             _ => false
         };
     }
 
-    public enum KeyPollType {
-        IsDown, Held, Pressed, Released
-    }
+    
 }

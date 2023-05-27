@@ -32,7 +32,6 @@ namespace Celesteia.Game.Systems {
         private ChunkVector _v;
         private List<ChunkVector> activeChunks = new List<ChunkVector>();
         private Color selectionColor;
-        private bool drawSelection = false;
         public void Update(GameTime gameTime)
         {
             if (_lastChunkPos != _pivotChunkPos) {

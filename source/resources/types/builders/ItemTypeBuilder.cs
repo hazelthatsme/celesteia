@@ -1,5 +1,5 @@
-using Celesteia.Game;
 using Celesteia.Game.Components;
+using Celesteia.Game.Items;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.Resources.Types.Builders {
@@ -37,7 +37,7 @@ namespace Celesteia.Resources.Types.Builders {
             return this;
         }
 
-        public ItemTypeBuilder Actions(ItemActions actions) {
+        public ItemTypeBuilder Actions(IItemActions actions) {
             current.Actions = actions;
             return this;
         }

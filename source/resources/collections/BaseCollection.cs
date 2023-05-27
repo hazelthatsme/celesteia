@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Celesteia.Game;
 using Celesteia.Game.Components;
 using Celesteia.Game.ECS;
+using Celesteia.Game.Items;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources.Types;
 using Celesteia.Resources.Types.Builders;

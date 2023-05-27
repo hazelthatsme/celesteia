@@ -6,32 +6,31 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 
-namespace Celesteia.Game {
-    public class BlockItemActions : ItemActions {
+namespace Celesteia.Game.Items {
+    public class BlockItemActions : CooldownItemActions {
         private NamespacedKey _blockKey;
         private byte _block = 0;
+        private NamespacedKey BlockKey { get => _blockKey; set {
+            _blockKey = value;
+            _block = ResourceManager.Blocks.GetResource(_blockKey).GetID();
+        }}
 
         public BlockItemActions(NamespacedKey blockKey) {
             UseTime = 0.2;
-            _blockKey = blockKey;
+            BlockKey = blockKey;
         }
         
-        private void TryQualify() {
-            _block = ResourceManager.Blocks.GetResource(_blockKey).GetID();
-        }
-        
-        public override bool OnLeftClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
-            TryQualify();
-            return Assert(gameTime, world, cursor, user, false) && Place(world, cursor, false);
-        }
-        public override bool OnRightClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
-            TryQualify();
-            return Assert(gameTime, world, cursor, user, true) && Place(world, cursor, true);
-        }
+        public override bool Primary(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user)
+        => Assert(gameTime, world, cursor, user, false) && Place(world, cursor, false);
+
+        public override bool Secondary(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user)
+        => Assert(gameTime, world, cursor, user, true) && Place(world, cursor, true);
 
         public virtual bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
+            if (!base.Assert(gameTime)) return false;
             if (_block == 0) return false;
-            if (!CheckUseTime(gameTime)) return false;
+
+            UpdateLastUse(gameTime);
 
             if (!user.Has<Transform2>() || !user.Has<EntityAttributes>()) return false;
 
@@ -60,7 +59,6 @@ namespace Celesteia.Game {
                 else if (forWall && world.GetBlock(cursor) == 0) return false;
             }
             
-            UpdateLastUse(gameTime);
             return true;
         }
 

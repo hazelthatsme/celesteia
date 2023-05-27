@@ -1,4 +1,4 @@
-using Celesteia.Game;
+using Celesteia.Game.Items;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Celesteia.Resources.Types {
@@ -15,7 +15,7 @@ namespace Celesteia.Resources.Types {
         public string Lore = "";
         public TextureRegion2D Sprite = null;
         public int MaxStackSize = 99;
-        public ItemActions Actions;
+        public IItemActions Actions;
         public bool ConsumeOnUse;
     }
 }

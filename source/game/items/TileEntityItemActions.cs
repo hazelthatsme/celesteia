@@ -7,8 +7,8 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 
-namespace Celesteia.Game {
-    public class TileEntityItemActions : ItemActions {
+namespace Celesteia.Game.Items {
+    public class TileEntityItemActions : CooldownItemActions {
         private NamespacedKey _entityKey;
         private TileEntityType _tileEntity = null;
 
@@ -22,20 +22,14 @@ namespace Celesteia.Game {
             //_tileEntity = ResourceManager.TileEntities.GetResource(_entityKey) as TileEntityType;
         }
         
-        public override bool OnLeftClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
+        public override bool Primary(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
             TryQualify();
             return Assert(gameTime, world, cursor, user, false) && Place(world, cursor, false);
         }
-        
-        public override bool OnRightClick(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) {
-            return false;
-        }
 
         public virtual bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
+            if (!base.Assert(gameTime)) return false;
             if (_tileEntity == null) return false;
-            if (!CheckUseTime(gameTime)) return false;
-            
-            UpdateLastUse(gameTime);
 
             if (!user.Has<Transform2>() || !user.Has<EntityAttributes>()) return false;
 
@@ -60,6 +54,8 @@ namespace Celesteia.Game {
                 if (!forWall && world.GetWallBlock(cursor) == 0) return false;
                 else if (forWall && world.GetBlock(cursor) == 0) return false;
             }*/
+            
+            base.UpdateLastUse(gameTime);
             
             return true;
         }

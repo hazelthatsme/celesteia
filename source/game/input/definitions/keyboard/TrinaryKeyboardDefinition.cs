@@ -1,10 +1,10 @@
 using Microsoft.Xna.Framework.Input;
 
-namespace Celesteia.Game.Input.Keyboard.Definitions {
-    public class TrinaryKeyboardDefinition : IInputDefinition {
+namespace Celesteia.Game.Input.Definitions.Keyboard {
+    public class TrinaryKeyboardDefinition : IFloatInputDefinition {
         public Keys Negative;
         public Keys Positive;
-        public KeyPollType PollType;
+        public InputPollType PollType;
 
         private float _current = 0;
 

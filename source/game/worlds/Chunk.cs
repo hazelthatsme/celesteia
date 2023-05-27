@@ -23,7 +23,6 @@ namespace Celesteia.Game.Worlds {
 
         private BlockState[,] foreground;
         private BlockState[,] background;
-        private BlockFrames[,,] drawMap;
 
         private GraphicsDevice _graphicsDevice;
 

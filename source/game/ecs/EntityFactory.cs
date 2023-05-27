@@ -13,7 +13,12 @@ using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Skybox;
 using Celesteia.Resources.Types;
-using Celesteia.Game.Input.Keyboard.Definitions;
+using Celesteia.Game.Input.Definitions.Keyboard;
+using Celesteia.Game.Input.Definitions.Gamepad;
+using Celesteia.Game.Input.Definitions.Mouse;
+using MonoGame.Extended.Input;
+using Celesteia.Game.Input.Definitions;
+using Celesteia.Game.Input.Conditions;
 
 namespace Celesteia.Game.ECS {
     /*
@@ -68,24 +73,37 @@ namespace Celesteia.Game.ECS {
             entity.Attach(new CollisionBox(1.5f, 3f));
 
             entity.Attach(new PlayerInput() {
-                Horizontal = {
-                    new TrinaryKeyboardDefinition() { Negative = Keys.A, Positive = Keys.D, PollType = KeyPollType.Held }
-                },
-                Run = {
-                    new BinaryKeyboardDefinition() { Keys = Keys.LeftShift, PollType = KeyPollType.Held }
-                },
-                Jump = {
-                    new BinaryKeyboardDefinition() { Keys = Keys.Space, PollType = KeyPollType.Held }
-                },
-                Inventory = {
-                    new BinaryKeyboardDefinition() { Keys = Keys.B, PollType = KeyPollType.Pressed }
-                },
-                Crafting = {
-                    new BinaryKeyboardDefinition() { Keys = Keys.C, PollType = KeyPollType.Pressed }
-                },
-                Pause = {
-                    new BinaryKeyboardDefinition() { Keys = Keys.Escape, PollType = KeyPollType.Pressed }
-                }
+                Horizontal = new AverageCondition(
+                    new TrinaryKeyboardDefinition() { Negative = Keys.A, Positive = Keys.D, PollType = InputPollType.Held }
+                ),
+                Run = new AnyCondition(
+                    new BinaryKeyboardDefinition() { Keys = Keys.LeftShift, PollType = InputPollType.Held },
+                    new BinaryGamepadDefinition() { Buttons = Buttons.LeftShoulder, PollType = InputPollType.Held }
+                ),
+                Jump = new AnyCondition(
+                    new BinaryKeyboardDefinition() { Keys = Keys.Space, PollType = InputPollType.Held },
+                    new BinaryGamepadDefinition() { Buttons = Buttons.A, PollType = InputPollType.Held }
+                ),
+                Inventory = new AnyCondition(
+                    new BinaryKeyboardDefinition() { Keys = Keys.B, PollType = InputPollType.Pressed },
+                    new BinaryGamepadDefinition() { Buttons = Buttons.Y, PollType = InputPollType.Pressed }
+                ),
+                Crafting = new AnyCondition(
+                    new BinaryKeyboardDefinition() { Keys = Keys.C, PollType = InputPollType.Pressed },
+                    new BinaryGamepadDefinition() { Buttons = Buttons.X, PollType = InputPollType.Pressed }
+                ),
+                Pause = new AnyCondition(
+                    new BinaryKeyboardDefinition() { Keys = Keys.Escape, PollType = InputPollType.Pressed },
+                    new BinaryGamepadDefinition() { Buttons = Buttons.Start, PollType = InputPollType.Pressed }
+                ),
+                PrimaryUse = new AnyCondition(
+                    new BinaryMouseDefinition() { Button = MouseButton.Left, PollType = InputPollType.Held },
+                    new BinaryGamepadDefinition() { Buttons = Buttons.RightTrigger, PollType = InputPollType.Held }
+                ),
+                SecondaryUse = new AnyCondition(
+                    new BinaryMouseDefinition() { Button = MouseButton.Right, PollType = InputPollType.Held },
+                    new BinaryGamepadDefinition() { Buttons = Buttons.LeftTrigger, PollType = InputPollType.Held }
+                )
             });
 
             entity.Attach(new LocalPlayer());
