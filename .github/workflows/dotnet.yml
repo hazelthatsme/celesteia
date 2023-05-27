@@ -12,10 +12,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build Celesteia
-      run: dotnet build --no-restore
+    - name: Restore, Build Celesteia
+      run: dotnet build
     - name: Publish Windows
       run: dotnet publish -c Release -r win-x64 --self-contained
     - name: Publish OSX
