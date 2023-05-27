@@ -8,8 +8,9 @@ namespace Celesteia.Game.Components.Items {
 
         public Inventory(int slots = 27, params ItemStack[] startingItems) {
             Capacity = slots;
-            if (startingItems != null) items = startingItems;
-            else items = new ItemStack[slots];
+            items = new ItemStack[slots];
+            
+            for (int i = 0; i < startingItems.Length; i++ ) items[i] = startingItems[i];
         }
 
         // Try adding an item to the inventory, return false if the inventory has no capacity for this action.
