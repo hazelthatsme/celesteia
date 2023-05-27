@@ -23,7 +23,6 @@ namespace Celesteia.Game.Worlds {
         public int BreakProgress;
 
         public bool Draw;
-        public bool DoDraw() => Draw && HasFrames();
         public bool HasFrames() => Frames != null;
     }
 }

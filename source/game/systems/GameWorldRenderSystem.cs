@@ -51,7 +51,7 @@ namespace Celesteia.Game.Systems {
                 _lastChunkPos = _pivotChunkPos;
             }
 
-            foreach (ChunkVector cv in activeChunks) _gameWorld.GetChunk(_v).Update(gameTime);
+            //foreach (ChunkVector cv in activeChunks) _gameWorld.GetChunk(_v).Update(gameTime);
             
             if (_gameWorld.GetSelection().HasValue) selectionColor = _gameWorld.GetSelectedBlock().Strength >= 0 ? Color.White : Color.Black;
         }

@@ -8,6 +8,7 @@ using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
 using Celesteia.Resources.Types;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Celesteia.Game.Worlds {
     public class Chunk {
@@ -22,6 +23,7 @@ namespace Celesteia.Game.Worlds {
 
         private BlockState[,] foreground;
         private BlockState[,] background;
+        private BlockFrames[,,] drawMap;
 
         private GraphicsDevice _graphicsDevice;
 
@@ -45,8 +47,8 @@ namespace Celesteia.Game.Worlds {
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     byte[] natural = generator.GetNaturalBlocks(_truePosition.X + i, _truePosition.Y + j);
 
-                    foreground[i, j].BlockID = natural[0];
-                    background[i, j].BlockID = natural[1];
+                    SetForeground(i, j, natural[0]);
+                    SetBackground(i, j, natural[1]);
                 }
             }
 
@@ -60,6 +62,7 @@ namespace Celesteia.Game.Worlds {
             if (IsInChunk(x, y)) {
                 foreground[x, y].BlockID = id;
                 foreground[x, y].BreakProgress = 0;
+                foreground[x, y].Draw = foreground[x, y].HasFrames();
             }
             DoUpdate = true;
         }
@@ -68,6 +71,7 @@ namespace Celesteia.Game.Worlds {
             if (IsInChunk(x, y)) {
                 background[x, y].BlockID = id;
                 background[x, y].BreakProgress = 0;
+                background[x, y].Draw = background[x, y].HasFrames() && foreground[x, y].Translucent;
             }
             DoUpdate = true;
         }
@@ -96,20 +100,7 @@ namespace Celesteia.Game.Worlds {
             if (dropKey.HasValue) drops = new ItemStack(dropKey.Value, 1);
         }
 
-        public void Update(GameTime gameTime) {
-        }
-
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            if (DoUpdate) {
-                for (int i = 0; i < CHUNK_SIZE; i++) {
-                    for (int j = 0; j < CHUNK_SIZE; j++) {
-                        foreground[i, j].Draw = foreground[i, j].HasFrames();
-                        background[i, j].Draw = background[i, j].HasFrames() && foreground[i, j].Translucent;
-                    }
-                }
-                DoUpdate = false;
-            }
-            
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 for (int j = 0; j < CHUNK_SIZE; j++) {
                     DrawAllAt(i, j, gameTime, spriteBatch, camera);
@@ -117,34 +108,35 @@ namespace Celesteia.Game.Worlds {
             }
         }
 
+        Vector2 trueV = Vector2.Zero;
         private void DrawAllAt(int x, int y, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            if (background[x, y].HasFrames() && foreground[x, y].Translucent) {
-                DrawWallTile(x, y, background[x, y].Type.Frames.GetFrame(0), spriteBatch, camera);
-                
-                if (background[x, y].BreakProgress > 0) DrawWallTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(
+            trueV.X = _truePosition.X + x;
+            trueV.Y = _truePosition.Y + y;
+
+            if (background[x, y].Draw) {
+                DrawWallTile(background[x, y].Frames.GetFrame(0), spriteBatch, camera);
+                if (background[x, y].BreakProgress > 0) DrawWallTile(ResourceManager.Blocks.BreakAnimation.GetProgressFrame(
                     // Background block breaking progress.
                     background[x, y].BreakProgress / (float) background[x, y].Type.Strength
                 ), spriteBatch, camera);
             }
-
-            if (foreground[x, y].HasFrames()) {
-                DrawTile(x, y, foreground[x, y].Type.Frames.GetFrame(0), spriteBatch, camera);
-
-                if (foreground[x, y].BreakProgress > 0) DrawTile(x, y, ResourceManager.Blocks.BreakAnimation.GetProgressFrame(
+            if (foreground[x, y].Draw) {
+                DrawTile(foreground[x, y].Frames.GetFrame(0), spriteBatch, camera);
+                if (foreground[x, y].BreakProgress > 0) DrawTile(ResourceManager.Blocks.BreakAnimation.GetProgressFrame(
                     // Foreground block breaking progress.
                     foreground[x, y].BreakProgress / (float) foreground[x, y].Type.Strength
                 ), spriteBatch, camera);
-            }
+            }  
         }
 
-        public void DrawTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
+        public void DrawTile(BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePosition.X + x, _truePosition.Y + y), Color.White, 0.4f);
+            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(trueV), Color.White, 0.4f);
         }
 
-        public void DrawWallTile(int x, int y, BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
+        public void DrawWallTile(BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(_truePosition.X + x, _truePosition.Y + y), Color.DarkGray, 0.5f);
+            frame.Draw(0, spriteBatch, trueV, Color.DarkGray, 0.5f);
         }
     }
 

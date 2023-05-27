@@ -50,7 +50,7 @@ namespace Celesteia.Screens {
                 .AddSystem(new CameraSystem(Camera, Game.Input))
                 .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
-                .AddSystem(new LightingSystem(Camera, SpriteBatch, _gameWorld))
+                //.AddSystem(new LightingSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
                 .Build();
 
