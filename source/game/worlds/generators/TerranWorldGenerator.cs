@@ -28,6 +28,7 @@ namespace Celesteia.Game.Worlds.Generators {
         private byte coal_ore;
         private byte copper_ore;
         private byte iron_ore;
+        private byte[] foliage;
         private void LoadBlockIndices() {
             top = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID();
             soil = ResourceManager.Blocks.GetResource(NamespacedKey.Base("soil")).GetID();
@@ -39,6 +40,13 @@ namespace Celesteia.Game.Worlds.Generators {
             coal_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("coal_ore")).GetID();
             copper_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("copper_ore")).GetID();
             iron_ore = ResourceManager.Blocks.GetResource(NamespacedKey.Base("iron_ore")).GetID();
+
+            foliage = new byte[5];
+            foliage[0] = 0;
+            foliage[1] = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grass")).GetID();
+            foliage[2] = ResourceManager.Blocks.GetResource(NamespacedKey.Base("blue_flower")).GetID();
+            foliage[3] = ResourceManager.Blocks.GetResource(NamespacedKey.Base("red_flower")).GetID();
+            foliage[4] = ResourceManager.Blocks.GetResource(NamespacedKey.Base("violet_flower")).GetID();
         }
 
         public byte[] GetNaturalBlocks(int x, int y)
@@ -53,6 +61,8 @@ namespace Celesteia.Game.Worlds.Generators {
             GenerateTrees(rand);
             if (progressReport != null) progressReport("Abandoning houses...");
             GenerateAbandonedHomes(rand);
+            if (progressReport != null) progressReport("Planting foliage...");
+            GenerateFoliage(rand);
         }
 
         public Vector2 GetSpawnpoint()
@@ -216,6 +226,23 @@ namespace Celesteia.Game.Worlds.Generators {
                     if (j == originY || j == maxY - 1) _world.SetBlock(i, j, planks);
                     if (i == originX || i == maxX - 1) _world.SetBlock(i, j, log);
                 }
+        }
+        
+        public void GenerateFoliage(Random rand) {
+            int j = 0;
+            int randomNumber = 0;
+            int lastTree = 0;
+            for (int i = 0; i < _world.BlockWidth; i++) {
+                j = _world.BlockHeight - GetHeightValue(i);
+
+                if (_world.GetBlock(i, j) != top) continue;                     // Only grow foliage on grass.
+
+                lastTree = i;
+
+                randomNumber = rand.Next(0, foliage.Length + 1);
+
+                if (randomNumber > 1 && !_world.GetAnyBlock(i, j - 1, false)) _world.SetBlock(i, j - 1, foliage[randomNumber - 1]);
+            }
         }
     }
 }

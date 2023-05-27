@@ -100,6 +100,25 @@ namespace Celesteia.Resources.Collections {
                 drop: GetKey("unyx_eyestone"),
                 light: new BlockLightProperties(new LightColor(230f, 74f, 255f), 5, true)
             ).Get());
+            AddBlock("scorched_soil", builder.WithName("Scorched Soil").Frames(15).Full().Properties(
+                strength: 5, 
+                drop: GetKey("soil")
+            ).Get());
+            AddBlock("blue_flower", builder.WithName("Morning Stars").Frames(16).Walkthrough().Properties(
+                strength: 1,
+                drop: GetKey("blue_flower_bundle")
+            ).Get());
+            AddBlock("red_flower", builder.WithName("Red Tears").Frames(17).Walkthrough().Properties(
+                strength: 1,
+                drop: GetKey("red_flower_bundle")
+            ).Get());
+            AddBlock("violet_flower", builder.WithName("Colupria").Frames(18).Walkthrough().Properties(
+                strength: 1,
+                drop: GetKey("violet_flower_bundle")
+            ).Get());
+            AddBlock("grass", builder.WithName("Grass").Frames(19).Walkthrough().Properties(
+                strength: 1
+            ).Get());
 
             return blocks;
         }
@@ -133,6 +152,9 @@ namespace Celesteia.Resources.Collections {
                 .Frame(7).Actions(new TorchItemActions(NamespacedKey.Base("torch"))).Get());
             AddItem("tile_entity", builder.WithName("Test Tile Entity").Template(new ItemTypeTemplate(1, false))
                 .Frame(8).Actions(new TileEntityItemActions(NamespacedKey.Base("test_tile_entity"))).Get());
+            AddItem("blue_flower_bundle", builder.WithName("Morning Stars").Frame(10).Block(NamespacedKey.Base("blue_flower")).Get());
+            AddItem("red_flower_bundle", builder.WithName("Red Tears").Frame(11).Block(NamespacedKey.Base("red_flower")).Get());
+            AddItem("violet_flower_bundle", builder.WithName("Colupria").Frame(12).Block(NamespacedKey.Base("violet_flower")).Get());
 
             return items;
         }
