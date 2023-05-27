@@ -152,9 +152,12 @@ namespace Celesteia.Resources.Collections {
                 .Frame(7).Actions(new TorchItemActions(NamespacedKey.Base("torch"))).Get());
             AddItem("tile_entity", builder.WithName("Test Tile Entity").Template(new ItemTypeTemplate(1, false))
                 .Frame(8).Actions(new TileEntityItemActions(NamespacedKey.Base("test_tile_entity"))).Get());
-            AddItem("blue_flower_bundle", builder.WithName("Morning Stars").Frame(10).Block(NamespacedKey.Base("blue_flower")).Get());
-            AddItem("red_flower_bundle", builder.WithName("Red Tears").Frame(11).Block(NamespacedKey.Base("red_flower")).Get());
-            AddItem("violet_flower_bundle", builder.WithName("Colupria").Frame(12).Block(NamespacedKey.Base("violet_flower")).Get());
+            AddItem("blue_flower_bundle", builder.WithName("Morning Stars").Template(new ItemTypeTemplate(1000, true))
+                .Frame(10).Actions(new FoliageItemActions(NamespacedKey.Base("blue_flower"))).Get());
+            AddItem("red_flower_bundle", builder.WithName("Red Tears").Template(new ItemTypeTemplate(1000, true))
+                .Frame(11).Actions(new FoliageItemActions(NamespacedKey.Base("red_flower"))).Get());
+            AddItem("violet_flower_bundle", builder.WithName("Colupria").Template(new ItemTypeTemplate(1000, true))
+                .Frame(12).Actions(new FoliageItemActions(NamespacedKey.Base("violet_flower"))).Get());
 
             return items;
         }
