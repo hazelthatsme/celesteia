@@ -12,9 +12,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-    - name: Build Windows
-      run: dotnet publish -c Release -r win-x64 --self-contained /p:PublishReadyToRun=false /p:TieredCompilation=false /p:DebugType=none /p:DebugSymbols=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
-    - name: Build OSX
-      run: dotnet publish -c Release -r osx-x64 --self-contained /p:PublishReadyToRun=false /p:TieredCompilation=false /p:DebugType=none /p:DebugSymbols=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
-    - name: Build Linux
-      run: dotnet publish -c Release -r linux-x64 --self-contained /p:PublishReadyToRun=false /p:TieredCompilation=false /p:DebugType=none /p:DebugSymbols=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+    - name: Publish Windows
+      run: dotnet publish -c Release -r win-x64 --self-contained
+    - name: Publish OSX
+      run: dotnet publish -c Release -r osx-x64 --self-contained
+    - name: Publish Linux
+      run: dotnet publish -c Release -r linux-x64 --self-contained

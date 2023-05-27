@@ -5,7 +5,10 @@
     <RollForward>Major</RollForward>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
-    <ExcludeGeneratedDebugSymbol>false</ExcludeGeneratedDebugSymbol>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
