@@ -13,6 +13,7 @@ using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Skybox;
 using Celesteia.Resources.Types;
+using Celesteia.Game.Input.Keyboard.Definitions;
 
 namespace Celesteia.Game.ECS {
     /*
@@ -66,14 +67,26 @@ namespace Celesteia.Game.ECS {
 
             entity.Attach(new CollisionBox(1.5f, 3f));
 
-            entity.Attach(new PlayerInput()
-                .AddHorizontal(new KeyDefinition(InputManager.Instance.Keyboard, "Walk", Keys.A, Keys.D, KeyDetectType.Held))
-                .AddRun(new KeyDefinition(InputManager.Instance.Keyboard, "Run", null, Keys.LeftShift, KeyDetectType.Held))
-                .AddJump(new KeyDefinition(InputManager.Instance.Keyboard, "Jetpack", null, Keys.Space, KeyDetectType.Held))
-                .AddInventory(new KeyDefinition(InputManager.Instance.Keyboard, "Inventory", null, Keys.B, KeyDetectType.Down))
-                .AddCrafting(new KeyDefinition(InputManager.Instance.Keyboard, "Crafting", null, Keys.C, KeyDetectType.Down))
-                .AddPause(new KeyDefinition(InputManager.Instance.Keyboard, "Pause", null, Keys.Escape, KeyDetectType.Down))
-            );
+            entity.Attach(new PlayerInput() {
+                Horizontal = {
+                    new TrinaryKeyboardDefinition() { Negative = Keys.A, Positive = Keys.D, PollType = KeyPollType.Held }
+                },
+                Run = {
+                    new BinaryKeyboardDefinition() { Keys = Keys.LeftShift, PollType = KeyPollType.Held }
+                },
+                Jump = {
+                    new BinaryKeyboardDefinition() { Keys = Keys.Space, PollType = KeyPollType.Held }
+                },
+                Inventory = {
+                    new BinaryKeyboardDefinition() { Keys = Keys.B, PollType = KeyPollType.Pressed }
+                },
+                Crafting = {
+                    new BinaryKeyboardDefinition() { Keys = Keys.C, PollType = KeyPollType.Pressed }
+                },
+                Pause = {
+                    new BinaryKeyboardDefinition() { Keys = Keys.Escape, PollType = KeyPollType.Pressed }
+                }
+            });
 
             entity.Attach(new LocalPlayer());
 

@@ -63,6 +63,7 @@ namespace Celesteia.Game.Worlds {
                 foreground[x, y].BlockID = id;
                 foreground[x, y].BreakProgress = 0;
                 foreground[x, y].Draw = foreground[x, y].HasFrames();
+                background[x, y].Draw = background[x, y].HasFrames() && foreground[x, y].Translucent;
             }
             DoUpdate = true;
         }

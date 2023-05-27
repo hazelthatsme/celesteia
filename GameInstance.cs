@@ -129,13 +129,13 @@ namespace Celesteia
             globalGUIs.ForEach((gui) => { gui.Update(gameTime, out _); });
 
             // If Scroll Lock is pressed, toggle GUIs.
-            if (Input.Keyboard.GetKeyDown(Keys.Scroll)) UIReferences.GUIEnabled = !UIReferences.GUIEnabled;
+            if (KeyboardHelper.Pressed(Keys.Scroll)) UIReferences.GUIEnabled = !UIReferences.GUIEnabled;
 
             // If F3 is pressed, toggle Debug Mode.
-            if (Input.Keyboard.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
+            if (KeyboardHelper.Pressed(Keys.F3)) DebugMode = !DebugMode;
 
             // If F11 is pressed, toggle Fullscreen.
-            if (Input.Keyboard.GetKeyDown(Keys.F11)) {
+            if (KeyboardHelper.Pressed(Keys.F11)) {
                 _graphics.ToggleFullScreen();
                 _graphics.Apply();
             }

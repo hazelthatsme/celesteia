@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
@@ -9,6 +11,7 @@ using Celesteia.GUIs.Game;
 using Celesteia.Resources.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -34,8 +37,6 @@ namespace Celesteia.Game.Systems {
                 attributes = _player.Get<EntityAttributes>();
                 input = _player.Get<PlayerInput>();
                 inventory = _player.Get<EntityInventory>();
-
-                UpdateControls();
             }
         }
         private LocalPlayer localPlayer;
@@ -75,18 +76,26 @@ namespace Celesteia.Game.Systems {
             UpdateMouse(gameTime, clicked);
         }
 
+        private static Dictionary<int, int> hotbarMappings = new Dictionary<int, int>() {
+            { (int)Keys.D1, 0 },
+            { (int)Keys.D2, 1 },
+            { (int)Keys.D3, 2 },
+            { (int)Keys.D4, 3 },
+            { (int)Keys.D5, 4 },
+            { (int)Keys.D6, 5 },
+            { (int)Keys.D7, 6 },
+            { (int)Keys.D8, 7 },
+            { (int)Keys.D9, 8 }
+        };
+
         private void UpdateSelectedItem() {
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D1)) _gameGui.HotbarSelection = 0;
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D2)) _gameGui.HotbarSelection = 1;
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D3)) _gameGui.HotbarSelection = 2;
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D4)) _gameGui.HotbarSelection = 3;
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D5)) _gameGui.HotbarSelection = 4;
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D6)) _gameGui.HotbarSelection = 5;
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D7)) _gameGui.HotbarSelection = 6;
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D8)) _gameGui.HotbarSelection = 7;
-            if (_input.Keyboard.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D9)) _gameGui.HotbarSelection = 8;
+            foreach (int keys in hotbarMappings.Keys) {
+                if (KeyboardHelper.Pressed((Keys) keys)) {
+                    _gameGui.HotbarSelection = hotbarMappings[keys];
+                }
+            }
             
-            if (!_input.Keyboard.GetKeyHeld(Microsoft.Xna.Framework.Input.Keys.LeftControl) && _input.Mouse.ScrollDelta != 0f) {
+            if (!KeyboardHelper.IsDown(Keys.LeftControl) && _input.Mouse.ScrollDelta != 0f) {
                 int change = _input.Mouse.ScrollDelta > 0f ? -1 : 1;
                 int selection = _gameGui.HotbarSelection;
 
@@ -135,16 +144,13 @@ namespace Celesteia.Game.Systems {
             h = input.TestHorizontal();
             Vector2 movement = new Vector2(h, 0f);
 
-            if (movement != Vector2.Zero && !_moving) {
+            if (h != 0f && !_moving) {
                 // Player has started moving, animate.
                 _startedMoving = gameTime.TotalGameTime.TotalSeconds;
+                frames.Effects = movement.X < 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             }
 
             _moving = movement != Vector2.Zero;
-
-            if (movement.X != 0f) {
-                frames.Effects = movement.X < 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            }
 
             // If the player is moving, change the frame every .25 seconds, else return the standing frame.
             frames.Frame = _moving ? (int)((gameTime.TotalGameTime.TotalSeconds - _startedMoving) / 0.25) : 0;
@@ -200,15 +206,6 @@ namespace Celesteia.Game.Systems {
 
                 inventory.Inventory.AssertAmounts();
             }
-        }
-
-        private void UpdateControls() {
-            _gameGui.Controls.SetKeyboardControls(
-                input.Run.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
-                input.Jump.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
-                input.Inventory.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
-                input.Crafting.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition
-            );
         }
     }
 }

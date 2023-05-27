@@ -32,7 +32,7 @@ namespace Celesteia.Game.Systems {
                 break;
             }
             
-            if (_input.Keyboard.GetKeyHeld(Keys.LeftControl)) _camera.Zoom += _input.Mouse.ScrollDelta != 0 ? (_input.Mouse.ScrollDelta > 0 ? 1 : -1) : 0;
+            if (KeyboardHelper.IsDown(Keys.LeftControl)) _camera.Zoom += _input.Mouse.ScrollDelta != 0 ? (_input.Mouse.ScrollDelta > 0 ? 1 : -1) : 0;
         }
     }
 }

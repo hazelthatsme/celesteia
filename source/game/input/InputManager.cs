@@ -7,15 +7,12 @@ namespace Celesteia.Game.Input {
         private new GameInstance Game => (GameInstance) base.Game;
         public InputManager(GameInstance Game) : base(Game) {}
 
-        public KeyboardWrapper Keyboard { get; private set; }
         public MouseWrapper Mouse { get; private set; }
         public GamepadWrapper Gamepad { get; private set; }
 
         public override void Initialize()
         {
             Instance = this;
-
-            Keyboard = new KeyboardWrapper();
             Mouse = new MouseWrapper();
             Gamepad = new GamepadWrapper();
 
@@ -30,7 +27,9 @@ namespace Celesteia.Game.Input {
 
         public override void Update(GameTime gameTime)
         {
-            Keyboard.Update();
+            if (!Enabled) return;
+
+            KeyboardHelper.Update();
             Mouse.Update();
             Gamepad.Update();
 
@@ -38,7 +37,7 @@ namespace Celesteia.Game.Input {
         }
 
         public bool GetAny() {
-            return Keyboard.GetAnyKey() || Gamepad.GetAnyButton();
+            return KeyboardHelper.AnyKey() || Gamepad.GetAnyButton();
         }
     }
 }
