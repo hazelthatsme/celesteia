@@ -1,13 +1,13 @@
 using System.Threading;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Celesteia.Graphics;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Celesteia.Resources.Types;
+using Celesteia.Game.World.Planet;
 
 namespace Celesteia.Game.Systems {
     public class LightingSystem : IUpdateSystem, IDrawSystem
@@ -24,7 +24,7 @@ namespace Celesteia.Game.Systems {
         public void Dispose() { }
         
         private Semaphore _semaphore;
-        public void Initialize(World world) {
+        public void Initialize(MonoGame.Extended.Entities.World world) {
             _semaphore = new Semaphore(0, 1);
             UpdateFrame();
             StartLightMapUpdates();
@@ -103,7 +103,7 @@ namespace Celesteia.Game.Systems {
                 for (int j = 0; j < _lightMap.Height; j++) {
                     y = j + _position.Y;
 
-                    _blockID = _gameWorld.GetBlock(x, y);
+                    _blockID = _gameWorld.ChunkMap.GetForeground(x, y);
 
                     if (_blockID != 0) {
                         _block = ResourceManager.Blocks.GetBlock(_blockID);
@@ -117,7 +117,7 @@ namespace Celesteia.Game.Systems {
                         }
                     }
 
-                    _wallID = _gameWorld.GetWallBlock(x, y);
+                    _wallID = _gameWorld.ChunkMap.GetBackground(x, y);
                     if (_wallID != 0) {
                         _wall = ResourceManager.Blocks.GetBlock(_wallID);
                         if (_wall.Light.Occludes) {

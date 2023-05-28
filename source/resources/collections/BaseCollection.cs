@@ -101,8 +101,7 @@ namespace Celesteia.Resources.Collections {
                 light: new BlockLightProperties(new LightColor(230f, 74f, 255f), 5, true)
             ).Get());
             AddBlock("scorched_soil", builder.WithName("Scorched Soil").Frames(15).Full().Properties(
-                strength: 5, 
-                drop: GetKey("soil")
+                strength: -1
             ).Get());
             AddBlock("blue_flower", builder.WithName("Morning Stars").Frames(16).Walkthrough().Properties(
                 strength: 1,

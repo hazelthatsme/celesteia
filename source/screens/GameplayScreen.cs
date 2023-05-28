@@ -7,7 +7,7 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using Celesteia.Resources;
 using Celesteia.Graphics;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Celesteia.Game.Components;
 using Celesteia.Game.Systems.Physics;
 using Celesteia.GUIs.Game;
@@ -46,12 +46,12 @@ namespace Celesteia.Screens {
                 .AddSystem(new PhysicsGravitySystem(_gameWorld))
                 .AddSystem(new PhysicsSystem())
                 .AddSystem(new PhysicsWorldCollisionSystem(_gameWorld))
-                .AddSystem(localPlayerSystem = new LocalPlayerSystem(_gameWorld, Camera, _gameGui, Game.Input))
+                .AddSystem(new ChunkMapRenderSystem(Camera, SpriteBatch, _gameWorld.ChunkMap))
+                .AddSystem(localPlayerSystem = new LocalPlayerSystem(Game, _gameWorld, Camera, SpriteBatch, _gameGui))
                 .AddSystem(new TargetPositionSystem(_gameWorld))
                 .AddSystem(new CameraSystem(Camera, Game.Input))
-                .AddSystem(new GameWorldRenderSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
-                //.AddSystem(new LightingSystem(Camera, SpriteBatch, _gameWorld))
+                .AddSystem(new LightingSystem(Camera, SpriteBatch, _gameWorld))
                 .AddSystem(new GameGUIDrawSystem(_gameGui))
                 .Build();
 

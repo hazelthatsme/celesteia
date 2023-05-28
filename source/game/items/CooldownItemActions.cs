@@ -1,4 +1,4 @@
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 
@@ -11,7 +11,7 @@ namespace Celesteia.Game.Items {
 
         public virtual bool Assert(GameTime gameTime) => CheckUseTime(gameTime);
 
-        public virtual bool Primary(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) => false;
-        public virtual bool Secondary(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) => false;
+        public virtual bool Primary(GameTime gameTime, GameWorld world, Point cursor, Entity user) => false;
+        public virtual bool Secondary(GameTime gameTime, GameWorld world, Point cursor, Entity user) => false;
     }
 }

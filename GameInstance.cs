@@ -11,7 +11,7 @@ using MonoGame.Extended.Screens;
 using System.Linq;
 using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Celesteia.Resources.Collections;
 using Celesteia.Game.Music;
 
@@ -101,7 +101,7 @@ namespace Celesteia
             LoadGUI();
 
             // Load the splash screen if it's a release build, load the game directly if it's a debug build.
-            if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this, Worlds.LoadNewWorld().GetAwaiter().GetResult()));
+            if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this, Worlds.LoadNewWorld((s) => Console.WriteLine(s)).GetAwaiter().GetResult()));
             else if (cmdArgs.Contains("-textDebug")) LoadScreen(new TextTestScreen(this));
             else LoadScreen(new SplashScreen(this));
         }

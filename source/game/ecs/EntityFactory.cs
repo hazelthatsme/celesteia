@@ -27,9 +27,9 @@ namespace Celesteia.Game.ECS {
     */
 
     public class EntityFactory {
-        private readonly World World;
+        private readonly MonoGame.Extended.Entities.World World;
 
-        public EntityFactory(World world) {
+        public EntityFactory(MonoGame.Extended.Entities.World world) {
             World = world;
         }
 

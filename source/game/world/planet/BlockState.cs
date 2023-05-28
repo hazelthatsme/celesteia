@@ -2,7 +2,7 @@ using Celesteia.Resources;
 using Celesteia.Resources.Sprites;
 using Celesteia.Resources.Types;
 
-namespace Celesteia.Game.Worlds {
+namespace Celesteia.Game.World.Planet {
     public struct BlockState {
         private byte _id;
         public byte BlockID {

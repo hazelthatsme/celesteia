@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Physics;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;

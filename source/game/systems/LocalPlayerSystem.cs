@@ -6,10 +6,12 @@ using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Player;
 using Celesteia.Game.Input;
 using Celesteia.Game.Items;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Celesteia.Graphics;
 using Celesteia.GUIs.Game;
+using Celesteia.Resources;
 using Celesteia.Resources.Sprites;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -18,8 +20,9 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 
 namespace Celesteia.Game.Systems {
-    public class LocalPlayerSystem : UpdateSystem
-    {
+    public class LocalPlayerSystem : UpdateSystem, IDrawSystem
+    {   
+        private GameInstance _game;
         private GameGUI _gameGui;
         private Camera2D _camera;
         private GameWorld _world;
@@ -46,18 +49,22 @@ namespace Celesteia.Game.Systems {
         private EntityAttributes attributes;
         private TargetPosition targetPosition;
         private Inventory inventory;
+        
+        private SpriteBatch _spriteBatch;
 
-        private InputManager _input;
+        private BlockFrame _selectionSprite;
 
-        public LocalPlayerSystem(GameWorld world, Camera2D camera, GameGUI gameGui, InputManager input) {
+        public LocalPlayerSystem(GameInstance game, GameWorld world, Camera2D camera, SpriteBatch spriteBatch, GameGUI gameGui) {
+            _game = game;
             _world = world;
             _camera = camera;
             _gameGui = gameGui;
+            _spriteBatch = spriteBatch;
 
-            _input = input;
+            _selectionSprite = ResourceManager.Blocks.Selection.GetFrame(0);
         }
 
-        private bool IsGameActive => !_gameGui.Paused && (int)_gameGui.State < 1;
+        private bool IsGameActive => !_gameGui.Paused && (int)_gameGui.State < 1 && _game.IsActive;
 
         public override void Update(GameTime gameTime)
         {
@@ -142,26 +149,27 @@ namespace Celesteia.Game.Systems {
         private double _startedMoving;
         private void UpdateMovement(GameTime gameTime, PlayerInput input, PhysicsEntity physicsEntity, EntityFrames frames, EntityAttributes.EntityAttributeMap attributes, TargetPosition targetPosition) {
             h = input.Horizontal.Poll();
-            Vector2 movement = new Vector2(h, 0f);
 
-            if (h != 0f && !_moving) {
+            if (h != 0f) {
                 // Player has started moving, animate.
-                _startedMoving = gameTime.TotalGameTime.TotalSeconds;
-                frames.Effects = movement.X < 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                if (!_moving) _startedMoving = gameTime.TotalGameTime.TotalSeconds;
+
+                // Flip sprite according to horizontal movement float.
+                frames.Effects = h < 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             }
 
-            _moving = movement != Vector2.Zero;
+            _moving = h != 0f;
 
             // If the player is moving, change the frame every .25 seconds, else return the standing frame.
             frames.Frame = _moving ? (int)((gameTime.TotalGameTime.TotalSeconds - _startedMoving) / 0.25) : 0;
 
             if (h == 0f) return;
 
-            movement *= 1f + (input.Run.Poll() ? 1.5f : 0);
-            movement *= attributes.Get(EntityAttribute.MovementSpeed);
-            movement *= gameTime.GetElapsedSeconds();
+            h *= 1f + (input.Run.Poll() ? 1.5f : 0);
+            h *= attributes.Get(EntityAttribute.MovementSpeed);
+            h *= gameTime.GetElapsedSeconds();
 
-            targetPosition.Target += movement;
+            targetPosition.Target.X += h;
         }
 
         private void UpdateJump(GameTime gameTime, LocalPlayer localPlayer, PlayerInput input, PhysicsEntity physicsEntity, EntityAttributes.EntityAttributeMap attributes)
@@ -174,12 +182,32 @@ namespace Celesteia.Game.Systems {
             } else if (physicsEntity.CollidingDown) localPlayer.JumpRemaining = attributes.Get(EntityAttribute.JumpFuel);
         }
 
-        Vector2 point = Vector2.Zero;
-        private void UpdateMouse(GameTime gameTime, PlayerInput input, bool clicked) {
-            point = _camera.ScreenToWorld(MouseHelper.Position);
+        private Point? Selection;
+        private BlockType SelectedBlock;
+        private Color SelectionColor;
+        public void SetSelection(Point? selection) {
+            if (selection == Selection) return;
             
-            if (IsGameActive) _world.SetSelection(point);
-            else _world.SetSelection(null);
+            Selection = selection;
+            if (!selection.HasValue) {
+                SelectionColor = Color.Transparent;
+                return;
+            }
+
+            SelectedBlock = ResourceManager.Blocks.GetBlock(_world.ChunkMap.GetForeground(Selection.Value));
+            if (SelectedBlock.Frames == null) SelectedBlock = ResourceManager.Blocks.GetBlock(_world.ChunkMap.GetBackground(Selection.Value));
+
+            SelectionColor = (SelectedBlock.Strength >= 0 ? Color.White : Color.Black);
+        }
+
+        Vector2 pointV = Vector2.Zero;
+        Point point = Point.Zero;
+        private void UpdateMouse(GameTime gameTime, PlayerInput input, bool clicked) {
+            pointV = _camera.ScreenToWorld(MouseHelper.Position);
+            pointV.Floor();
+            point = pointV.ToPoint();
+            
+            SetSelection(IsGameActive ? point : null);
 
             if (!clicked && IsGameActive) UpdateClick(gameTime, input);
         }
@@ -189,7 +217,7 @@ namespace Celesteia.Game.Systems {
         ItemStack stack = null;
         IItemActions actions = null;
         private void UpdateClick(GameTime gameTime, PlayerInput input) {
-            if (!input.PrimaryUse.Poll() || input.SecondaryUse.Poll()) return;
+            if (!input.PrimaryUse.Poll() && !input.SecondaryUse.Poll()) return;
             if (_gameGui.GetSelectedItem() == null) return;
 
             stack = _gameGui.GetSelectedItem();
@@ -197,13 +225,21 @@ namespace Celesteia.Game.Systems {
 
             actions = stack.Type.Actions;
 
-            success =
-                (input.PrimaryUse.Poll() && actions.Primary(gameTime, _world, point, _player)) ||
-                (input.SecondaryUse.Poll() && stack.Type.Actions.Secondary(gameTime, _world, point, _player));
+            if (input.PrimaryUse.Poll()) success = actions.Primary(gameTime, _world, point, _player);
+            if (input.SecondaryUse.Poll()) success = stack.Type.Actions.Secondary(gameTime, _world, point, _player);
 
             if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
 
             inventory.AssertAmounts();
+        }
+
+        public void Draw(GameTime gameTime)
+        {
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
+
+            _selectionSprite.Draw(0, _spriteBatch, pointV, SelectionColor);
+
+            _spriteBatch.End();
         }
     }
 }

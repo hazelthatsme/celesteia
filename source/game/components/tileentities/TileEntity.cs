@@ -1,4 +1,4 @@
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 
@@ -14,7 +14,7 @@ public class TileEntity {
     public bool CheckIfBroken(GameWorld world) {
         for (int i = 0; i < _type.Bounds.X; i++) {
             for (int j = 0; j < _type.Bounds.Y; j++) {
-                if (world.GetBlock(Position.X - _type.Origin.X + i, Position.Y - _type.Origin.Y + j) == 0) return true;
+                if (world.ChunkMap.GetForeground(Position.X - _type.Origin.X + i, Position.Y - _type.Origin.Y + j) == 0) return true;
             }
         }
 

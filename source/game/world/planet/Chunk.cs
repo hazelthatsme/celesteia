@@ -3,55 +3,31 @@ using Microsoft.Xna.Framework.Graphics;
 using Celesteia.Resources;
 using Celesteia.Graphics;
 using System;
-using Celesteia.Game.Worlds.Generators;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
-using Celesteia.Resources.Types;
-using System.Diagnostics;
-using System.Threading;
 
-namespace Celesteia.Game.Worlds {
+namespace Celesteia.Game.World.Planet {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
         public static bool IsInChunk(int x, int y) => x >= 0 && y >= 0 && y < CHUNK_SIZE && y < CHUNK_SIZE;
 
-        public bool Enabled = false;
         public bool DoUpdate = false;
 
+        public Point TruePosition { get; private set; }
         private ChunkVector _position;
-        private Point _truePosition;
+        public ChunkVector Position {
+            get => _position;
+            set { _position = value; TruePosition = _position.Resolve(); }
+        }
 
         private BlockState[,] foreground;
         private BlockState[,] background;
 
-        private GraphicsDevice _graphicsDevice;
-
-        public Chunk(ChunkVector cv, GraphicsDevice graphicsDevice) {
-            SetPosition(cv);
-            _graphicsDevice = graphicsDevice;
+        public Chunk(ChunkVector cv) {
+            Position = cv;
 
             foreground = new BlockState[CHUNK_SIZE, CHUNK_SIZE];
             background = new BlockState[CHUNK_SIZE, CHUNK_SIZE];
-        }
-
-        public Chunk SetPosition(ChunkVector cv) {
-            _position = cv;
-            _truePosition = cv.Resolve();
-
-            return this;
-        }
-
-        public void Generate(IWorldGenerator generator) {
-            for (int i = 0; i < CHUNK_SIZE; i++) {
-                for (int j = 0; j < CHUNK_SIZE; j++) {
-                    byte[] natural = generator.GetNaturalBlocks(_truePosition.X + i, _truePosition.Y + j);
-
-                    SetForeground(i, j, natural[0]);
-                    SetBackground(i, j, natural[1]);
-                }
-            }
-
-            DoUpdate = true;
         }
 
         public byte GetForeground(int x, int y) => IsInChunk(x, y) ? foreground[x, y].BlockID : (byte)0;
@@ -61,8 +37,7 @@ namespace Celesteia.Game.Worlds {
             if (IsInChunk(x, y)) {
                 foreground[x, y].BlockID = id;
                 foreground[x, y].BreakProgress = 0;
-                foreground[x, y].Draw = foreground[x, y].HasFrames();
-                background[x, y].Draw = background[x, y].HasFrames() && foreground[x, y].Translucent;
+                UpdateDraws(x, y);
             }
             DoUpdate = true;
         }
@@ -71,9 +46,14 @@ namespace Celesteia.Game.Worlds {
             if (IsInChunk(x, y)) {
                 background[x, y].BlockID = id;
                 background[x, y].BreakProgress = 0;
-                background[x, y].Draw = background[x, y].HasFrames() && foreground[x, y].Translucent;
+                UpdateDraws(x, y);
             }
             DoUpdate = true;
+        }
+
+        public void UpdateDraws(int x, int y) {
+            foreground[x, y].Draw = foreground[x, y].HasFrames();
+            background[x, y].Draw = background[x, y].HasFrames() && foreground[x, y].Translucent;
         }
 
         private NamespacedKey? dropKey;
@@ -110,8 +90,8 @@ namespace Celesteia.Game.Worlds {
 
         Vector2 trueV = Vector2.Zero;
         private void DrawAllAt(int x, int y, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            trueV.X = _truePosition.X + x;
-            trueV.Y = _truePosition.Y + y;
+            trueV.X = TruePosition.X + x;
+            trueV.Y = TruePosition.Y + y;
 
             if (background[x, y].Draw) {
                 DrawWallTile(background[x, y].Frames.GetFrame(0), spriteBatch, camera);
@@ -131,7 +111,7 @@ namespace Celesteia.Game.Worlds {
 
         public void DrawTile(BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
             if (frame == null) return;
-            frame.Draw(0, spriteBatch, camera.GetDrawingPosition(trueV), Color.White, 0.4f);
+            frame.Draw(0, spriteBatch, trueV, Color.White, 0.4f);
         }
 
         public void DrawWallTile(BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {

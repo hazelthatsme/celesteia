@@ -1,16 +1,16 @@
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 
 namespace Celesteia.Game.Items {
     public class FoliageItemActions : BlockItemActions {
-        public FoliageItemActions(NamespacedKey blockKey) : base(blockKey) {}
-
-        public override bool Assert(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user, bool forWall) {
-            if (world.GetBlock(new Vector2(cursor.X, cursor.Y + 1)) != ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID()) return false;
-
-            return base.Assert(gameTime, world, cursor, user, false);
+        byte grown_soil;
+        public FoliageItemActions(NamespacedKey blockKey) : base(blockKey) {
+            grown_soil = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID();
         }
+
+        public override bool Assert(GameTime gameTime, GameWorld world, Point cursor, Entity user, bool forWall)
+        => world.ChunkMap.GetForeground(cursor.X, cursor.Y + 1) == grown_soil && base.Assert(gameTime, world, cursor, user, false);
     }
 }

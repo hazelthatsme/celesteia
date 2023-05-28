@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Celesteia.Resources;
 using Celesteia.Screens;
 using Celesteia.UI;

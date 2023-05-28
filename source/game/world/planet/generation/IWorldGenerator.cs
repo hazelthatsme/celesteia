@@ -1,13 +1,10 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace Celesteia.Game.Worlds.Generators {
-    public interface IWorldGenerator {
-        // Get the world.
-        public GameWorld GetWorld();
-
-        // Set the world.
-        public void SetWorld(GameWorld world);
+namespace Celesteia.Game.World.Planet.Generation {
+    public interface IChunkProvider {
+        // Provide a chunk's tile map.
+        public void ProvideChunk(Chunk c);
 
         // Get the natural block and wall at X and Y.
         public byte[] GetNaturalBlocks(int x, int y);

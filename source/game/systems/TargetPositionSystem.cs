@@ -1,5 +1,5 @@
 using Celesteia.Game.Components;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -28,8 +28,8 @@ namespace Celesteia.Game.Systems {
                 TargetPosition targetPosition = targetPositionMapper.Get(entityId);
                 Transform2 transform = transformMapper.Get(entityId);
 
-                if (targetPosition.Target.X < 0 || targetPosition.Target.X > _gameWorld.BlockWidth)
-                    targetPosition.Target.X = MathHelper.Clamp(targetPosition.Target.X, 0f, _gameWorld.BlockWidth);
+                if (targetPosition.Target.X < 0 || targetPosition.Target.X > _gameWorld.ChunkMap.BlockWidth)
+                    targetPosition.Target.X = MathHelper.Clamp(targetPosition.Target.X, 0f, _gameWorld.ChunkMap.BlockWidth);
                 
                 transform.Position = targetPosition.Target;
             }

@@ -1,6 +1,6 @@
 using System;
 using Celesteia.Game.Components;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.World;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 
@@ -17,7 +17,7 @@ namespace Celesteia.Game.Items {
             _max = max;
         }
         
-        public override bool Primary(GameTime gameTime, GameWorld world, Vector2 cursor, Entity user) => Assert(gameTime, user) && Use(user);
+        public override bool Primary(GameTime gameTime, GameWorld world, Point cursor, Entity user) => Assert(gameTime, user) && Use(user);
 
         // Check if the conditions to use this item's action are met.
         public bool Assert(GameTime gameTime, Entity user) {

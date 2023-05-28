@@ -23,7 +23,7 @@ namespace Celesteia.Graphics {
             get { return _center; }
         }
 
-        private int _zoom = 3;
+        private int _zoom = 2;
         // The zoom value of the camera.
         public int Zoom {
             get { return _zoom; }
