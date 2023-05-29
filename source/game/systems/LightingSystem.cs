@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities.Systems;
 using Celesteia.Resources.Types;
 using Celesteia.Game.World.Planet;
+using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 
 namespace Celesteia.Game.Systems {
     public class LightingSystem : IUpdateSystem, IDrawSystem
@@ -23,12 +26,16 @@ namespace Celesteia.Game.Systems {
         }
         public void Dispose() { }
         
-        private Semaphore _semaphore;
+        private int _lightRenderDistance = 5;
+
+        private Dictionary<byte, BlockLightProperties> lightingDictionary;
         public void Initialize(MonoGame.Extended.Entities.World world) {
-            _semaphore = new Semaphore(0, 1);
-            UpdateFrame();
-            StartLightMapUpdates();
-            _semaphore.Release(1);
+            int _size = 2 * _lightRenderDistance * Chunk.CHUNK_SIZE;
+
+            _lightMap = new LightMap(_size, _size);
+            _texture = new Texture2D(_spriteBatch.GraphicsDevice, _size, _size);
+
+            lightingDictionary = new Dictionary<byte, BlockLightProperties>();
         }
 
         private LightMap _lightMap;
@@ -39,90 +46,73 @@ namespace Celesteia.Game.Systems {
         private bool drawTexture = false;
         private bool calculationDone = false;
         private double lastUpdate = 0;
+        private Task _lightUpdate;
         public void Update(GameTime gameTime)
         {
-            if (drawTexture) {
-                UpdateTexture();
-            }
+            if (_lightUpdate == null || (_lightUpdate != null && _lightUpdate.IsCompleted))
+                    _lightUpdate = Task.Factory.StartNew(() => UpdateLight());
+                
+            if (drawTexture) UpdateTexture();
 
-            if (gameTime.TotalGameTime.TotalSeconds - lastUpdate > _lightUpdateRate && calculationDone) {
-                _position = UpdatePosition();
-                _semaphore.Release();
+            if (gameTime.TotalGameTime.TotalSeconds - lastUpdate > _lightUpdateRate) {
                 lastUpdate = gameTime.TotalGameTime.TotalSeconds;
             }
         }
         
         private Point _position;
         private Vector2 _drawPosition;
-        private Point UpdatePosition() {
-            return ChunkVector.FromVector2(_camera.Center).Resolve() - new Point(_lightRenderDistance);
-        }
-
-        private int _lightRenderDistance = 150;
-        private int _size => 2 * _lightRenderDistance;
-        private void UpdateFrame() {
-            _lightMap = new LightMap(_size, _size);
-            _texture = new Texture2D(_spriteBatch.GraphicsDevice, _size, _size);
+        private void UpdatePosition() {
+            _position = ChunkVector.FromVector2(_camera.Center).Resolve() - new Point(_lightRenderDistance * Chunk.CHUNK_SIZE);
         }
 
         private void UpdateTexture() {
+            _drawPosition = _position.ToVector2();
             _texture.SetData<Color>(_lightMap.GetColors(), 0, _lightMap.GetColorCount());
             drawTexture = false;
-            _drawPosition = _position.ToVector2();
         }
 
-        private Thread updateLightThread;
-        private void StartLightMapUpdates() {
-            updateLightThread = new Thread(() => {
-                while (true) {
-                    _semaphore.WaitOne();
-                    calculationDone = false;
-
-                    UpdateEmission();
-                    _lightMap.Propagate();
-                    _lightMap.CreateColorMap();
-
-                    calculationDone = true;
-                    drawTexture = true;
-                }
-            });
+        private void UpdateLight() {
+            UpdatePosition();
             
-            updateLightThread.IsBackground = true;
-            updateLightThread.Start();
+            UpdateEmission();
+            _lightMap.Propagate();
+            _lightMap.CreateColorMap();
+
+            drawTexture = true;
         }
 
         private int x;
         private int y;
         private byte _blockID;
-        private BlockType _block;
-        private byte _wallID;
-        private BlockType _wall;
+        private BlockLightProperties _light;
+
+        // Foreground != 0 -> (Emits -> emit light) OR (Occludes -> emit darkness).
+        // Background != 0 -> Occludes -> (Emits -> emit light) OR emit darkness.
         private void UpdateEmission() {
             for (int i = 0; i < _lightMap.Width; i++) {
-                x = i + _position.X;
                 for (int j = 0; j < _lightMap.Height; j++) {
-                    y = j + _position.Y;
-
-                    _blockID = _gameWorld.ChunkMap.GetForeground(x, y);
+                    // Foreground
+                    _blockID = _gameWorld.ChunkMap.GetForeground(i + _position.X, j + _position.Y);
 
                     if (_blockID != 0) {
-                        _block = ResourceManager.Blocks.GetBlock(_blockID);
-                        if (_block.Light.Emits) {
-                            _lightMap.AddLight(i, j, _block.Light); continue;
+                        _light = GetBlockLightProperties(_blockID);
+                        if (_light.Emits) {
+                            _lightMap.AddLight(i, j, _light); continue;
                         }
                         else {
-                            if (_block.Light.Occludes) {
+                            if (_light.Occludes) {
                                 _lightMap.AddDarkness(i, j); continue;
                             }
                         }
                     }
 
-                    _wallID = _gameWorld.ChunkMap.GetBackground(x, y);
-                    if (_wallID != 0) {
-                        _wall = ResourceManager.Blocks.GetBlock(_wallID);
-                        if (_wall.Light.Occludes) {
-                            if (_wall.Light.Emits) {
-                                _lightMap.AddLight(i, j, _wall.Light); continue;
+                    // Background
+                    _blockID = _gameWorld.ChunkMap.GetBackground(i + _position.X, j + _position.Y);
+                    if (_blockID != 0) {
+                        _light = GetBlockLightProperties(_blockID);
+                        if (_light.Occludes) {
+                            if (_light.Emits) {
+                                _lightMap.AddLight(i, j, _light); continue;
                             }
                             else {
                                 _lightMap.AddDarkness(i, j); continue;
@@ -136,7 +126,11 @@ namespace Celesteia.Game.Systems {
 
         }
 
-        private Vector2 origin = new Vector2(0.5f);
+        private BlockLightProperties GetBlockLightProperties(byte id) {
+            if (!lightingDictionary.ContainsKey(id)) lightingDictionary.Add(id, ResourceManager.Blocks.GetBlock(id).Light);
+            return lightingDictionary[id];
+        }
+
         private Color lightColor = new Color(255, 255, 255, 255);
         private BlendState multiply = new BlendState() {
             ColorBlendFunction = BlendFunction.Add,

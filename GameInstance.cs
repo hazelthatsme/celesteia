@@ -24,8 +24,6 @@ namespace Celesteia
         
         private readonly List<string> cmdArgs;
 
-        private double maximumFramerate = 144;
-
         private List<GUI> globalGUIs;
 
         private readonly GraphicsManager _graphics;
@@ -70,7 +68,7 @@ namespace Celesteia
         }
 
         private void SetupGraphicsAndWindow() {
-            _graphics.VSync = false;
+            _graphics.VSync = true;
             _graphics.FullScreen = FullscreenMode.Windowed;
             _graphics.Resolution = Window.ClientBounds;
             _graphics.Apply();
@@ -79,8 +77,8 @@ namespace Celesteia
             InactiveSleepTime = new TimeSpan(0);
 
             // Set maximum framerate to avoid resource soaking.
-            IsFixedTimeStep = true;
-            TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
+            //IsFixedTimeStep = true;
+            //TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
 
             // Allow game window to be resized, and set the title.
             Window.AllowUserResizing = true;
