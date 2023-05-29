@@ -130,7 +130,7 @@ namespace Celesteia.Game.Systems {
                         }
                     }
 
-                    _lightMap.AddLight(i, j, true, LightColor.ambient, 6);
+                    _lightMap.AddLight(i, j, true, LightColor.ambient, 4);
                 }
             }
 
