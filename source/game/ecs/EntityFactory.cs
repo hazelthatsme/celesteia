@@ -68,13 +68,14 @@ namespace Celesteia.Game.ECS {
                 new ItemStack(NamespacedKey.Base("wooden_torch"), 10)
             ));
 
-            entity.Attach(new PhysicsEntity(1f, true));
+            entity.Attach(new PhysicsEntity(1.6f, true));
 
             entity.Attach(new CollisionBox(1.5f, 3f));
 
             entity.Attach(new PlayerInput() {
                 Horizontal = new AverageCondition(
-                    new TrinaryKeyboardDefinition() { Negative = Keys.A, Positive = Keys.D, PollType = InputPollType.Held }
+                    new TrinaryKeyboardDefinition() { Negative = Keys.A, Positive = Keys.D, PollType = InputPollType.Held },
+                    new SensorGamepadDefinition() { Sensor = GamePadSensor.LeftThumbStickX }
                 ),
                 Run = new AnyCondition(
                     new BinaryKeyboardDefinition() { Keys = Keys.LeftShift, PollType = InputPollType.Held },
@@ -111,7 +112,7 @@ namespace Celesteia.Game.ECS {
             entity.Attach(new CameraFollow());
 
             entity.Attach(new EntityAttributes(new EntityAttributes.EntityAttributeMap()
-                .Set(EntityAttribute.MovementSpeed, 5f)
+                .Set(EntityAttribute.MovementSpeed, 12.5f)
                 .Set(EntityAttribute.JumpFuel, .5f)
                 .Set(EntityAttribute.JumpForce, 10f)
                 .Set(EntityAttribute.BlockRange, 7f)
