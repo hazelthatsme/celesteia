@@ -76,11 +76,12 @@ namespace Celesteia.Game.Systems {
             if (IsGameActive) {
                 UpdateSelectedItem();
                 
+                UpdateMouse(gameTime, input);
                 UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
                 UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
-            }
-            
-            UpdateMouse(gameTime, input, clicked);
+
+                if (!clicked) UpdateClick(gameTime, input);
+            } else SelectionColor = Color.Transparent;
         }
 
         private static Dictionary<int, int> hotbarMappings = new Dictionary<int, int>() {
@@ -202,14 +203,12 @@ namespace Celesteia.Game.Systems {
 
         Vector2 pointV = Vector2.Zero;
         Point point = Point.Zero;
-        private void UpdateMouse(GameTime gameTime, PlayerInput input, bool clicked) {
+        private void UpdateMouse(GameTime gameTime, PlayerInput input) {
             pointV = _camera.ScreenToWorld(MouseHelper.Position);
             pointV.Floor();
             point = pointV.ToPoint();
             
-            SetSelection(IsGameActive ? point : null);
-
-            if (!clicked && IsGameActive) UpdateClick(gameTime, input);
+            SetSelection(point);
         }
 
 
