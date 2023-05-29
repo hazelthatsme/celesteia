@@ -85,28 +85,14 @@ namespace Celesteia.Game.Systems {
 
                     if (_blockID != 0) {
                         _light = GetBlockLightProperties(_blockID);
-                        if (_light.Emits) {
-                            _lightMap.AddLight(i, j, _light); continue;
-                        }
-                        else {
-                            if (_light.Occludes) {
-                                _lightMap.AddDarkness(i, j); continue;
-                            }
-                        }
+                        if (_lightMap.AddForeground(i, j, _light)) continue;
                     }
 
                     // Background
                     _blockID = _gameWorld.ChunkMap.GetBackground(i + _position.X, j + _position.Y);
                     if (_blockID != 0) {
                         _light = GetBlockLightProperties(_blockID);
-                        if (_light.Occludes) {
-                            if (_light.Emits) {
-                                _lightMap.AddLight(i, j, _light); continue;
-                            }
-                            else {
-                                _lightMap.AddDarkness(i, j); continue;
-                            }
-                        }
+                        if (_lightMap.AddBackground(i, j, _light)) continue;
                     }
 
                     _lightMap.AddLight(i, j, true, LightColor.ambient, 4);

@@ -20,8 +20,20 @@ namespace Celesteia.Graphics.Lighting {
             _propagation = new int[width, height];
         }
 
-        public void AddLight(int x, int y, BlockLightProperties blockLight) {
-            AddLight(x, y, blockLight.Emits, blockLight.Color, blockLight.Propagation);
+        public bool AddForeground(int x, int y, BlockLightProperties blockLight) {
+            if (blockLight.Emits) AddLight(x, y, blockLight.Emits, blockLight.Color, blockLight.Propagation);
+            else if (blockLight.Occludes) AddDarkness(x, y);
+
+            return blockLight.Emits || blockLight.Occludes;
+        }
+
+        public bool AddBackground(int x, int y, BlockLightProperties blockLight) {
+            if (blockLight.Occludes) {
+                if (blockLight.Emits) AddLight(x, y, blockLight.Emits, blockLight.Color, blockLight.Propagation);
+                else AddDarkness(x, y);
+            }
+            
+            return blockLight.Occludes;
         }
 
         public void AddLight(int x, int y, bool emit, LightColor color, int propagation) {
@@ -32,22 +44,16 @@ namespace Celesteia.Graphics.Lighting {
             _propagation[x, y] = propagation;
         }
 
-        public void AddDarkness(int x, int y) {
-            AddLight(x, y, false, LightColor.black, 0);
-        }
+        public void AddDarkness(int x, int y) => AddLight(x, y, false, LightColor.black, 0);
 
         public void Propagate() {
             for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++) {
-                    if (_emit[x, y]) {
+                for (int y = 0; y < Height; y++)
+                    if (_emit[x, y])
                         PropagateFrom(x, y, _lightColors[x, y], _propagation[x, y]);
-                    }
-                }
         }
 
-        public bool InMap(int x, int y) {
-            return !(x < 0 || x >= Width || y < 0 || y >= Height);
-        }
+        public bool InMap(int x, int y) => !(x < 0 || x >= Width || y < 0 || y >= Height);
 
         private float _normalDropoff = 0.7f;
         private float _diagonalDropoff => _normalDropoff * _normalDropoff;
@@ -97,7 +103,7 @@ namespace Celesteia.Graphics.Lighting {
         public static LightColor black = new LightColor(0, 0, 0);
         public static LightColor white = new LightColor(255f, 255f, 255f);
         public static LightColor ambient = new LightColor(255f, 255f, 255f);
-        public static LightColor cave = new LightColor(10f, 10f, 10f);
+        public static LightColor cave = new LightColor(40f, 40f, 40f);
 
         public float R;
         public float G;

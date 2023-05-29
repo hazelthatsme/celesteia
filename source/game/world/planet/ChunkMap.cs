@@ -72,7 +72,7 @@ namespace Celesteia.Game.World.Planet {
         }
 
         // CHUNK IN MAP CHECKS
-        public bool ChunkIsInMap(int chunkX, int chunkY) => chunkX >= 0 && chunkY >= 0 && chunkX < Width && chunkY < Height;
+        public bool ChunkIsInMap(int chunkX, int chunkY) => !(chunkX < 0 || chunkY < 0 || chunkX >= Width || chunkY >= Height);
         public bool ChunkIsInMap(ChunkVector cv) => ChunkIsInMap(cv.X, cv.Y);
     }
 }

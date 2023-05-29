@@ -9,7 +9,7 @@ using Celesteia.Game.Components.Items;
 namespace Celesteia.Game.World.Planet {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
-        public static bool IsInChunk(int x, int y) => x >= 0 && y >= 0 && y < CHUNK_SIZE && y < CHUNK_SIZE;
+        public static bool IsInChunk(int x, int y) => !(x < 0 && y < 0 && y >= CHUNK_SIZE && y >= CHUNK_SIZE);
 
         public bool DoUpdate = false;
 

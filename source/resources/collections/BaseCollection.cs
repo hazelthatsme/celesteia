@@ -61,13 +61,11 @@ namespace Celesteia.Resources.Collections {
             ).Get());
             AddBlock("iron_ore", builder.WithName("Iron Ore").Full().Frames(8).Properties(
                 strength: 15,
-                drop: GetKey("iron_ore"),
-                light: new BlockLightProperties(new LightColor(63f, 63f, 63f), 1, true)
+                drop: GetKey("iron_ore")
             ).Get());
             AddBlock("copper_ore", builder.WithName("Copper Ore").Full().Frames(7).Properties(
                 strength: 10, 
-                drop: GetKey("copper_ore"),
-                light: new BlockLightProperties(new LightColor(112f, 63f, 46f), 1, true)
+                drop: GetKey("copper_ore")
             ).Get());
             AddBlock("coal_ore", builder.WithName("Coal Ore").Full().Frames(14).Properties(
                 strength: 10, 
