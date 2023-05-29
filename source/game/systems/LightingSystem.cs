@@ -41,10 +41,7 @@ namespace Celesteia.Game.Systems {
         private LightMap _lightMap;
         private Texture2D _texture;
 
-        private double _lightUpdateRate = 0.0333;
-
         private bool drawTexture = false;
-        private double lastUpdate = 0;
         private Task _lightUpdate;
         public void Update(GameTime gameTime)
         {
@@ -52,14 +49,9 @@ namespace Celesteia.Game.Systems {
                     _lightUpdate = Task.Factory.StartNew(() => UpdateLight());
                 
             if (drawTexture) UpdateTexture();
-
-            if (gameTime.TotalGameTime.TotalSeconds - lastUpdate > _lightUpdateRate) {
-                lastUpdate = gameTime.TotalGameTime.TotalSeconds;
-            }
         }
         
         private Point _position;
-        private Vector2 _drawPosition;
         private void UpdatePosition() {
             _position = ChunkVector.FromVector2(_camera.Center).Resolve() - new Point(_lightRenderDistance * Chunk.CHUNK_SIZE);
         }
@@ -128,18 +120,18 @@ namespace Celesteia.Game.Systems {
             return lightingDictionary[id];
         }
 
-        private Color lightColor = new Color(255, 255, 255, 255);
         private BlendState multiply = new BlendState() {
             ColorBlendFunction = BlendFunction.Add,
             ColorSourceBlend = Blend.DestinationColor,
             ColorDestinationBlend = Blend.Zero,
         };
 
+        private Vector2 _drawPosition;
         public void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin(SpriteSortMode.Immediate, multiply, SamplerState.LinearClamp, null, null, null, _camera.GetViewMatrix());
 
-            _spriteBatch.Draw(_texture, _drawPosition, lightColor);
+            _spriteBatch.Draw(_texture, _drawPosition, Color.White);
 
             _spriteBatch.End();
         }
