@@ -30,9 +30,9 @@ namespace Celesteia.Game.Systems {
         {
             if (_lastChunkPos != _pivotChunkPos) {
                 activeChunks.Clear();
-                for (int i = -RenderDistance; i <= RenderDistance; i++) {
+                for (int i = -RenderDistance; i < RenderDistance; i++) {
                     _v.X = _pivotChunkPos.X + i;
-                    for (int j = -RenderDistance; j <= RenderDistance; j++) {
+                    for (int j = -RenderDistance; j < RenderDistance; j++) {
                         _v.Y = _pivotChunkPos.Y + j;
 
                         if (!_chunkMap.ChunkIsInMap(_v)) continue;

@@ -103,18 +103,22 @@ namespace Celesteia.Resources.Collections {
             ).Get());
             AddBlock("blue_flower", builder.WithName("Morning Stars").Frames(16).Walkthrough().Properties(
                 strength: 1,
-                drop: GetKey("blue_flower_bundle")
+                drop: GetKey("blue_flower_bundle"),
+                light: new BlockLightProperties(LightColor.black, 0, false)
             ).Get());
             AddBlock("red_flower", builder.WithName("Red Tears").Frames(17).Walkthrough().Properties(
                 strength: 1,
-                drop: GetKey("red_flower_bundle")
+                drop: GetKey("red_flower_bundle"),
+                light: new BlockLightProperties(LightColor.black, 0, false)
             ).Get());
             AddBlock("violet_flower", builder.WithName("Colupria").Frames(18).Walkthrough().Properties(
                 strength: 1,
-                drop: GetKey("violet_flower_bundle")
+                drop: GetKey("violet_flower_bundle"),
+                light: new BlockLightProperties(LightColor.black, 0, false)
             ).Get());
             AddBlock("grass", builder.WithName("Grass").Frames(19).Walkthrough().Properties(
-                strength: 1
+                strength: 1,
+                light: new BlockLightProperties(LightColor.black, 0, false)
             ).Get());
 
             return blocks;

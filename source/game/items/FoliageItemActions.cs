@@ -10,6 +10,8 @@ namespace Celesteia.Game.Items {
             grown_soil = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID();
         }
 
+        public override bool Secondary(GameTime gameTime, GameWorld world, Point cursor, Entity user) => false;
+
         public override bool Assert(GameTime gameTime, GameWorld world, Point cursor, Entity user, bool forWall)
         => world.ChunkMap.GetForeground(cursor.X, cursor.Y + 1) == grown_soil && base.Assert(gameTime, world, cursor, user, false);
     }
