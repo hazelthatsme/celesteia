@@ -1,5 +1,5 @@
 using Celesteia.Game.Components;
-using Celesteia.Game.World;
+using Celesteia.Game.Planets;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -7,14 +7,13 @@ using MonoGame.Extended.Entities.Systems;
 
 namespace Celesteia.Game.Systems {
     public class TargetPositionSystem : EntityUpdateSystem {
-        private GameWorld _gameWorld;
+        private ChunkMap _chunkMap;
         
         private ComponentMapper<Transform2> transformMapper;
         private ComponentMapper<TargetPosition> targetPositionMapper;
 
-        public TargetPositionSystem(GameWorld gameWorld) : base(Aspect.All(typeof(Transform2), typeof(TargetPosition))) {
-            _gameWorld = gameWorld;
-        }
+        public TargetPositionSystem(ChunkMap chunkMap) : base(Aspect.All(typeof(Transform2), typeof(TargetPosition)))
+        => _chunkMap = chunkMap;
 
         public override void Initialize(IComponentMapperService mapperService)
         {
@@ -28,8 +27,8 @@ namespace Celesteia.Game.Systems {
                 TargetPosition targetPosition = targetPositionMapper.Get(entityId);
                 Transform2 transform = transformMapper.Get(entityId);
 
-                if (targetPosition.Target.X < 0 || targetPosition.Target.X > _gameWorld.ChunkMap.BlockWidth)
-                    targetPosition.Target.X = MathHelper.Clamp(targetPosition.Target.X, 0f, _gameWorld.ChunkMap.BlockWidth);
+                if (targetPosition.Target.X < 0 || targetPosition.Target.X > _chunkMap.BlockWidth)
+                    targetPosition.Target.X = MathHelper.Clamp(targetPosition.Target.X, 0f, _chunkMap.BlockWidth);
                 
                 transform.Position = targetPosition.Target;
             }

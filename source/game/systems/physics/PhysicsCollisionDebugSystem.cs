@@ -1,5 +1,5 @@
 using Celesteia.Game.Components.Physics;
-using Celesteia.Game.World;
+using Celesteia.Game.Planets;
 using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,15 +12,15 @@ namespace Celesteia.Game.Systems.Physics {
     {
         private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
-        private readonly GameWorld _gameWorld;
+        private readonly ChunkMap _chunkMap;
 
         private ComponentMapper<Transform2> transformMapper;
         private ComponentMapper<CollisionBox> collisionBoxMapper;
 
-        public PhysicsCollisionDebugSystem(Camera2D camera, SpriteBatch spriteBatch, GameWorld gameWorld) : base(Aspect.All(typeof(Transform2), typeof(CollisionBox))) {
+        public PhysicsCollisionDebugSystem(Camera2D camera, SpriteBatch spriteBatch, ChunkMap chunkMap) : base(Aspect.All(typeof(Transform2), typeof(CollisionBox))) {
             _camera = camera;
             _spriteBatch = spriteBatch;
-            _gameWorld = gameWorld;
+            _chunkMap = chunkMap;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
@@ -46,7 +46,7 @@ namespace Celesteia.Game.Systems.Physics {
 
                 for (int i = minX; i < maxX; i++)
                     for (int j = minY; j < maxY; j++) {
-                        RectangleF? blockBox = _gameWorld.TestBoundingBox(i, j);
+                        RectangleF? blockBox = _chunkMap.TestBoundingBox(i, j);
                         if (blockBox.HasValue) {
                             _spriteBatch.DrawRectangle(new RectangleF(i, j, blockBox.Value.Width, blockBox.Value.Height), Color.Red, .05f, 0f);
                         } else {

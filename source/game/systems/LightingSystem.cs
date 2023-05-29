@@ -1,5 +1,3 @@
-using System.Threading;
-using Celesteia.Game.World;
 using Celesteia.Graphics;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources;
@@ -7,9 +5,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities.Systems;
 using Celesteia.Resources.Types;
-using Celesteia.Game.World.Planet;
+using Celesteia.Game.Planets;
 using System.Threading.Tasks;
-using System;
 using System.Collections.Generic;
 
 namespace Celesteia.Game.Systems {
@@ -17,12 +14,12 @@ namespace Celesteia.Game.Systems {
     {
         private readonly Camera2D _camera;
         private readonly SpriteBatch _spriteBatch;
-        private readonly GameWorld _gameWorld;
+        private readonly ChunkMap _chunkMap;
 
-        public LightingSystem(Camera2D camera, SpriteBatch spriteBatch, GameWorld gameWorld) {
+        public LightingSystem(Camera2D camera, SpriteBatch spriteBatch, ChunkMap chunkMap) {
             _camera = camera;
             _spriteBatch = spriteBatch;
-            _gameWorld = gameWorld;
+            _chunkMap = chunkMap;
         }
         public void Dispose() { }
         
@@ -81,7 +78,7 @@ namespace Celesteia.Game.Systems {
             for (int i = 0; i < _lightMap.Width; i++) {
                 for (int j = 0; j < _lightMap.Height; j++) {
                     // Foreground
-                    _blockID = _gameWorld.ChunkMap.GetForeground(i + _position.X, j + _position.Y);
+                    _blockID = _chunkMap.GetForeground(i + _position.X, j + _position.Y);
 
                     if (_blockID != 0) {
                         _light = GetBlockLightProperties(_blockID);
@@ -89,7 +86,7 @@ namespace Celesteia.Game.Systems {
                     }
 
                     // Background
-                    _blockID = _gameWorld.ChunkMap.GetBackground(i + _position.X, j + _position.Y);
+                    _blockID = _chunkMap.GetBackground(i + _position.X, j + _position.Y);
                     if (_blockID != 0) {
                         _light = GetBlockLightProperties(_blockID);
                         if (_lightMap.AddBackground(i, j, _light)) continue;

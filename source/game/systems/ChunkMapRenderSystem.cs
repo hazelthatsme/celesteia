@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using Celesteia.Game.World;
-using Celesteia.Game.World.Planet;
+using Celesteia.Game.Planets;
 using Celesteia.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

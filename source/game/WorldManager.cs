@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using Celesteia.Game.World.Planet.Generation;
+using Celesteia.Game.ECS;
+using Celesteia.Game.Planets;
+using Celesteia.Game.Planets.Generation;
 using Microsoft.Xna.Framework;
 
-namespace Celesteia.Game.World {
+namespace Celesteia.Game {
     public class WorldManager : GameComponent
     {
         private new GameInstance Game => (GameInstance) base.Game;
@@ -17,15 +19,12 @@ namespace Celesteia.Game.World {
             return _loaded = gameWorld;
         }
 
-        public async Task<GameWorld> LoadNewWorld(Action<string> progressReport = null) {
+        public async Task<GameWorld> LoadNewWorld(Action<string> progressReport = null, int? seed = null) {
             // Asynchronously generate the world.
             GameWorld generatedWorld = await Task.Run<GameWorld>(() => {
-                GameWorld gameWorld = new GameWorld(250, 75);
-                gameWorld.Generate(new TerranWorldGenerator(gameWorld.ChunkMap, gameWorld.Seed), progressReport);
-                
-                if (progressReport != null) progressReport.Invoke("World generated.");
-
-                return gameWorld;
+                GeneratedPlanet planet = new GeneratedPlanet(250, 75, seed);
+                planet.Generate(new TerranPlanetGenerator(planet), progressReport);
+                return new GameWorld(planet);
             });
 
             return LoadWorld(generatedWorld);

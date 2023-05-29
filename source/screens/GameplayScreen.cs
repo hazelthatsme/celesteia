@@ -7,26 +7,26 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using Celesteia.Resources;
 using Celesteia.Graphics;
-using Celesteia.Game.World;
 using Celesteia.Game.Components;
 using Celesteia.Game.Systems.Physics;
 using Celesteia.GUIs.Game;
 using Celesteia.Game.Systems.UI;
 using Celesteia.Game.Components.Items;
+using Celesteia.Game.Planets;
 
 namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
         private new GameInstance Game => (GameInstance) base.Game;
 
+        private GameWorld _gameWorld;
+        private ChunkMap _chunkMap;
         public GameplayScreen(GameInstance game, GameWorld gameWorld) : base(game) {
             _gameWorld = gameWorld;
+            _chunkMap = gameWorld.ChunkMap;
         }
 
         private SpriteBatch SpriteBatch => Game.SpriteBatch;
         private Camera2D Camera;
-        private World _world;
-        private EntityFactory _entityFactory;
-        private GameWorld _gameWorld;
         private GameGUI _gameGui;
 
         public override void LoadContent()
@@ -40,35 +40,32 @@ namespace Celesteia.Screens {
             _gameGui = new GameGUI(Game);
             _gameGui.LoadContent(Content);
 
-            LocalPlayerSystem localPlayerSystem;
+            LocalPlayerSystem lps = new LocalPlayerSystem(Game, _chunkMap, Camera, SpriteBatch, _gameGui);
 
-            _world = new WorldBuilder()
-                .AddSystem(new PhysicsGravitySystem(_gameWorld))
+            _gameWorld.BeginBuilder()
                 .AddSystem(new PhysicsSystem())
-                .AddSystem(new PhysicsWorldCollisionSystem(_gameWorld))
-                .AddSystem(new ChunkMapRenderSystem(Camera, SpriteBatch, _gameWorld.ChunkMap))
-                .AddSystem(new TargetPositionSystem(_gameWorld))
+                .AddSystem(new PhysicsWorldCollisionSystem(_chunkMap))
+                .AddSystem(new ChunkMapRenderSystem(Camera, SpriteBatch, _chunkMap))
+                .AddSystem(new TargetPositionSystem(_chunkMap))
                 .AddSystem(new CameraSystem(Camera, Game.Input))
                 .AddSystem(new CameraRenderSystem(Camera, SpriteBatch))
-                .AddSystem(new LightingSystem(Camera, SpriteBatch, _gameWorld))
-                .AddSystem(localPlayerSystem = new LocalPlayerSystem(Game, _gameWorld, Camera, SpriteBatch, _gameGui))
-                .AddSystem(new GameGUIDrawSystem(_gameGui))
-                .Build();
+                .AddSystem(new LightingSystem(Camera, SpriteBatch, _chunkMap))
+                .AddSystem(lps)
+                .AddSystem(new GameGUIDrawSystem(_gameGui));
+            _gameWorld.EndBuilder();
 
-            _entityFactory = new EntityFactory(_world);
-
-            Entity player = _entityFactory.CreateEntity(NamespacedKey.Base("player"));
-            player.Get<TargetPosition>().Target = _gameWorld.GetSpawnpoint();
+            Entity player = new EntityFactory(_gameWorld).CreateEntity(NamespacedKey.Base("player"));
+            player.Get<TargetPosition>().Target = _chunkMap.GetSpawnpoint();
             _gameGui.SetReferenceInventory(player.Get<Inventory>());
-            localPlayerSystem.Player = player;
+            lps.Player = player;
         }
 
-        public override void Update(GameTime gameTime) => _world.Update(gameTime);
+        public override void Update(GameTime gameTime) => _gameWorld.Update(gameTime);
 
         public override void Draw(GameTime gameTime)
         {
-            Game.GraphicsDevice.Clear(Color.SkyBlue);
-            _world.Draw(gameTime);
+            GraphicsDevice.Clear(Color.SkyBlue);
+            _gameWorld.Draw(gameTime);
         }
 
         public override void Dispose()

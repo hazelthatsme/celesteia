@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Physics;
-using Celesteia.Game.World;
-using Celesteia.Resources;
+using Celesteia.Game.Planets;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -11,10 +9,10 @@ using MonoGame.Extended.Entities.Systems;
 
 namespace Celesteia.Game.Systems.Physics {
     public class PhysicsWorldCollisionSystem : EntityUpdateSystem {
-        private GameWorld _gameWorld;
+        private ChunkMap _chunkMap;
 
-        public PhysicsWorldCollisionSystem(GameWorld gameWorld) : base(Aspect.All(typeof(TargetPosition), typeof(PhysicsEntity), typeof(CollisionBox))) {
-            _gameWorld = gameWorld;
+        public PhysicsWorldCollisionSystem(ChunkMap chunkMap) : base(Aspect.All(typeof(TargetPosition), typeof(PhysicsEntity), typeof(CollisionBox))) {
+            _chunkMap = chunkMap;
         }
 
         private ComponentMapper<Transform2> transformMapper;
@@ -53,7 +51,7 @@ namespace Celesteia.Game.Systems.Physics {
 
                 for (int i = minX; i < maxX; i++)
                     for (int j = minY; j < maxY; j++) {
-                        RectangleF? blockBox = _gameWorld.TestBoundingBox(i, j);
+                        RectangleF? blockBox = _chunkMap.TestBoundingBox(i, j);
                         if (blockBox.HasValue) {
                             RectangleF inter = RectangleF.Intersection(collisionBox.Bounds, blockBox.Value);
 

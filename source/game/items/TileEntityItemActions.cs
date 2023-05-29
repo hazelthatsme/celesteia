@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Celesteia.Game.Components;
-using Celesteia.Game.World;
+using Celesteia.Game.Planets;
 using Celesteia.Resources;
 using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
@@ -22,12 +22,12 @@ namespace Celesteia.Game.Items {
             //_tileEntity = ResourceManager.TileEntities.GetResource(_entityKey) as TileEntityType;
         }
         
-        public override bool Primary(GameTime gameTime, GameWorld world, Point cursor, Entity user) {
+        public override bool Primary(GameTime gameTime, ChunkMap chunkMap, Point cursor, Entity user) {
             TryQualify();
-            return Assert(gameTime, world, cursor, user, false) && Place(world, cursor, false);
+            return Assert(gameTime, chunkMap, cursor, user, false) && Place(chunkMap, cursor, false);
         }
 
-        public virtual bool Assert(GameTime gameTime, GameWorld world, Point cursor, Entity user, bool forWall) {
+        public virtual bool Assert(GameTime gameTime, ChunkMap chunkMap, Point cursor, Entity user, bool forWall) {
             if (!base.Assert(gameTime)) return false;
             if (_tileEntity == null) return false;
 
@@ -40,7 +40,7 @@ namespace Celesteia.Game.Items {
 
             for (int i = 0; i < _tileEntity.Bounds.X; i++) {
                 for (int j = 0; j < _tileEntity.Bounds.Y; j++) {
-                    if (world.ChunkMap.GetForeground(cursor.X - _tileEntity.Origin.X + i, cursor.Y - _tileEntity.Origin.Y - j) != 0) {
+                    if (chunkMap.GetForeground(cursor.X - _tileEntity.Origin.X + i, cursor.Y - _tileEntity.Origin.Y - j) != 0) {
                         Debug.WriteLine($"Block found at {cursor.X - _tileEntity.Origin.X + i}, {cursor.Y - _tileEntity.Origin.Y - j}");
                         return false;
                     } else Debug.WriteLine($"No block found at {cursor.X - _tileEntity.Origin.X + i}, {cursor.Y - _tileEntity.Origin.Y - j}");
@@ -60,13 +60,13 @@ namespace Celesteia.Game.Items {
             return true;
         }
 
-        public bool Place(GameWorld world, Point cursor, bool wall) {
+        public bool Place(ChunkMap chunkMap, Point cursor, bool wall) {
             Point pos = cursor - _tileEntity.Origin;
             BlockType part = ResourceManager.Blocks.GetResource(_tileEntity.PartKey) as BlockType;
 
             for (int i = 0; i < _tileEntity.Bounds.X; i++)
                 for (int j = 0; j < _tileEntity.Bounds.Y; j++) {
-                    world.ChunkMap.SetForeground(cursor.X - _tileEntity.Origin.X + i, cursor.Y - _tileEntity.Origin.Y + j, part.GetID());
+                    chunkMap.SetForeground(cursor.X - _tileEntity.Origin.X + i, cursor.Y - _tileEntity.Origin.Y + j, part.GetID());
                     Debug.WriteLine($"Set block at at {cursor.X - _tileEntity.Origin.X + i}, {cursor.Y - _tileEntity.Origin.Y - j}");
                 }
             

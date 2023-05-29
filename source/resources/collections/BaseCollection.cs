@@ -56,6 +56,7 @@ namespace Celesteia.Resources.Collections {
                 drop: GetKey("log")
             ).Get());
             AddBlock("leaves", builder.WithName("Leaves").Walkthrough().Frames(11).Properties(
+                translucent: true,
                 strength: 1,
                 light: new BlockLightProperties(LightColor.black, 0, false)
             ).Get());
@@ -151,8 +152,6 @@ namespace Celesteia.Resources.Collections {
             AddItem("fuel_tank", builder.WithName("Fuel Tank").Frame(6).Upgrade(EntityAttribute.JumpFuel, 0.5f, 5f).Get());
             AddItem("wooden_torch", builder.WithName("Wooden Torch").Template(new ItemTypeTemplate(1000, true))
                 .Frame(7).Actions(new TorchItemActions(NamespacedKey.Base("torch"))).Get());
-            AddItem("tile_entity", builder.WithName("Test Tile Entity").Template(new ItemTypeTemplate(1, false))
-                .Frame(8).Actions(new TileEntityItemActions(NamespacedKey.Base("test_tile_entity"))).Get());
             AddItem("blue_flower_bundle", builder.WithName("Morning Stars").Template(new ItemTypeTemplate(1000, true))
                 .Frame(10).Actions(new FoliageItemActions(NamespacedKey.Base("blue_flower"))).Get());
             AddItem("red_flower_bundle", builder.WithName("Red Tears").Template(new ItemTypeTemplate(1000, true))
@@ -190,7 +189,7 @@ namespace Celesteia.Resources.Collections {
             void AddEntity(string index, EntityType type) => entities.Add(GetKey(index), type);
             
             entities = new Dictionary<NamespacedKey, EntityType>();
-            AddEntity("player", new EntityType((w, e) => EntityFactory.BuildPlayer(e, _content.Load<Texture2D>("sprites/entities/player/astronaut"))));
+            AddEntity("player", new EntityType((e) => EntityFactory.BuildPlayer(e, _content.Load<Texture2D>("sprites/entities/player/astronaut"))));
 
             return entities;
         }

@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace Celesteia.Game.World.Planet.Generation {
+namespace Celesteia.Game.Planets.Generation {
     public interface IChunkProvider {
         // Provide a chunk's tile map.
         public void ProvideChunk(Chunk c);

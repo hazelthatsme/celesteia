@@ -4,15 +4,15 @@ using Celesteia.Resources;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Celesteia.Game.World.Planet.Generation {
-    public class TerranWorldGenerator : IChunkProvider {
+namespace Celesteia.Game.Planets.Generation {
+    public class TerranPlanetGenerator : IChunkProvider {
         private ChunkMap _chunkMap;
         private int _seed;
         private FastNoiseLite _noise;
 
-        public TerranWorldGenerator(ChunkMap chunkMap, int seed) {
+        public TerranPlanetGenerator(GeneratedPlanet chunkMap) {
             _chunkMap = chunkMap;
-            _noise = new FastNoiseLite(_seed = seed);
+            _noise = new FastNoiseLite(_seed = chunkMap.Seed);
 
             LoadBlockIndices();
         }
@@ -229,9 +229,9 @@ namespace Celesteia.Game.World.Planet.Generation {
         private Dictionary<double, int> foliageDistribution = new Dictionary<double, int> {
             { 0.3, 0 },
             { 0.6, 1 },
-            { 0.8, 2 },
-            { 0.9, 4 },
-            { 0.95, 3 },
+            { 0.7, 2 },
+            { 0.85, 4 },
+            { 0.99, 3 },
         };
 
         public void GenerateFoliage(Random rand) {

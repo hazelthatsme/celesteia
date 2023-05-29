@@ -6,10 +6,9 @@ using System;
 using Celesteia.Resources.Sprites;
 using Celesteia.Game.Components.Items;
 
-namespace Celesteia.Game.World.Planet {
+namespace Celesteia.Game.Planets {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
-        public static bool IsInChunk(int x, int y) => !(x < 0 && y < 0 && y >= CHUNK_SIZE && y >= CHUNK_SIZE);
 
         public bool DoUpdate = false;
 
@@ -30,24 +29,20 @@ namespace Celesteia.Game.World.Planet {
             background = new BlockState[CHUNK_SIZE, CHUNK_SIZE];
         }
 
-        public byte GetForeground(int x, int y) => IsInChunk(x, y) ? foreground[x, y].BlockID : (byte)0;
-        public byte GetBackground(int x, int y) => IsInChunk(x, y) ? background[x, y].BlockID : (byte)0;
+        public byte GetForeground(int x, int y) => foreground[x, y].BlockID;
+        public byte GetBackground(int x, int y) => background[x, y].BlockID;
 
         public void SetForeground(int x, int y, byte id) {
-            if (IsInChunk(x, y)) {
-                foreground[x, y].BlockID = id;
-                foreground[x, y].BreakProgress = 0;
-                UpdateDraws(x, y);
-            }
+            foreground[x, y].BlockID = id;
+            foreground[x, y].BreakProgress = 0;
+            UpdateDraws(x, y);
             DoUpdate = true;
         }
 
         public void SetBackground(int x, int y, byte id) {
-            if (IsInChunk(x, y)) {
-                background[x, y].BlockID = id;
-                background[x, y].BreakProgress = 0;
-                UpdateDraws(x, y);
-            }
+            background[x, y].BlockID = id;
+            background[x, y].BreakProgress = 0;
+            UpdateDraws(x, y);
             DoUpdate = true;
         }
 
@@ -60,8 +55,6 @@ namespace Celesteia.Game.World.Planet {
         public void AddBreakProgress(int x, int y, int power, bool wall, out ItemStack drops) {
             dropKey = null;
             drops = null;
-            
-            if (!IsInChunk(x, y)) return;
 
             if (wall) {
                 background[x, y].BreakProgress += power;

@@ -26,6 +26,15 @@ namespace Celesteia.Game.Systems.Physics {
                 TargetPosition targetPosition = targetPositionMapper.Get(entityId);
                 PhysicsEntity physicsEntity = physicsEntityMapper.Get(entityId);
 
+                // Apply gravity if applicable
+                if (physicsEntity.Gravity) {
+                    if (physicsEntity.CollidingDown && physicsEntity.Velocity.Y > 0f) {
+                        physicsEntity.SetVelocity(physicsEntity.Velocity.X, 0.1f);
+                    }
+                    
+                    physicsEntity.AddVelocity(0f, physicsEntity.Mass * PhysicsSystem.GRAVITY_CONSTANT * gameTime.GetElapsedSeconds());
+                }
+
                 targetPosition.Target += physicsEntity.Velocity * gameTime.GetElapsedSeconds();
             }
         }

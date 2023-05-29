@@ -8,6 +8,9 @@ using Celesteia.Graphics;
 using MonoGame.Extended.Entities;
 using Celesteia.Game.Systems.MainMenu;
 using Celesteia.Game.ECS;
+using MonoGame.Extended;
+using Celesteia.Game.Components.Skybox;
+using Celesteia.Resources;
 
 namespace Celesteia.Screens {
     public class MainMenuScreen : GameScreen
@@ -21,13 +24,12 @@ namespace Celesteia.Screens {
 
         private Camera2D Camera;
         private World _world;
-        private EntityFactory _entityFactory;
 
         public override void LoadContent()
         {
             base.LoadContent();
 
-            mainMenuTheme = Game.Content.Load<Song>("music/stargaze_symphony");
+            mainMenuTheme = Content.Load<Song>("music/stargaze_symphony");
             Game.Music.PlayNow(mainMenuTheme);
 
             Camera = new Camera2D(GraphicsDevice);
@@ -37,16 +39,25 @@ namespace Celesteia.Screens {
                 .AddSystem(new MainMenuRenderSystem(Camera, Game.SpriteBatch))
                 .Build();
 
-            _entityFactory = new EntityFactory(_world);
-
-            _entityFactory.CreateSkyboxPortion("stars", Color.White, -0.1f, .9f);
-            _entityFactory.CreateSkyboxPortion("shadow", Color.Black, 5f, .7f);
-            _entityFactory.CreateSkyboxPortion("shadow", Color.Black, 3f, .6f);
-            _entityFactory.CreateSkyboxPortion("nebula", new Color(165,216,255,45), 3f, .5f);
-            _entityFactory.CreateSkyboxPortion("nebula", new Color(255,165,246,45), -2f, .3f);
+            CreateSkyboxPortion("stars", Color.White, -0.1f, .9f);
+            CreateSkyboxPortion("shadow", Color.Black, 5f, .7f);
+            CreateSkyboxPortion("shadow", Color.Black, 3f, .6f);
+            CreateSkyboxPortion("nebula", new Color(165,216,255,45), 3f, .5f);
+            CreateSkyboxPortion("nebula", new Color(255,165,246,45), -2f, .3f);
 
             this.mainMenu = new MainMenu(Game);
             this.mainMenu.LoadContent(Content);
+        }
+
+        public Entity CreateSkyboxPortion(string name, Color color, float rotation, float depth)
+        {
+            Entity e = _world.CreateEntity();
+
+            e.Attach(new Transform2(Vector2.Zero, 0F, new Vector2(3f, 3f)));
+            e.Attach(new SkyboxRotateZ(rotation));
+            e.Attach(ResourceManager.Skybox.GetAsset(name).Frames.Clone().SetColor(color).SetDepth(depth));
+            
+            return e;
         }
 
         public override void Draw(GameTime gameTime)

@@ -6,7 +6,7 @@ using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Player;
 using Celesteia.Game.Input;
 using Celesteia.Game.Items;
-using Celesteia.Game.World;
+using Celesteia.Game.Planets;
 using Celesteia.Graphics;
 using Celesteia.GUIs.Game;
 using Celesteia.Resources;
@@ -25,7 +25,7 @@ namespace Celesteia.Game.Systems {
         private GameInstance _game;
         private GameGUI _gameGui;
         private Camera2D _camera;
-        private GameWorld _world;
+        private ChunkMap _chunkMap;
 
         private Entity _player;
         public Entity Player {
@@ -54,9 +54,9 @@ namespace Celesteia.Game.Systems {
 
         private BlockFrame _selectionSprite;
 
-        public LocalPlayerSystem(GameInstance game, GameWorld world, Camera2D camera, SpriteBatch spriteBatch, GameGUI gameGui) {
+        public LocalPlayerSystem(GameInstance game, ChunkMap chunkMap, Camera2D camera, SpriteBatch spriteBatch, GameGUI gameGui) {
             _game = game;
-            _world = world;
+            _chunkMap = chunkMap;
             _camera = camera;
             _gameGui = gameGui;
             _spriteBatch = spriteBatch;
@@ -195,8 +195,8 @@ namespace Celesteia.Game.Systems {
                 return;
             }
 
-            SelectedBlock = ResourceManager.Blocks.GetBlock(_world.ChunkMap.GetForeground(Selection.Value));
-            if (SelectedBlock.Frames == null) SelectedBlock = ResourceManager.Blocks.GetBlock(_world.ChunkMap.GetBackground(Selection.Value));
+            SelectedBlock = ResourceManager.Blocks.GetBlock(_chunkMap.GetForeground(Selection.Value));
+            if (SelectedBlock.Frames == null) SelectedBlock = ResourceManager.Blocks.GetBlock(_chunkMap.GetBackground(Selection.Value));
 
             SelectionColor = (SelectedBlock.Strength >= 0 ? Color.White : Color.Black);
         }
@@ -224,8 +224,8 @@ namespace Celesteia.Game.Systems {
 
             actions = stack.Type.Actions;
 
-            if (input.PrimaryUse.Poll()) success = actions.Primary(gameTime, _world, point, _player);
-            if (input.SecondaryUse.Poll()) success = stack.Type.Actions.Secondary(gameTime, _world, point, _player);
+            if (input.PrimaryUse.Poll()) success = actions.Primary(gameTime, _chunkMap, point, _player);
+            if (input.SecondaryUse.Poll()) success = stack.Type.Actions.Secondary(gameTime, _chunkMap, point, _player);
 
             if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
 

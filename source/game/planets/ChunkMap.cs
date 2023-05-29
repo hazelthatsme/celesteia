@@ -1,8 +1,11 @@
 using System;
 using Celesteia.Game.Components.Items;
+using Celesteia.Game.Planets.Generation;
+using Celesteia.Resources;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
-namespace Celesteia.Game.World.Planet {
+namespace Celesteia.Game.Planets {
     public class ChunkMap {
         public int Width, Height;
         public int BlockWidth => Width * Chunk.CHUNK_SIZE;
@@ -71,8 +74,24 @@ namespace Celesteia.Game.World.Planet {
             );
         }
 
+        // COLLISION CHECKS
+
+        public RectangleF? TestBoundingBox(int x, int y, byte id) {
+            RectangleF? box = ResourceManager.Blocks.GetBlock(id).BoundingBox;
+
+            if (!box.HasValue) return null;
+
+            return new RectangleF(
+                x, y,
+                box.Value.Width, box.Value.Height
+            );
+        }
+        public RectangleF? TestBoundingBox(int x, int y) => TestBoundingBox(x, y, GetForeground(x, y));
+
         // CHUNK IN MAP CHECKS
         public bool ChunkIsInMap(int chunkX, int chunkY) => !(chunkX < 0 || chunkY < 0 || chunkX >= Width || chunkY >= Height);
         public bool ChunkIsInMap(ChunkVector cv) => ChunkIsInMap(cv.X, cv.Y);
+
+        public virtual Vector2 GetSpawnpoint() => Vector2.Zero;
     }
 }

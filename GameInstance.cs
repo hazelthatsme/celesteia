@@ -11,9 +11,9 @@ using MonoGame.Extended.Screens;
 using System.Linq;
 using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
-using Celesteia.Game.World;
 using Celesteia.Resources.Collections;
 using Celesteia.Game.Music;
+using Celesteia.Game;
 
 namespace Celesteia
 {
