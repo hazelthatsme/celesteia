@@ -1,3 +1,4 @@
+using Celesteia.Game.Components.Items;
 using Celesteia.Resources;
 using Celesteia.Resources.Sprites;
 using Celesteia.Resources.Types;
@@ -24,5 +25,14 @@ namespace Celesteia.Game.Planets {
 
         public bool Draw;
         public bool HasFrames() => Frames != null;
+
+        public BlockData Data;
+        public bool HasData() => Data != null;
+    }
+
+    public class BlockData {}
+    public class TileEntity : BlockData {}
+    public class Container : TileEntity {
+        public Inventory inventory;
     }
 }
