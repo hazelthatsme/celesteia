@@ -44,7 +44,6 @@ namespace Celesteia.Game.Systems {
         private double _lightUpdateRate = 0.0333;
 
         private bool drawTexture = false;
-        private bool calculationDone = false;
         private double lastUpdate = 0;
         private Task _lightUpdate;
         public void Update(GameTime gameTime)
@@ -81,8 +80,6 @@ namespace Celesteia.Game.Systems {
             drawTexture = true;
         }
 
-        private int x;
-        private int y;
         private byte _blockID;
         private BlockLightProperties _light;
 
