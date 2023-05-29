@@ -5,6 +5,7 @@ using Celesteia.Game.Items;
 using Celesteia.Graphics.Lighting;
 using Celesteia.Resources.Types;
 using Celesteia.Resources.Types.Builders;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
@@ -82,10 +83,6 @@ namespace Celesteia.Resources.Collections {
                 drop: GetKey("wooden_torch"),
                 light: new BlockLightProperties(LightColor.white, 6, false)
             ).Get());
-            AddBlock("test_tile_entity", builder.WithName("Test Tile Entity").Frames(5).Walkthrough().Properties(
-                translucent: true,
-                strength: -1
-            ).Get());
             AddBlock("stone_bricks", builder.WithName("Stone Bricks").Frames(6).Full().Properties(
                 strength: 7, 
                 drop: GetKey("stone_bricks")
@@ -119,6 +116,19 @@ namespace Celesteia.Resources.Collections {
             ).Get());
             AddBlock("grass", builder.WithName("Grass").Frames(19).Walkthrough().Properties(
                 strength: 1,
+                light: new BlockLightProperties(LightColor.black, 0, false)
+            ).Get());
+            AddBlock("crashed_capsule_base", builder.WithName("Crashed Capsule").UniqueFrames(
+                TextureAtlas.Create("cc", _content.Load<Texture2D>("sprites/crashed_capsule"), pixelSize * 3, pixelSize * 3), 0, 1,
+                new Vector2(pixelSize * 1, pixelSize * 2)
+            ).Walkthrough().Properties(
+                translucent: true,
+                strength: -1,
+                light: new BlockLightProperties(LightColor.black, 0, false)
+            ).Get());
+            AddBlock("crashed_capsule_frame", builder.WithName("Crashed Capsule").Invisible().Properties(
+                translucent: true,
+                strength: -1,
                 light: new BlockLightProperties(LightColor.black, 0, false)
             ).Get());
 

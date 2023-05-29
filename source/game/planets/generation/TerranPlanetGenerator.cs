@@ -29,6 +29,8 @@ namespace Celesteia.Game.Planets.Generation {
         private byte iron_ore;
         private byte[] foliage;
         private byte landing_floor;
+        private byte cc_base;
+        private byte cc_frame;
         private void LoadBlockIndices() {
             top = ResourceManager.Blocks.GetResource(NamespacedKey.Base("grown_soil")).GetID();
             soil = ResourceManager.Blocks.GetResource(NamespacedKey.Base("soil")).GetID();
@@ -50,6 +52,8 @@ namespace Celesteia.Game.Planets.Generation {
             };
 
             landing_floor = ResourceManager.Blocks.GetResource(NamespacedKey.Base("scorched_soil")).GetID();
+            cc_base = ResourceManager.Blocks.GetResource(NamespacedKey.Base("crashed_capsule_base")).GetID();
+            cc_frame = ResourceManager.Blocks.GetResource(NamespacedKey.Base("crashed_capsule_frame")).GetID();
         }
 
         public void ProvideChunk(Chunk c) {
@@ -260,11 +264,12 @@ namespace Celesteia.Game.Planets.Generation {
             for (int i = -1; i <= 1; i++) {
                 _chunkMap.SetForeground(x + i, j + 1, soil);
                 _chunkMap.SetForeground(x + i, j, landing_floor);
-                for (int h = 1; h <= 4; h++) {
-                    _chunkMap.SetForeground(x + i, j - h, 0);
-                    _chunkMap.SetBackground(x + i, j - h, 0);
+                for (int h = 1; h <= 3; h++) {
+                    _chunkMap.SetForeground(x + i, j - h, cc_frame);
+                    _chunkMap.SetBackground(x + i, j - h, cc_frame);
                 }
             }
+            _chunkMap.SetForeground(x, j - 1, cc_base);
         }
     }
 }

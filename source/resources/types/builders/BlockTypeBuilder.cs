@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.TextureAtlases;
 
@@ -30,6 +31,11 @@ namespace Celesteia.Resources.Types.Builders {
 
         public BlockTypeBuilder Frames(int start, int count = 1) {
             current.MakeFrames(_atlas, start, count);
+            return this;
+        }
+
+        public BlockTypeBuilder UniqueFrames(TextureAtlas atlas, int start, int count = 1, Vector2? origin = null) {
+            current.Frames = new Sprites.BlockFrames(atlas, start, count, origin);
             return this;
         }
 

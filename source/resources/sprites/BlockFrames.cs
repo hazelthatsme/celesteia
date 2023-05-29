@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Celesteia.Resources.Management;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.TextureAtlases;
@@ -15,14 +12,14 @@ namespace Celesteia.Resources.Sprites {
         private bool _doDraw;
         public bool DoDraw => _doDraw;
 
-        public BlockFrames(TextureAtlas atlas, int startIndex, int frameCount) {
+        public BlockFrames(TextureAtlas atlas, int startIndex, int frameCount, Vector2? origin = null) {
             _doDraw = frameCount > 0;
 
             _scaling = new Vector2(ResourceManager.SPRITE_SCALING);
 
             _frames = new BlockFrame[frameCount];
             for (int i = 0; i < frameCount; i++) {
-                _frames[i] = new BlockFrame(atlas.GetRegion(startIndex + i), _scaling);
+                _frames[i] = new BlockFrame(atlas.GetRegion(startIndex + i), _scaling, origin);
             }
         }
 
@@ -39,31 +36,17 @@ namespace Celesteia.Resources.Sprites {
 
     public class BlockFrame {
         private TextureRegion2D _region;
-        private Color[] _colors;
-        private Texture2D _standaloneTexture;
         private Vector2 _scaling;
-        
+        private Vector2 _origin;
 
-        public BlockFrame(TextureRegion2D region, Vector2 scaling) {
+        public BlockFrame(TextureRegion2D region, Vector2 scaling, Vector2? origin = null) {
             _region = region;
             _scaling = scaling;
-
-            CreateStandaloneTexture();
+            _origin = origin.HasValue ? origin.Value : Vector2.Zero;
         }
 
-        public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color, float depth = 0f) {
-            spriteBatch.Draw(_standaloneTexture, position, _standaloneTexture.Bounds, color, 0f, Vector2.Zero, _scaling, SpriteEffects.None, depth);
-        }
-
-        private void CreateStandaloneTexture() {
-            _colors = new Color[_region.Width * _region.Height];
-            _region.Texture.GetData<Color>(0, _region.Bounds, _colors, 0, _colors.Length);
-
-            _standaloneTexture = new Texture2D(_region.Texture.GraphicsDevice, _region.Width, _region.Height);
-            _standaloneTexture.SetData<Color>(_colors);
-
-            Debug.WriteLine($"  > Created texture.");
-        }
+        public void Draw(int index, SpriteBatch spriteBatch, Vector2 position, Color color, float depth = 0f)
+        => spriteBatch.Draw(_region, position, color, 0f, _origin, _scaling, SpriteEffects.None, depth);
         
         public TextureRegion2D GetRegion() => _region;
     }
