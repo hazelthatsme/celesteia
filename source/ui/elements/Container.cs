@@ -37,10 +37,13 @@ namespace Celesteia.UI.Elements {
                 element.Update(gameTime, out clickedAnything);
             }
 
-            /*_mousePosition = MouseWrapper.GetPosition();
+            _mousePosition = MouseHelper.Position;
 
-            if (MouseWrapper.GetMouseDown(MouseButton.Left)) clickedAnything = ResolveMouseDown(MouseButton.Left);
-            if (MouseWrapper.GetMouseUp(MouseButton.Left)) clickedAnything = ResolveMouseUp(MouseButton.Left);*/
+            if (MouseHelper.Pressed(MouseButton.Left))  clickedAnything = ResolveMouseDown(MouseButton.Left);
+            else if (MouseHelper.Pressed(MouseButton.Right))  clickedAnything = ResolveMouseDown(MouseButton.Right);
+
+            if (MouseHelper.Released(MouseButton.Left)) clickedAnything = ResolveMouseUp(MouseButton.Left);
+            else if (MouseHelper.Released(MouseButton.Right)) clickedAnything = ResolveMouseUp(MouseButton.Right);
 
             ResolveMouseOver();
         }
@@ -51,10 +54,8 @@ namespace Celesteia.UI.Elements {
                 if (!element.GetEnabled()) return;
                 Clickable clickable = element as Clickable;
 
-                if (clickable.GetRectangle().Contains(_mousePosition)) {
-                    clicked = true;
+                if (clicked = clickable.GetRectangle().Contains(_mousePosition))
                     clickable.OnMouseDown(button, _mousePosition);
-                }
             });
             return clicked;
         }

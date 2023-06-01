@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Celesteia.Game.Components.Items;
-using Celesteia.Game.Components.Player;
 using Celesteia.Game.Input;
 using Celesteia.Resources;
 using Celesteia.UI;
@@ -299,7 +298,7 @@ namespace Celesteia.GUIs.Game {
 
         public override void Update(GameTime gameTime, out bool clickedAnything)
         {
-            //_mousePivot.MoveTo(MouseWrapper.GetPosition());
+            _mousePivot.MoveTo(MouseHelper.Position);
             _itemDisplay.SetEnabled(_itemDisplayEnabled && (int)_state > 0);
             _craftingDisplay.SetEnabled(_craftingDisplayEnabled && (int)_state > 1);
 
@@ -314,11 +313,11 @@ namespace Celesteia.GUIs.Game {
 
             Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null);
 
-            /*if (CursorItem != null) Game.SpriteBatch.Draw(CursorItem.Type.Sprite, MouseWrapper.GetPosition().ToVector2(), _slightlyTransparent, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            if (CursorItem != null) Game.SpriteBatch.Draw(CursorItem.Type.Sprite, MouseHelper.Position.ToVector2(), _slightlyTransparent, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             else {
                 _itemDisplay.Draw(Game.SpriteBatch);
                 _craftingDisplay.Draw(Game.SpriteBatch);
-            }*/
+            }
 
             Game.SpriteBatch.End();
         }
