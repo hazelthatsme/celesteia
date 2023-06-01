@@ -5,6 +5,8 @@ using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Planets {
     public struct BlockState {
+        public bool Empty;
+
         private byte _id;
         public byte BlockID {
             get => _id;
@@ -12,6 +14,7 @@ namespace Celesteia.Game.Planets {
                 _id = value;
                 Type = ResourceManager.Blocks.GetBlock(BlockID) as BlockType;
 
+                Empty = _id == 0;
                 Translucent = Type.Translucent;
                 Frames = Type.Frames;
             }

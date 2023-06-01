@@ -29,7 +29,7 @@ namespace Celesteia.Game.Systems {
         public override void Update(GameTime gameTime)
         {
             foreach (int entityId in ActiveEntities) {
-                _camera.MoveTo(transformMapper.Get(entityId).Position);
+                _camera.Center = transformMapper.Get(entityId).Position;
                 break;
             }
             

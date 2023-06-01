@@ -12,7 +12,7 @@ namespace Celesteia.Game.Systems {
         private readonly SpriteBatch _spriteBatch;
         private ChunkVector _lastChunkPos;
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
-        public int RenderDistance => 5;
+        public int RenderDistance = 5;
         private ChunkMap _chunkMap;
 
         public ChunkMapRenderSystem(Camera2D camera, SpriteBatch spriteBatch, ChunkMap chunkMap) {
@@ -35,16 +35,12 @@ namespace Celesteia.Game.Systems {
                         _v.Y = _pivotChunkPos.Y + j;
 
                         if (!_chunkMap.ChunkIsInMap(_v)) continue;
-
-                        _chunkMap.GetChunk(_v).DoUpdate = true;
                         activeChunks.Add(_v);
                     }
                 }
 
                 _lastChunkPos = _pivotChunkPos;
             }
-
-            //foreach (ChunkVector cv in activeChunks) _gameWorld.GetChunk(_v).Update(gameTime);
         }
 
         public void Draw(GameTime gameTime) {

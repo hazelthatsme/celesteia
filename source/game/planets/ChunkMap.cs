@@ -26,17 +26,17 @@ namespace Celesteia.Game.Planets {
         public Chunk GetChunkAtPoint(Point point) => GetChunkAtCoordinates(point.X, point.Y);
 
         // BACKGROUND MANAGEMENT
-        public byte GetBackground(int blockX, int blockY) {
+        public BlockState GetBackground(int blockX, int blockY) {
             Chunk c = GetChunkAtCoordinates(blockX, blockY);
-            return c != null ? c.GetBackground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE) : (byte)0;
+            return c.GetBackground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE);
         }
-        public byte GetBackground(Point point) => GetBackground(point.X, point.Y);
+        public BlockState GetBackground(Point point) => GetBackground(point.X, point.Y);
 
-        public void SetBackground(int blockX, int blockY, byte id) {
+        public void SetBackgroundID(int blockX, int blockY, byte id) {
             Chunk c = GetChunkAtCoordinates(blockX, blockY);
             if (c != null) c.SetBackground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE, id);
         }
-        public void SetBackground(Point point, byte id) => SetBackground(point.X, point.Y, id);
+        public void SetBackgroundID(Point point, byte id) => SetBackgroundID(point.X, point.Y, id);
 
         public void AddBackgroundBreakProgress(int blockX, int blockY, int power, out ItemStack drops) {
             drops = null;
@@ -46,17 +46,17 @@ namespace Celesteia.Game.Planets {
         public void AddBackgroundBreakProgress(Point point, int power, out ItemStack drops) => AddBackgroundBreakProgress(point.X, point.Y, power, out drops);
 
         // FOREGROUND MANAGEMENT
-        public byte GetForeground(int blockX, int blockY) {
+        public BlockState GetForeground(int blockX, int blockY) {
             Chunk c = GetChunkAtCoordinates(blockX, blockY);
-            return c != null ? c.GetForeground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE) : (byte)0;
+            return c.GetForeground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE);
         }
-        public byte GetForeground(Point point) => GetForeground(point.X, point.Y);
+        public BlockState GetForeground(Point point) => GetForeground(point.X, point.Y);
 
-        public void SetForeground(int blockX, int blockY, byte id) {
+        public void SetForegroundID(int blockX, int blockY, byte id) {
             Chunk c = GetChunkAtCoordinates(blockX, blockY);
             if (c != null) c.SetForeground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE, id);
         }
-        public void SetForeground(Point point, byte id) => SetForeground(point.X, point.Y, id);
+        public void SetForegroundID(Point point, byte id) => SetForegroundID(point.X, point.Y, id);
 
         public void AddForegroundBreakProgress(int blockX, int blockY, int power, out ItemStack drops) {
             drops = null;
@@ -69,16 +69,14 @@ namespace Celesteia.Game.Planets {
         public bool GetAny(int blockX, int blockY) {
             Chunk c = GetChunkAtCoordinates(blockX, blockY);
             return c != null && (
-                c.GetForeground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE) != 0 ||
-                c.GetBackground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE) != 0
+                !c.GetForeground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE).Empty ||
+                !c.GetBackground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE).Empty
             );
         }
 
         // COLLISION CHECKS
 
-        public RectangleF? TestBoundingBox(int x, int y, byte id) {
-            RectangleF? box = ResourceManager.Blocks.GetBlock(id).BoundingBox;
-
+        public RectangleF? TestBoundingBox(int x, int y, RectangleF? box) {
             if (!box.HasValue) return null;
 
             return new RectangleF(
@@ -86,7 +84,7 @@ namespace Celesteia.Game.Planets {
                 box.Value.Width, box.Value.Height
             );
         }
-        public RectangleF? TestBoundingBox(int x, int y) => TestBoundingBox(x, y, GetForeground(x, y));
+        public RectangleF? TestBoundingBox(int x, int y) => TestBoundingBox(x, y, GetForeground(x, y).Type.BoundingBox);
 
         // CHUNK IN MAP CHECKS
         public bool ChunkIsInMap(int chunkX, int chunkY) => !(chunkX < 0 || chunkY < 0 || chunkX >= Width || chunkY >= Height);

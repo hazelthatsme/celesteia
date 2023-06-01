@@ -10,8 +10,6 @@ namespace Celesteia.Game.Planets {
     public class Chunk {
         public const int CHUNK_SIZE = 16;
 
-        public bool DoUpdate = false;
-
         public Point TruePosition { get; private set; }
         private ChunkVector _position;
         public ChunkVector Position {
@@ -29,21 +27,19 @@ namespace Celesteia.Game.Planets {
             background = new BlockState[CHUNK_SIZE, CHUNK_SIZE];
         }
 
-        public byte GetForeground(int x, int y) => foreground[x, y].BlockID;
-        public byte GetBackground(int x, int y) => background[x, y].BlockID;
+        public BlockState GetForeground(int x, int y) => foreground[x, y];
+        public BlockState GetBackground(int x, int y) => background[x, y];
 
         public void SetForeground(int x, int y, byte id) {
             foreground[x, y].BlockID = id;
             foreground[x, y].BreakProgress = 0;
             UpdateDraws(x, y);
-            DoUpdate = true;
         }
 
         public void SetBackground(int x, int y, byte id) {
             background[x, y].BlockID = id;
             background[x, y].BreakProgress = 0;
             UpdateDraws(x, y);
-            DoUpdate = true;
         }
 
         public void UpdateDraws(int x, int y) {
@@ -86,6 +82,8 @@ namespace Celesteia.Game.Planets {
             trueV.X = TruePosition.X + x;
             trueV.Y = TruePosition.Y + y;
 
+            trueV.Floor();
+
             if (background[x, y].Draw) {
                 DrawWallTile(background[x, y].Frames.GetFrame(0), spriteBatch, camera);
                 if (background[x, y].BreakProgress > 0) DrawWallTile(ResourceManager.Blocks.BreakAnimation.GetProgressFrame(
@@ -103,12 +101,10 @@ namespace Celesteia.Game.Planets {
         }
 
         public void DrawTile(BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
-            if (frame == null) return;
             frame.Draw(0, spriteBatch, trueV, Color.White, 0.4f);
         }
 
         public void DrawWallTile(BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
-            if (frame == null) return;
             frame.Draw(0, spriteBatch, trueV, Color.DarkGray, 0.5f);
         }
     }
@@ -129,6 +125,9 @@ namespace Celesteia.Game.Planets {
                 (int)Math.Floor(vector.Y / Chunk.CHUNK_SIZE)
             );
         }
+
+        public static ChunkVector FromPoint(Point point)
+        => new ChunkVector(point.X / Chunk.CHUNK_SIZE, point.Y/ Chunk.CHUNK_SIZE);
 
         public Point Resolve() {
             return new Point(X * Chunk.CHUNK_SIZE, Y * Chunk.CHUNK_SIZE);

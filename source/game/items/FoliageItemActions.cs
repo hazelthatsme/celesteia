@@ -13,6 +13,6 @@ namespace Celesteia.Game.Items {
         public override bool Secondary(GameTime gameTime, ChunkMap chunkMap, Point cursor, Entity user) => false;
 
         public override bool Assert(GameTime gameTime, ChunkMap chunkMap, Point cursor, Entity user, bool forWall)
-        => chunkMap.GetForeground(cursor.X, cursor.Y + 1) == grown_soil && base.Assert(gameTime, chunkMap, cursor, user, false);
+        => chunkMap.GetForeground(cursor.X, cursor.Y + 1).BlockID == grown_soil && base.Assert(gameTime, chunkMap, cursor, user, false);
     }
 }

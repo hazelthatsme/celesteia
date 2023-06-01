@@ -13,35 +13,34 @@ namespace Celesteia.Graphics {
         private int ViewportWidth => _graphicsDevice.Viewport.Width;
         private int ViewportHeight => _graphicsDevice.Viewport.Height;
 
+        private int _zoom = 0;
+        private int _scaledZoom = 0;
+        // The zoom value of the camera.
+        public int Zoom {
+            get { return _zoom; }
+            set {
+                _zoom = MathHelper.Clamp(value, 2, 8);
+                _scaledZoom = _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
+            }
+        }
+
         public Camera2D(GraphicsDevice graphicsDevice) {
             _graphicsDevice = graphicsDevice;
+            Zoom = 2;
         }
 
         private Vector2 _center = Vector2.Zero;
         // The camera's center, exposed to other classes.
         public Vector2 Center {
             get { return _center; }
+            set { _center = value; }
         }
-
-        private int _zoom = 2;
-        // The zoom value of the camera.
-        public int Zoom {
-            get { return _zoom; }
-            set { _zoom = MathHelper.Clamp(value, 2, 8); }
-        }
-        // Macro for zoom scaled to inverse sprite scaling.
-        private int ScaledZoom => _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
 
         private float _rotation;
         // The rotation applied to the camera.
         public float Rotation {
             get { return _rotation; }
             set { _rotation = value % 360f; }
-        }
-
-        // Move center to a position in the world.
-        public void MoveTo(Vector2 vector2) {
-            _center = vector2;
         }
 
         /*
@@ -54,7 +53,7 @@ namespace Celesteia.Graphics {
         public Matrix GetViewMatrix() {
             return Matrix.CreateTranslation(new Vector3(-_center.X, -_center.Y, 0)) * 
                 Matrix.CreateRotationZ(Rotation) *
-                Matrix.CreateScale(ScaledZoom, ScaledZoom, 1f) * 
+                Matrix.CreateScale(_scaledZoom, _scaledZoom, 1f) * 
                 Matrix.CreateTranslation((int)Math.Round(ViewportWidth / 2f), (int)Math.Round(ViewportHeight / 2f), 0f);
         }
 

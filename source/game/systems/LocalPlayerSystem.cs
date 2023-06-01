@@ -184,7 +184,7 @@ namespace Celesteia.Game.Systems {
         }
 
         private Point? Selection;
-        private BlockType SelectedBlock;
+        private BlockState SelectedBlock;
         private Color SelectionColor;
         public void SetSelection(Point? selection) {
             if (selection == Selection) return;
@@ -195,10 +195,10 @@ namespace Celesteia.Game.Systems {
                 return;
             }
 
-            SelectedBlock = ResourceManager.Blocks.GetBlock(_chunkMap.GetForeground(Selection.Value));
-            if (SelectedBlock.Frames == null) SelectedBlock = ResourceManager.Blocks.GetBlock(_chunkMap.GetBackground(Selection.Value));
+            SelectedBlock = _chunkMap.GetForeground(Selection.Value);
+            if (!SelectedBlock.Draw) SelectedBlock = _chunkMap.GetBackground(Selection.Value);
 
-            SelectionColor = (SelectedBlock.Strength >= 0 ? Color.White : Color.Black);
+            SelectionColor = (SelectedBlock.Type.Strength >= 0 ? Color.White : Color.Black);
         }
 
         Vector2 pointV = Vector2.Zero;

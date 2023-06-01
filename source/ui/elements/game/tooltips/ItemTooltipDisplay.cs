@@ -1,4 +1,5 @@
 using Celesteia.Resources.Types;
+using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -37,7 +38,9 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
                 AbsoluteUnit.WithValue(0f),
                 AbsoluteUnit.WithValue(32f),
                 AbsoluteUnit.WithValue(32f)
-            )));
+            )) {
+                Text = new TextProperties().Standard().SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+            });
             titleCard.AddChild(Title = new Label(new Rect(
                 AbsoluteUnit.WithValue(72f),
                 AbsoluteUnit.WithValue(0f),
@@ -52,7 +55,7 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
         }
 
         public void SetItem(ItemType type) {
-            Item.SetItem(type);
+            Item.Item = type;
             Title.SetText(type.Name);
         }
     }

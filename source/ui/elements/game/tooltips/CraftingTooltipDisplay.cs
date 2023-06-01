@@ -1,4 +1,5 @@
 using Celesteia.Resources.Types;
+using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -38,7 +39,9 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
                 AbsoluteUnit.WithValue(0f),
                 AbsoluteUnit.WithValue(32f),
                 AbsoluteUnit.WithValue(32f)
-            )));
+            )) {
+                Text = new TextProperties().Standard().SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+            });
             titleCard.AddChild(Title = new Label(new Rect(
                 AbsoluteUnit.WithValue(72f),
                 AbsoluteUnit.WithValue(0f),
@@ -61,7 +64,7 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
         }
 
         public void SetRecipe(Recipe recipe) {
-            Item.SetItem(recipe.Result.GetItemType());
+            Item.Item = recipe.Result.GetItemType();
             Title.SetText(recipe.Result.GetItemType().Name);
 
             if (Recipe != null) Recipe.Dispose();
@@ -79,7 +82,11 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
                     AbsoluteUnit.WithValue(0f),
                     AbsoluteUnit.WithValue(32f),
                     AbsoluteUnit.WithValue(32f)
-                )).SetItem(recipe.Ingredients[i].GetItemType()).SetAmount(recipe.Ingredients[i].Amount));
+                )) {
+                    Item = recipe.Ingredients[i].GetItemType(),
+                    Amount = recipe.Ingredients[i].Amount,
+                    Text = new TextProperties().Standard().SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+                });
             
             Content.AddChild(Recipe);
         }

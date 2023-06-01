@@ -10,6 +10,6 @@ namespace Celesteia.Game.Items {
         public override bool Secondary(GameTime gameTime, ChunkMap chunkMap, Point cursor, Entity user) => false;
 
         public override bool Assert(GameTime g, ChunkMap cm, Point c, Entity u, bool wa = false)
-        => cm.GetBackground(c) != 0 && base.Assert(g, cm, c, u, false);
+        => !cm.GetBackground(c).Empty && base.Assert(g, cm, c, u, false);
     }
 }

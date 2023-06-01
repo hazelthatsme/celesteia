@@ -153,7 +153,7 @@ namespace Celesteia.Game.Planets.Generation {
 
                 if (Math.Abs(i - GetSpawnpoint().X) < 10f) continue;            // Don't grow trees too close to spawn.
                 if (i < 10 || i > _chunkMap.BlockWidth - 10) continue;     // Don't grow trees too close to world borders.
-                if (_chunkMap.GetForeground(i, j) != top) continue;                     // Only grow trees on grass.
+                if (_chunkMap.GetForeground(i, j).BlockID != top) continue;                     // Only grow trees on grass.
                 if (i - lastTree < blocksBetweenTrees) continue;                // Force a certain number of blocks between trees.
 
                 lastTree = i;
@@ -168,14 +168,14 @@ namespace Celesteia.Game.Planets.Generation {
             if (steps == 0) {
                 for (int i = -2; i <= 2; i++)
                     for (int j = -2; j <= 2; j++) {
-                        if (_chunkMap.GetForeground(x + i, y + j) == 0) _chunkMap.SetForeground(x + i, y + j, leaves);
+                        if (_chunkMap.GetForeground(x + i, y + j).Empty) _chunkMap.SetForegroundID(x + i, y + j, leaves);
                     }
                 return;
             }
 
-            if (_chunkMap.GetForeground(x, y) != 0) return;
+            if (!_chunkMap.GetForeground(x, y).Empty) return;
 
-            _chunkMap.SetForeground(x, y, log);
+            _chunkMap.SetForegroundID(x, y, log);
 
             if (!branch) GrowTreeRecursively(x, y - 1, steps - 1, rand, false);     // Grow upwards.
             if (rand.Next(0, 6) > steps) GrowTreeRecursively(x - 1, y, steps - 1, rand, true);     // Grow to the left.
@@ -217,16 +217,16 @@ namespace Celesteia.Game.Planets.Generation {
 
             for (int i = originX; i < maxX; i++)
                 for (int j = originY; j < maxY; j++) {
-                    _chunkMap.SetBackground(i, j, planks);
-                    _chunkMap.SetForeground(i, j, 0);
+                    _chunkMap.SetBackgroundID(i, j, planks);
+                    _chunkMap.SetForegroundID(i, j, 0);
 
                     // Apply some random decay by skipping tiles at random.
                     if (rand.Next(0, 5) > 3) {
                         continue;
                     }
 
-                    if (j == originY || j == maxY - 1) _chunkMap.SetForeground(i, j, planks);
-                    if (i == originX || i == maxX - 1) _chunkMap.SetForeground(i, j, log);
+                    if (j == originY || j == maxY - 1) _chunkMap.SetForegroundID(i, j, planks);
+                    if (i == originX || i == maxX - 1) _chunkMap.SetForegroundID(i, j, log);
                 }
         }
         
@@ -246,15 +246,15 @@ namespace Celesteia.Game.Planets.Generation {
             for (int i = 0; i < _chunkMap.BlockWidth; i++) {
                 j = _chunkMap.BlockHeight - GetHeightValue(i);
 
-                if (_chunkMap.GetForeground(i, j) != top) continue;     // If there is anything but foreground grown soil, continue.
-                if (_chunkMap.GetForeground(i, j - 1) != 0) continue;   // If the foreground is already taken, continue.
+                if (_chunkMap.GetForeground(i, j).BlockID != top) continue; // If there is anything but foreground grown soil, continue.
+                if (!_chunkMap.GetForeground(i, j - 1).Empty) continue;     // If the foreground is already taken, continue.
 
                 randomNumber = rand.NextDouble();
                 for (int f = 0; f < foliageDistribution.Keys.Count; f++) {
                     if (randomNumber > foliageDistribution.Keys.ElementAt(f)) foliageIndex = foliageDistribution[foliageDistribution.Keys.ElementAt(f)];
                 }
                 
-                _chunkMap.SetForeground(i, j - 1, foliage[foliageIndex]);
+                _chunkMap.SetForegroundID(i, j - 1, foliage[foliageIndex]);
             }
         }
         
@@ -262,14 +262,11 @@ namespace Celesteia.Game.Planets.Generation {
             int x = GetSpawnpoint().ToPoint().X;
             int j = _chunkMap.BlockHeight - GetHeightValue(x);
             for (int i = -1; i <= 1; i++) {
-                _chunkMap.SetForeground(x + i, j + 1, soil);
-                _chunkMap.SetForeground(x + i, j, landing_floor);
-                for (int h = 1; h <= 3; h++) {
-                    _chunkMap.SetForeground(x + i, j - h, cc_frame);
-                    _chunkMap.SetBackground(x + i, j - h, cc_frame);
-                }
+                _chunkMap.SetForegroundID(x + i, j + 1, soil);
+                _chunkMap.SetForegroundID(x + i, j, landing_floor);
+                for (int h = 1; h <= 3; h++) _chunkMap.SetForegroundID(x + i, j - h, cc_frame);
             }
-            _chunkMap.SetForeground(x, j - 1, cc_base);
+            _chunkMap.SetForegroundID(x, j - 1, cc_base);
         }
     }
 }
