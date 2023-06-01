@@ -29,12 +29,8 @@ namespace Celesteia.Graphics {
             Zoom = 2;
         }
 
-        private Vector2 _center = Vector2.Zero;
-        // The camera's center, exposed to other classes.
-        public Vector2 Center {
-            get { return _center; }
-            set { _center = value; }
-        }
+        // The camera's center.
+        public Vector2 Center = Vector2.Zero;
 
         private float _rotation;
         // The rotation applied to the camera.
@@ -51,10 +47,10 @@ namespace Celesteia.Graphics {
                 - Always round the viewport width and height to prevent half-pixel rounding issues.
         */
         public Matrix GetViewMatrix() {
-            return Matrix.CreateTranslation(new Vector3(-_center.X, -_center.Y, 0)) * 
+            return Matrix.CreateTranslation(-Center.X, -Center.Y, 0f) * 
                 Matrix.CreateRotationZ(Rotation) *
                 Matrix.CreateScale(ScaledZoom, ScaledZoom, 1f) * 
-                Matrix.CreateTranslation((int)MathF.Floor(ViewportWidth / 2f), (int)MathF.Floor(ViewportHeight / 2f), 0f);
+                Matrix.CreateTranslation(ViewportWidth / 2f, ViewportHeight / 2f, 0f);
         }
 
         // Forward to ScreenToWorld(Vector2)
