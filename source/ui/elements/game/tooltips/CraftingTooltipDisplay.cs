@@ -85,7 +85,10 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
                 )) {
                     Item = recipe.Ingredients[i].GetItemType(),
                     Amount = recipe.Ingredients[i].Amount,
-                    Text = new TextProperties().Standard().SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+                    Text = new TextProperties().Standard()
+                        .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+                        .SetFontSize(12f)
+                        .SetText(recipe.Ingredients[i].Amount.ToString())
                 });
             
             Content.AddChild(Recipe);
