@@ -11,6 +11,7 @@ namespace Celesteia.Graphics {
         private GraphicsDeviceManager _manager;
         public GraphicsManager(GameInstance Game) : base(Game) {
             _manager = new GraphicsDeviceManager(Game);
+            _manager.PreferHalfPixelOffset = true;
         }
 
         private FullscreenMode _screenMode;

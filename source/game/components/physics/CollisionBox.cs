@@ -21,7 +21,7 @@ namespace Celesteia.Game.Components.Physics {
         }
 
         public Rectangle Round(RectangleF floatRect) {
-            return new Rectangle((int)Math.Floor(floatRect.X), (int)Math.Floor(floatRect.Y), (int)Math.Ceiling(floatRect.Width), (int)Math.Ceiling(floatRect.Height));
+            return new Rectangle((int)MathF.Floor(floatRect.X), (int)MathF.Floor(floatRect.Y), (int)MathF.Ceiling(floatRect.Width), (int)MathF.Ceiling(floatRect.Height));
         }
 
         public RectangleF Intersection(CollisionBox other) {

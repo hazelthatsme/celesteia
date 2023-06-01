@@ -30,7 +30,7 @@ namespace Celesteia.Resources.Sprites {
         }
 
         public BlockFrame GetProgressFrame(float progress) {
-            return GetFrame((int)Math.Round(progress * (_frames.Length - 1)));
+            return GetFrame((int)MathF.Round(progress * (_frames.Length - 1)));
         }
     }
 

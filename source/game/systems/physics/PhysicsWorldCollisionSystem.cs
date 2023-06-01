@@ -38,11 +38,11 @@ namespace Celesteia.Game.Systems.Physics {
 
                 collisionBox.Update(targetPosition.Target);
 
-                int minX = (int)Math.Floor(collisionBox.Bounds.Center.X - (collisionBox.Bounds.Width / 2f));
-                int maxX = (int)Math.Ceiling(collisionBox.Bounds.Center.X + (collisionBox.Bounds.Width / 2f));
+                int minX = (int)MathF.Floor(collisionBox.Bounds.Center.X - (collisionBox.Bounds.Width / 2f));
+                int maxX = (int)MathF.Ceiling(collisionBox.Bounds.Center.X + (collisionBox.Bounds.Width / 2f));
 
-                int minY = (int)Math.Floor(collisionBox.Bounds.Center.Y - (collisionBox.Bounds.Height / 2f));
-                int maxY = (int)Math.Ceiling(collisionBox.Bounds.Center.Y + (collisionBox.Bounds.Height / 2f));
+                int minY = (int)MathF.Floor(collisionBox.Bounds.Center.Y - (collisionBox.Bounds.Height / 2f));
+                int maxY = (int)MathF.Ceiling(collisionBox.Bounds.Center.Y + (collisionBox.Bounds.Height / 2f));
                 
                 bool collLeft = false;
                 bool collRight = false;

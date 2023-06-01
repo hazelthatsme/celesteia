@@ -76,9 +76,9 @@ namespace Celesteia.Graphics.Lighting {
 
                     if (!_lightColors[lookX, lookY].Equals(LightColor.black))
                     {
-                        _target.R = Math.Max(_target.R, _lightColors[lookX, lookY].R);
-                        _target.G = Math.Max(_target.G, _lightColors[lookX, lookY].G);
-                        _target.B = Math.Max(_target.B, _lightColors[lookX, lookY].B);
+                        _target.R = MathF.Max(_target.R, _lightColors[lookX, lookY].R);
+                        _target.G = MathF.Max(_target.G, _lightColors[lookX, lookY].G);
+                        _target.B = MathF.Max(_target.B, _lightColors[lookX, lookY].B);
                     }
 
                     _lightColors[lookX, lookY] = _target;

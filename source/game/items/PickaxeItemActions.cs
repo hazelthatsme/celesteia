@@ -34,7 +34,7 @@ namespace Celesteia.Game.Items {
             // Check if the targeted location is within the entity's block manipulation range.
             if (Vector2.Distance(entityTransform.Position, cursor.ToVector2()) > attributes.Get(EntityAttribute.BlockRange)) return false;
 
-            BlockState state = forWall ? chunkMap.GetBackground(cursor) : chunkMap.GetForeground(cursor);
+            BlockState state = (forWall ? chunkMap.GetBackground(cursor) : chunkMap.GetForeground(cursor));
 
             // If there is no tile in the given location, the action will not continue.
             if (state.Empty) return false;

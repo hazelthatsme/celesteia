@@ -14,13 +14,13 @@ namespace Celesteia.Graphics {
         private int ViewportHeight => _graphicsDevice.Viewport.Height;
 
         private int _zoom = 0;
-        private int _scaledZoom = 0;
+        public int ScaledZoom { get; private set; } = 0;
         // The zoom value of the camera.
         public int Zoom {
             get { return _zoom; }
             set {
                 _zoom = MathHelper.Clamp(value, 2, 8);
-                _scaledZoom = _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
+                ScaledZoom = _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
             }
         }
 
@@ -53,8 +53,8 @@ namespace Celesteia.Graphics {
         public Matrix GetViewMatrix() {
             return Matrix.CreateTranslation(new Vector3(-_center.X, -_center.Y, 0)) * 
                 Matrix.CreateRotationZ(Rotation) *
-                Matrix.CreateScale(_scaledZoom, _scaledZoom, 1f) * 
-                Matrix.CreateTranslation((int)Math.Round(ViewportWidth / 2f), (int)Math.Round(ViewportHeight / 2f), 0f);
+                Matrix.CreateScale(ScaledZoom, ScaledZoom, 1f) * 
+                Matrix.CreateTranslation((int)MathF.Floor(ViewportWidth / 2f), (int)MathF.Floor(ViewportHeight / 2f), 0f);
         }
 
         // Forward to ScreenToWorld(Vector2)

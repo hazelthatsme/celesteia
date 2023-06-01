@@ -29,8 +29,8 @@ namespace Celesteia.UI.Elements {
                 r.Y += GetParent().GetRectangle().Y;
             }
 
-            r.X -= (int)Math.Round(_pivot.X * r.Width);
-            r.Y -= (int)Math.Round(_pivot.Y * r.Height);
+            r.X -= (int)MathF.Round(_pivot.X * r.Width);
+            r.Y -= (int)MathF.Round(_pivot.Y * r.Height);
             
             return r;
         }

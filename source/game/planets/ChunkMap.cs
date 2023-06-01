@@ -28,7 +28,9 @@ namespace Celesteia.Game.Planets {
         // BACKGROUND MANAGEMENT
         public BlockState GetBackground(int blockX, int blockY) {
             Chunk c = GetChunkAtCoordinates(blockX, blockY);
-            return c.GetBackground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE);
+            if (c != null) return c.GetBackground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE);
+
+            return BlockState.None;
         }
         public BlockState GetBackground(Point point) => GetBackground(point.X, point.Y);
 
@@ -48,7 +50,9 @@ namespace Celesteia.Game.Planets {
         // FOREGROUND MANAGEMENT
         public BlockState GetForeground(int blockX, int blockY) {
             Chunk c = GetChunkAtCoordinates(blockX, blockY);
-            return c.GetForeground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE);
+            if (c != null) return c.GetForeground(blockX % Chunk.CHUNK_SIZE, blockY % Chunk.CHUNK_SIZE);
+
+            return BlockState.None;
         }
         public BlockState GetForeground(Point point) => GetForeground(point.X, point.Y);
 

@@ -69,43 +69,42 @@ namespace Celesteia.Game.Planets {
             if (dropKey.HasValue) drops = new ItemStack(dropKey.Value, 1);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
             for (int i = 0; i < CHUNK_SIZE; i++) {
                 for (int j = 0; j < CHUNK_SIZE; j++) {
-                    DrawAllAt(i, j, gameTime, spriteBatch, camera);
+                    DrawAllAt(i, j, gameTime, spriteBatch);
                 }
             }
         }
 
-        Vector2 trueV = Vector2.Zero;
-        private void DrawAllAt(int x, int y, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
-            trueV.X = TruePosition.X + x;
-            trueV.Y = TruePosition.Y + y;
-
-            trueV.Floor();
+        Vector2 v;
+        private void DrawAllAt(int x, int y, GameTime gameTime, SpriteBatch spriteBatch) {
+            v.X = TruePosition.X + x;
+            v.Y = TruePosition.Y + y;
+            v.Floor();
 
             if (background[x, y].Draw) {
-                DrawWallTile(background[x, y].Frames.GetFrame(0), spriteBatch, camera);
+                DrawWallTile(background[x, y].Frames.GetFrame(0), spriteBatch, v);
                 if (background[x, y].BreakProgress > 0) DrawWallTile(ResourceManager.Blocks.BreakAnimation.GetProgressFrame(
                     // Background block breaking progress.
                     background[x, y].BreakProgress / (float) background[x, y].Type.Strength
-                ), spriteBatch, camera);
+                ), spriteBatch, v);
             }
             if (foreground[x, y].Draw) {
-                DrawTile(foreground[x, y].Frames.GetFrame(0), spriteBatch, camera);
+                DrawTile(foreground[x, y].Frames.GetFrame(0), spriteBatch, v);
                 if (foreground[x, y].BreakProgress > 0) DrawTile(ResourceManager.Blocks.BreakAnimation.GetProgressFrame(
                     // Foreground block breaking progress.
                     foreground[x, y].BreakProgress / (float) foreground[x, y].Type.Strength
-                ), spriteBatch, camera);
+                ), spriteBatch, v);
             }  
         }
 
-        public void DrawTile(BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
-            frame.Draw(0, spriteBatch, trueV, Color.White, 0.4f);
+        public void DrawTile(BlockFrame frame, SpriteBatch spriteBatch, Vector2 v) {
+            frame.Draw(0, spriteBatch, v, Color.White, 0.4f);
         }
 
-        public void DrawWallTile(BlockFrame frame, SpriteBatch spriteBatch, Camera2D camera) {
-            frame.Draw(0, spriteBatch, trueV, Color.DarkGray, 0.5f);
+        public void DrawWallTile(BlockFrame frame, SpriteBatch spriteBatch, Vector2 v) {
+            frame.Draw(0, spriteBatch, v, Color.DarkGray, 0.5f);
         }
     }
 
@@ -121,8 +120,8 @@ namespace Celesteia.Game.Planets {
         public static ChunkVector FromVector2(Vector2 vector)
         {
             return new ChunkVector(
-                (int)Math.Floor(vector.X / Chunk.CHUNK_SIZE),
-                (int)Math.Floor(vector.Y / Chunk.CHUNK_SIZE)
+                (int)MathF.Floor(vector.X / Chunk.CHUNK_SIZE),
+                (int)MathF.Floor(vector.Y / Chunk.CHUNK_SIZE)
             );
         }
 

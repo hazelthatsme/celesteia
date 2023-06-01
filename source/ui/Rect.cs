@@ -77,10 +77,10 @@ namespace Celesteia.UI {
         {
             float[] resolved = this.Resolve();
             return new Rectangle(
-                (int) Math.Floor(resolved[0]),
-                (int) Math.Floor(resolved[1]),
-                (int) Math.Floor(resolved[2]),
-                (int) Math.Floor(resolved[3])
+                (int) MathF.Floor(resolved[0]),
+                (int) MathF.Floor(resolved[1]),
+                (int) MathF.Floor(resolved[2]),
+                (int) MathF.Floor(resolved[3])
             );
         }
     }

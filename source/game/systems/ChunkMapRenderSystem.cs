@@ -44,18 +44,18 @@ namespace Celesteia.Game.Systems {
         }
 
         public void Draw(GameTime gameTime) {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap, null, null, null, _camera.GetViewMatrix());
 
             // Draw every chunk in view.
-            foreach (ChunkVector cv in activeChunks) DrawChunk(cv, gameTime, _spriteBatch, _camera);
+            foreach (ChunkVector cv in activeChunks) DrawChunk(cv, gameTime, _spriteBatch);
 
             _spriteBatch.End();
         }
 
-        private void DrawChunk(ChunkVector cv, GameTime gameTime, SpriteBatch spriteBatch, Camera2D camera) {
+        private void DrawChunk(ChunkVector cv, GameTime gameTime, SpriteBatch spriteBatch) {
             Chunk c = _chunkMap.GetChunk(cv);
 
-            if (c != null) c.Draw(gameTime, spriteBatch, camera);
+            if (c != null) c.Draw(gameTime, spriteBatch);
         }
 
         public void Dispose() {}

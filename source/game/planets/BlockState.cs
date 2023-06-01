@@ -5,6 +5,8 @@ using Celesteia.Resources.Types;
 
 namespace Celesteia.Game.Planets {
     public struct BlockState {
+        public static BlockState None = new BlockState() { Empty = true };
+
         public bool Empty;
 
         private byte _id;
