@@ -234,6 +234,8 @@ namespace Celesteia.Game.Systems {
 
         public void Draw(GameTime gameTime)
         {
+            if (!UIReferences.GUIEnabled) return;
+            
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
 
             _selectionSprite.Draw(0, _spriteBatch, pointV, SelectionColor);
