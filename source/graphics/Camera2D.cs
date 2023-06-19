@@ -19,7 +19,7 @@ namespace Celesteia.Graphics {
         public int Zoom {
             get { return _zoom; }
             set {
-                _zoom = MathHelper.Clamp(value, 2, 8);
+                _zoom = MathHelper.Clamp(value, 1, 8);
                 ScaledZoom = _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
             }
         }
