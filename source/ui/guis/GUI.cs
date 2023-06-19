@@ -21,6 +21,11 @@ namespace Celesteia.GUIs {
         }
 
         public virtual void Update(GameTime gameTime, out bool clickedAnything) {
+            if (Game.IsActive) {
+                clickedAnything = false;
+                return;
+            }
+            
             Root.Update(gameTime, out clickedAnything);
         }
 

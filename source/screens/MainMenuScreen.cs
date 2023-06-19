@@ -71,7 +71,7 @@ namespace Celesteia.Screens {
         public override void Update(GameTime gameTime)
         {
             _world.Update(gameTime);
-            this.mainMenu.Update(gameTime, out _);
+            mainMenu.Update(gameTime, out _);
         }
 
         public override void Dispose()
