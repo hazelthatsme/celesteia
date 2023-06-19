@@ -56,6 +56,12 @@
 /processorParam:Quality=Best
 /build:music/Stargaze Symphony.ogg;music/stargaze_symphony.ogg
 
+#begin music/Landing Light.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/Landing Light.ogg;music/landing_light.ogg
+
 #begin sprites/blockbreak.png
 /importer:TextureImporter
 /processor:TextureProcessor

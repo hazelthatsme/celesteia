@@ -13,6 +13,7 @@ using Celesteia.GUIs.Game;
 using Celesteia.Game.Systems.UI;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Planets;
+using Microsoft.Xna.Framework.Media;
 
 namespace Celesteia.Screens {
     public class GameplayScreen : GameScreen {
@@ -33,7 +34,8 @@ namespace Celesteia.Screens {
         {
             base.LoadContent();
 
-            Game.Music.PlayNow(null);
+            Song overworldMusic = Content.Load<Song>("music/landing_light");
+            Game.Music.PlayNow(overworldMusic);
 
             Camera = new Camera2D(GraphicsDevice);
 
