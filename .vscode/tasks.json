@@ -23,13 +23,7 @@
                 "Release",
                 "-r",
                 "win-x64",
-                "--self-contained",
-                "/p:PublishReadyToRun=false",
-                "/p:TieredCompilation=false",
-                "/p:DebugType=none",
-                "/p:DebugSymbols=false",
-                "/p:PublishSingleFile=true",
-                "/p:IncludeNativeLibrariesForSelfExtract=true"
+                "--self-contained"
             ],
             "problemMatcher": "$msCompile"
         },
