@@ -143,7 +143,7 @@ namespace Celesteia.Game.Planets.Generation {
         public float GetOreValue(int x, int y, float offsetX, float offsetY) => (_noise.GetNoise((x + offsetX) * 5f, (y + offsetY) * 5f) + 1) / 2f;
 
         private int blocksBetweenTrees = 5;
-        private int treeGrowthSteps = 10;
+        private int treeGrowthSteps = 15;
         public void GenerateTrees(Random rand) {
             int j = 0;
             int randomNumber = 0;
