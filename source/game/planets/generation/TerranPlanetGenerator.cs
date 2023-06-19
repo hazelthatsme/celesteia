@@ -196,7 +196,7 @@ namespace Celesteia.Game.Planets.Generation {
 
                 int homeWidth = rand.Next(10, 15);
                 int homeHeight = rand.Next(6, 10);
-                int buryAmount = rand.Next(0, 5);
+                int buryAmount = rand.Next(15, 40);
 
                 j -= homeHeight;    // Raise the home to be built on the ground first.
                 j += buryAmount;    // Bury the home by a random amount.
