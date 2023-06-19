@@ -14,7 +14,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Publish Windows x64",
+            "label": "Publish Windows",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -31,11 +31,10 @@
                 "/p:PublishSingleFile=true",
                 "/p:IncludeNativeLibrariesForSelfExtract=true"
             ],
-            "problemMatcher": "$msCompile",
-            "dependsOn": ["Publish Windows x86"]
+            "problemMatcher": "$msCompile"
         },
         {
-            "label": "Publish Windows x86",
+            "label": "Publish OSX",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -43,19 +42,13 @@
                 "-c",
                 "Release",
                 "-r",
-                "win-x86",
-                "--self-contained",
-                "/p:PublishReadyToRun=false",
-                "/p:TieredCompilation=false",
-                "/p:DebugType=none",
-                "/p:DebugSymbols=false",
-                "/p:PublishSingleFile=true",
-                "/p:IncludeNativeLibrariesForSelfExtract=true"
+                "osx-x64",
+                "--self-contained"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Publish Linux x64",
+            "label": "Publish Linux",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -64,13 +57,7 @@
                 "Release",
                 "-r",
                 "linux-x64",
-                "--self-contained",
-                "/p:PublishReadyToRun=false",
-                "/p:TieredCompilation=false",
-                "/p:DebugType=none",
-                "/p:DebugSymbols=false",
-                "/p:PublishSingleFile=true",
-                "/p:IncludeNativeLibrariesForSelfExtract=true"
+                "--self-contained"
             ],
             "problemMatcher": "$msCompile"
         },

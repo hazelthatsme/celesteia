@@ -21,13 +21,6 @@ namespace Celesteia.UI.Elements.Game.Controls {
                 .SetTextAlignment(TextAlignment.Left);
         }
 
-        public void SetKeyboardControls(
-            params KeyDefinition[] defs
-        ) {
-            foreach (KeyDefinition def in defs) _keyboardControls.Add(def.GetPositive().Value, def.Action);
-            UpdateLines();
-        }
-
         private int lineHeight = 16;
         private Rect LineRect(int line) => new Rect(
             AbsoluteUnit.WithValue(0f),

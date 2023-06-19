@@ -11,34 +11,37 @@ using MonoGame.Extended.Screens;
 using System.Linq;
 using Celesteia.Resources;
 using MonoGame.Extended.Screens.Transitions;
-using Celesteia.Game.Worlds;
+using Celesteia.Resources.Collections;
+using Celesteia.Game.Music;
+using Celesteia.Game;
 
 namespace Celesteia
 {
     public class GameInstance : Microsoft.Xna.Framework.Game
     {
-        public static readonly string Version = "Alpha 1.2.4_02";
+        public static readonly string Version = "Alpha 1.3";
         public static bool DebugMode { get; private set; }
         
         private readonly List<string> cmdArgs;
 
-        private double maximumFramerate = 144;
-
-        private GraphicsDeviceManager _graphics;
-        private GraphicsController GraphicsController;
-        public SpriteBatch SpriteBatch;
-
         private List<GUI> globalGUIs;
 
+        private readonly GraphicsManager _graphics;
         private readonly ScreenManager _screenManager;
         public readonly MusicManager Music;
         public readonly WorldManager Worlds;
+        public readonly InputManager Input;
+
+        public SpriteBatch SpriteBatch;
 
         public GameInstance()
         {
-            // Graphics setup.
-            _graphics = new GraphicsDeviceManager(this);
-            GraphicsController = new GraphicsController(this, _graphics);
+            // Add all components to the game instance.
+            Components.Add(_graphics = new GraphicsManager(this));
+            Components.Add(_screenManager = new ScreenManager());
+            Components.Add(Music = new MusicManager(this));
+            Components.Add(Worlds = new WorldManager(this));
+            Components.Add(Input = new InputManager(this));
 
             // Load command line arguments into list.
             cmdArgs = Environment.GetCommandLineArgs().ToList();
@@ -48,16 +51,6 @@ namespace Celesteia
 
             // Make sure mouse is visible.
             IsMouseVisible = true;
-            
-            // Load the screen manager.
-            _screenManager = new ScreenManager();
-            Components.Add(_screenManager);
-
-            Music = new MusicManager(this);
-            Components.Add(Music);
-
-            Worlds = new WorldManager(this);
-            Components.Add(Worlds);
         }
 
         protected override void Initialize()
@@ -70,25 +63,22 @@ namespace Celesteia
             // Set up graphics and window (eventually from settings).
             SetupGraphicsAndWindow();
 
-            // Initialize input management.
-            Input.Initialize();
-
             // Run XNA native initialization logic.
             base.Initialize();
         }
 
         private void SetupGraphicsAndWindow() {
-            GraphicsController.VSync = false;
-            GraphicsController.FullScreen = FullscreenMode.Windowed;
-            GraphicsController.Resolution = Window.ClientBounds;
-            GraphicsController.Apply();
+            _graphics.VSync = true;
+            _graphics.FullScreen = FullscreenMode.Windowed;
+            _graphics.Resolution = Window.ClientBounds;
+            _graphics.Apply();
             
             // Disable slowdown on window focus loss.
             InactiveSleepTime = new TimeSpan(0);
 
             // Set maximum framerate to avoid resource soaking.
             IsFixedTimeStep = true;
-            TargetElapsedTime = TimeSpan.FromSeconds(1 / maximumFramerate);
+            //TargetElapsedTime = TimeSpan.FromSeconds(1 / 144.0);
 
             // Allow game window to be resized, and set the title.
             Window.AllowUserResizing = true;
@@ -102,13 +92,14 @@ namespace Celesteia
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
+            ResourceManager.AddCollection(new BaseCollection(Content));
             ResourceManager.LoadContent(Content);
 
             // Load global GUIs.
             LoadGUI();
 
             // Load the splash screen if it's a release build, load the game directly if it's a debug build.
-            if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this, Worlds.LoadNewWorld().GetAwaiter().GetResult()));
+            if (cmdArgs.Contains("-gameplayDebug")) LoadScreen(new GameplayScreen(this, Worlds.LoadNewWorld((s) => Console.WriteLine(s)).GetAwaiter().GetResult()));
             else if (cmdArgs.Contains("-textDebug")) LoadScreen(new TextTestScreen(this));
             else LoadScreen(new SplashScreen(this));
         }
@@ -122,32 +113,29 @@ namespace Celesteia
             globalGUIs.ForEach((gui) => { gui.LoadContent(Content); });
         }
 
-        public void LoadScreen(GameScreen screen, Transition transition) {
-            _screenManager.LoadScreen(screen, transition);
-        }
+        public void LoadScreen(GameScreen screen, Transition transition = null) {
+            // If a transition is present, load the screen using it.
+            if (transition != null) _screenManager.LoadScreen(screen, transition);
 
-        public void LoadScreen(GameScreen screen) {
-            _screenManager.LoadScreen(screen);
+            // If there was no transition specified, load the screen without it.
+            else _screenManager.LoadScreen(screen);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            // Update the input.
-            Input.Update();
-
             // Update each global GUI.
             globalGUIs.ForEach((gui) => { gui.Update(gameTime, out _); });
 
             // If Scroll Lock is pressed, toggle GUIs.
-            if (KeyboardWrapper.GetKeyDown(Keys.Scroll)) UIReferences.GUIEnabled = !UIReferences.GUIEnabled;
+            if (KeyboardHelper.Pressed(Keys.Scroll)) UIReferences.GUIEnabled = !UIReferences.GUIEnabled;
 
             // If F3 is pressed, toggle Debug Mode.
-            if (KeyboardWrapper.GetKeyDown(Keys.F3)) DebugMode = !DebugMode;
+            if (KeyboardHelper.Pressed(Keys.F3)) DebugMode = !DebugMode;
 
             // If F11 is pressed, toggle Fullscreen.
-            if (KeyboardWrapper.GetKeyDown(Keys.F11)) {
-                GraphicsController.ToggleFullScreen();
-                GraphicsController.Apply();
+            if (KeyboardHelper.Pressed(Keys.F11)) {
+                _graphics.ToggleFullScreen();
+                _graphics.Apply();
             }
 
             base.Update(gameTime);

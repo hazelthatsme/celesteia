@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using Celesteia.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,35 +13,30 @@ namespace Celesteia.Graphics {
         private int ViewportWidth => _graphicsDevice.Viewport.Width;
         private int ViewportHeight => _graphicsDevice.Viewport.Height;
 
-        public Camera2D(GraphicsDevice graphicsDevice) {
-            _graphicsDevice = graphicsDevice;
-        }
-
-        private Vector2 _center = Vector2.Zero;
-        // The camera's center, exposed to other classes.
-        public Vector2 Center {
-            get { return _center; }
-        }
-
-        private int _zoom = 3;
+        private int _zoom = 0;
+        public int ScaledZoom { get; private set; } = 0;
         // The zoom value of the camera.
         public int Zoom {
             get { return _zoom; }
-            set { _zoom = MathHelper.Clamp(value, 3, 8); }
+            set {
+                _zoom = MathHelper.Clamp(value, 2, 8);
+                ScaledZoom = _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
+            }
         }
-        // Macro for zoom scaled to inverse sprite scaling.
-        private float ScaledZoom => _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
+
+        public Camera2D(GraphicsDevice graphicsDevice) {
+            _graphicsDevice = graphicsDevice;
+            Zoom = 2;
+        }
+
+        // The camera's center.
+        public Vector2 Center = Vector2.Zero;
 
         private float _rotation;
         // The rotation applied to the camera.
         public float Rotation {
             get { return _rotation; }
             set { _rotation = value % 360f; }
-        }
-
-        // Move center to a position in the world.
-        public void MoveTo(Vector2 vector2) {
-            _center = vector2;
         }
 
         /*
@@ -53,18 +47,10 @@ namespace Celesteia.Graphics {
                 - Always round the viewport width and height to prevent half-pixel rounding issues.
         */
         public Matrix GetViewMatrix() {
-            return Matrix.CreateTranslation(new Vector3(-_center.X, -_center.Y, 0)) * 
+            return Matrix.CreateTranslation(-Center.X, -Center.Y, 0f) * 
                 Matrix.CreateRotationZ(Rotation) *
                 Matrix.CreateScale(ScaledZoom, ScaledZoom, 1f) * 
-                Matrix.CreateTranslation((int)Math.Round(ViewportWidth / 2f), (int)Math.Round(ViewportHeight / 2f), 0f);
-        }
-
-        // Round drawing positions to the closest scaled zoom, to preserve pixel perfect graphics.
-        public Vector2 GetDrawingPosition(Vector2 position) {
-            return new Vector2(
-                (int)Math.Round(position.X * ScaledZoom) / ScaledZoom,
-                (int)Math.Round(position.Y * ScaledZoom) / ScaledZoom
-            );
+                Matrix.CreateTranslation(ViewportWidth / 2f, ViewportHeight / 2f, 0f);
         }
 
         // Forward to ScreenToWorld(Vector2)

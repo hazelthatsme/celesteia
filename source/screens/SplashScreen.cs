@@ -49,7 +49,7 @@ namespace Celesteia.Screens {
         private Color color = Color.White;
 
         public override void Update(GameTime gameTime) {
-            if (progress >= 1f || Input.GetAny()) {
+            if (progress >= 1f || Game.Input.GetAny()) {
                 Game.LoadScreen(new MainMenuScreen(Game), new MonoGame.Extended.Screens.Transitions.FadeTransition(GraphicsDevice, Color.Black));
                 return;
             }

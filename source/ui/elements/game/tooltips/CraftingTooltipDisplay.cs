@@ -1,4 +1,5 @@
-using Celesteia.Resources.Collections;
+using Celesteia.Resources.Types;
+using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -38,7 +39,9 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
                 AbsoluteUnit.WithValue(0f),
                 AbsoluteUnit.WithValue(32f),
                 AbsoluteUnit.WithValue(32f)
-            )));
+            )) {
+                Text = new TextProperties().Standard().SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+            });
             titleCard.AddChild(Title = new Label(new Rect(
                 AbsoluteUnit.WithValue(72f),
                 AbsoluteUnit.WithValue(0f),
@@ -60,9 +63,9 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
             SetEnabled(false);
         }
 
-        public void SetRecipe(CraftingRecipe recipe) {
-            Item.SetItem(recipe.Result.Type);
-            Title.SetText(recipe.Result.Type.Name);
+        public void SetRecipe(Recipe recipe) {
+            Item.Item = recipe.Result.GetItemType();
+            Title.SetText(recipe.Result.GetItemType().Name);
 
             if (Recipe != null) Recipe.Dispose();
             Recipe = new Container(new Rect(
@@ -79,7 +82,14 @@ namespace Celesteia.UI.Elements.Game.Tooltips {
                     AbsoluteUnit.WithValue(0f),
                     AbsoluteUnit.WithValue(32f),
                     AbsoluteUnit.WithValue(32f)
-                )).SetItem(recipe.Ingredients[i].Type).SetAmount(recipe.Ingredients[i].Amount));
+                )) {
+                    Item = recipe.Ingredients[i].GetItemType(),
+                    Amount = recipe.Ingredients[i].Amount,
+                    Text = new TextProperties().Standard()
+                        .SetTextAlignment(TextAlignment.Bottom | TextAlignment.Right)
+                        .SetFontSize(12f)
+                        .SetText(recipe.Ingredients[i].Amount.ToString())
+                });
             
             Content.AddChild(Recipe);
         }

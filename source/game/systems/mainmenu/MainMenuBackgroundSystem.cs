@@ -1,4 +1,4 @@
-using Celesteia.Game.Skybox;
+using Celesteia.Game.Components.Skybox;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;

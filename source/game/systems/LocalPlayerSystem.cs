@@ -1,25 +1,31 @@
+using System;
+using System.Collections.Generic;
 using Celesteia.Game.Components;
 using Celesteia.Game.Components.Items;
 using Celesteia.Game.Components.Physics;
 using Celesteia.Game.Components.Player;
 using Celesteia.Game.Input;
-using Celesteia.Game.Worlds;
+using Celesteia.Game.Items;
+using Celesteia.Game.Planets;
 using Celesteia.Graphics;
 using Celesteia.GUIs.Game;
+using Celesteia.Resources;
 using Celesteia.Resources.Sprites;
+using Celesteia.Resources.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Input;
 
 namespace Celesteia.Game.Systems {
-    public class LocalPlayerSystem : UpdateSystem
-    {
+    public class LocalPlayerSystem : UpdateSystem, IDrawSystem
+    {   
+        private GameInstance _game;
         private GameGUI _gameGui;
         private Camera2D _camera;
-        private GameWorld _world;
+        private ChunkMap _chunkMap;
 
         private Entity _player;
         public Entity Player {
@@ -33,9 +39,7 @@ namespace Celesteia.Game.Systems {
                 frames = _player.Get<EntityFrames>();
                 attributes = _player.Get<EntityAttributes>();
                 input = _player.Get<PlayerInput>();
-                inventory = _player.Get<EntityInventory>();
-
-                UpdateControls();
+                inventory = _player.Get<Inventory>();
             }
         }
         private LocalPlayer localPlayer;
@@ -44,15 +48,23 @@ namespace Celesteia.Game.Systems {
         private EntityFrames frames;
         private EntityAttributes attributes;
         private TargetPosition targetPosition;
-        private EntityInventory inventory;
+        private Inventory inventory;
+        
+        private SpriteBatch _spriteBatch;
 
-        public LocalPlayerSystem(GameGUI gameGui, Camera2D camera, GameWorld world) {
-            _gameGui = gameGui;
+        private BlockFrame _selectionSprite;
+
+        public LocalPlayerSystem(GameInstance game, ChunkMap chunkMap, Camera2D camera, SpriteBatch spriteBatch, GameGUI gameGui) {
+            _game = game;
+            _chunkMap = chunkMap;
             _camera = camera;
-            _world = world;
+            _gameGui = gameGui;
+            _spriteBatch = spriteBatch;
+
+            _selectionSprite = ResourceManager.Blocks.Selection.GetFrame(0);
         }
 
-        private bool IsGameActive => !_gameGui.Paused && (int)_gameGui.State < 1;
+        private bool IsGameActive => !_gameGui.Paused && (int)_gameGui.State < 1 && _game.IsActive;
 
         public override void Update(GameTime gameTime)
         {
@@ -64,26 +76,35 @@ namespace Celesteia.Game.Systems {
             if (IsGameActive) {
                 UpdateSelectedItem();
                 
+                UpdateMouse(gameTime, input);
                 UpdateMovement(gameTime, input, physicsEntity, frames, attributes.Attributes, targetPosition);
                 UpdateJump(gameTime, localPlayer, input, physicsEntity, attributes.Attributes);
-            }
-            
-            UpdateMouse(gameTime, clicked);
+
+                if (!clicked) UpdateClick(gameTime, input);
+            } else SelectionColor = Color.Transparent;
         }
 
+        private static Dictionary<int, int> hotbarMappings = new Dictionary<int, int>() {
+            { (int)Keys.D1, 0 },
+            { (int)Keys.D2, 1 },
+            { (int)Keys.D3, 2 },
+            { (int)Keys.D4, 3 },
+            { (int)Keys.D5, 4 },
+            { (int)Keys.D6, 5 },
+            { (int)Keys.D7, 6 },
+            { (int)Keys.D8, 7 },
+            { (int)Keys.D9, 8 }
+        };
+
         private void UpdateSelectedItem() {
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D1)) _gameGui.HotbarSelection = 0;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D2)) _gameGui.HotbarSelection = 1;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D3)) _gameGui.HotbarSelection = 2;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D4)) _gameGui.HotbarSelection = 3;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D5)) _gameGui.HotbarSelection = 4;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D6)) _gameGui.HotbarSelection = 5;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D7)) _gameGui.HotbarSelection = 6;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D8)) _gameGui.HotbarSelection = 7;
-            if (KeyboardWrapper.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.D9)) _gameGui.HotbarSelection = 8;
+            foreach (int keys in hotbarMappings.Keys) {
+                if (KeyboardHelper.Pressed((Keys) keys)) {
+                    _gameGui.HotbarSelection = hotbarMappings[keys];
+                }
+            }
             
-            if (!KeyboardWrapper.GetKeyHeld(Microsoft.Xna.Framework.Input.Keys.LeftControl) && MouseWrapper.GetScrollDelta() != 0f) {
-                int change = MouseWrapper.GetScrollDelta() > 0f ? -1 : 1;
+            if (!KeyboardHelper.IsDown(Keys.LeftControl) && MouseHelper.ScrollDelta != 0f) {
+                int change = (int) -Math.Clamp(MouseHelper.ScrollDelta, -1f, 1f);
                 int selection = _gameGui.HotbarSelection;
 
                 selection += change;
@@ -99,9 +120,9 @@ namespace Celesteia.Game.Systems {
         bool _craftingPress;
         bool _pausePress;
         private void UpdateGUI(GameTime gameTime, PlayerInput input, out bool clicked) {
-            _inventoryPress = input.TestInventory() > 0f;
-            _craftingPress = input.TestCrafting() > 0f;
-            _pausePress = input.TestPause() > 0f;
+            _inventoryPress = input.Inventory.Poll();
+            _craftingPress = input.Crafting.Poll();
+            _pausePress = input.Pause.Poll();
 
             if (_inventoryPress || _craftingPress || _pausePress) {
                 switch (_gameGui.State) {
@@ -125,74 +146,101 @@ namespace Celesteia.Game.Systems {
         }
 
         float h;
+        private bool _moving;
+        private double _startedMoving;
         private void UpdateMovement(GameTime gameTime, PlayerInput input, PhysicsEntity physicsEntity, EntityFrames frames, EntityAttributes.EntityAttributeMap attributes, TargetPosition targetPosition) {
-            h = input.TestHorizontal();
-            Vector2 movement = new Vector2(h, 0f);
+            h = input.Horizontal.Poll();
 
-            if (movement.X != 0f) {
-                frames.Effects = movement.X < 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            if (h != 0f) {
+                // Player has started moving, animate.
+                if (!_moving) _startedMoving = gameTime.TotalGameTime.TotalSeconds;
+
+                // Flip sprite according to horizontal movement float.
+                frames.Effects = h < 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             }
+
+            _moving = h != 0f;
+
+            // If the player is moving, change the frame every .25 seconds, else return the standing frame.
+            frames.Frame = _moving ? (int)((gameTime.TotalGameTime.TotalSeconds - _startedMoving) / 0.25) : 0;
 
             if (h == 0f) return;
 
-            movement *= 1f + (input.TestRun() * 1.5f);
-            movement *= attributes.Get(EntityAttribute.MovementSpeed);
-            movement *= gameTime.GetElapsedSeconds();
+            h *= 1f + (input.Run.Poll() ? 1.5f : 0);
+            h *= attributes.Get(EntityAttribute.MovementSpeed);
+            h *= gameTime.GetElapsedSeconds();
 
-            targetPosition.Target += movement;
+            targetPosition.Target.X += h;
         }
 
         private void UpdateJump(GameTime gameTime, LocalPlayer localPlayer, PlayerInput input, PhysicsEntity physicsEntity, EntityAttributes.EntityAttributeMap attributes)
         {
             if (localPlayer.JumpRemaining > 0f) {
-                if (input.TestJump() > 0f) {
+                if (input.Jump.Poll()) {
                     physicsEntity.SetVelocity(physicsEntity.Velocity.X, -attributes.Get(EntityAttribute.JumpForce));
                     localPlayer.JumpRemaining -= gameTime.GetElapsedSeconds();
                 }
-            } else if (physicsEntity.CollidingDown) localPlayer.ResetJump(attributes.Get(EntityAttribute.JumpFuel));
+            } else if (physicsEntity.CollidingDown) localPlayer.JumpRemaining = attributes.Get(EntityAttribute.JumpFuel);
         }
 
-        Vector2 point = Vector2.Zero;
-        private void UpdateMouse(GameTime gameTime, bool clicked) {
-            point = _camera.ScreenToWorld(MouseWrapper.GetPosition());
+        private Point? Selection;
+        private BlockState SelectedBlock;
+        private Color SelectionColor;
+        public void SetSelection(Point? selection) {
+            if (selection == Selection) return;
             
-            if (IsGameActive) _world.SetSelection(point);
-            else _world.SetSelection(null);
+            Selection = selection;
+            if (!selection.HasValue) {
+                SelectionColor = Color.Transparent;
+                return;
+            }
 
-            if (!clicked && IsGameActive) UpdateClick(gameTime);
+            SelectedBlock = _chunkMap.GetForeground(Selection.Value);
+            if (!SelectedBlock.Draw) SelectedBlock = _chunkMap.GetBackground(Selection.Value);
+
+            SelectionColor = (SelectedBlock.Type.Strength >= 0 ? Color.White : Color.Black);
+        }
+
+        Vector2 pointV = Vector2.Zero;
+        Point point = Point.Zero;
+        private void UpdateMouse(GameTime gameTime, PlayerInput input) {
+            pointV = _camera.ScreenToWorld(MouseHelper.Position);
+            pointV.Floor();
+            point = pointV.ToPoint();
+            
+            SetSelection(point);
         }
 
 
-        bool mouseClick = false;
+        bool success = false;
         ItemStack stack = null;
-        private void UpdateClick(GameTime gameTime) {
-            mouseClick = MouseWrapper.GetMouseHeld(MouseButton.Left) || MouseWrapper.GetMouseHeld(MouseButton.Right);
-
-            if (!mouseClick) return;
+        IItemActions actions = null;
+        private void UpdateClick(GameTime gameTime, PlayerInput input) {
+            if (!input.PrimaryUse.Poll() && !input.SecondaryUse.Poll()) return;
+            if (_gameGui.GetSelectedItem() == null) return;
 
             stack = _gameGui.GetSelectedItem();
+            if(stack.Type == null || stack.Type.Actions == null) return;
 
-            if (stack == null || stack.Type == null || stack.Type.Actions == null) return;
+            actions = stack.Type.Actions;
 
-            if (mouseClick) {
-                bool success = false;
-                        
-                if (MouseWrapper.GetMouseHeld(MouseButton.Left)) success = stack.Type.Actions.OnLeftClick(gameTime, _world, point, _player);
-                else if (MouseWrapper.GetMouseHeld(MouseButton.Right)) success = stack.Type.Actions.OnRightClick(gameTime, _world, point, _player);
+            if (input.PrimaryUse.Poll()) success = actions.Primary(gameTime, _chunkMap, point, _player);
+            if (input.SecondaryUse.Poll()) success = stack.Type.Actions.Secondary(gameTime, _chunkMap, point, _player);
 
-                if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
+            if (success && stack.Type.ConsumeOnUse) stack.Amount -= 1;
 
-                inventory.Inventory.AssertAmounts();
-            }
+            inventory.AssertAmounts();
         }
 
-        private void UpdateControls() {
-            _gameGui.Controls.SetKeyboardControls(
-                input.Run.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
-                input.Jump.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
-                input.Inventory.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition,
-                input.Crafting.Find(x => x.GetInputType() == InputType.Keyboard && (x as KeyDefinition).GetPositive().HasValue) as KeyDefinition
-            );
+        public void Draw(GameTime gameTime)
+        {
+            if (!UIReferences.GUIEnabled) return;
+            
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, _camera.GetViewMatrix());
+
+            _selectionSprite.Draw(0, _spriteBatch, pointV, SelectionColor);
+
+            _spriteBatch.End();
         }
     }
 }

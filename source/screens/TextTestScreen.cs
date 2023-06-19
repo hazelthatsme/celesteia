@@ -44,7 +44,7 @@ namespace Celesteia.Screens {
         }
 
         public override void Update(GameTime gameTime) {
-            _fontSize += MouseWrapper.GetScrollDelta();
+            _fontSize += MouseHelper.ScrollDelta;
             _fontSize = Math.Clamp(_fontSize, 1f, 100f);
 
             topLeft.SetTextProperties(properties.Clone().SetTextAlignment(TextAlignment.Top | TextAlignment.Left).SetFontSize(_fontSize));
