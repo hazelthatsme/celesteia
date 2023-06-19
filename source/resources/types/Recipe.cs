@@ -16,13 +16,15 @@ namespace Celesteia.Resources.Types {
             Ingredients = new List<Part>(ingredients);
         }
 
-        public void TryCraft(Inventory inventory) {
-            bool canCraft = true;
-
+        public bool Craftable(Inventory inventory) {
             foreach (Part ingredient in Ingredients)
-                if (!inventory.ContainsAmount(ingredient.Key, ingredient.Amount)) canCraft = false;
+                if (!inventory.ContainsAmount(ingredient.Key, ingredient.Amount)) return false;
 
-            if (!canCraft) return;
+            return true;
+        }
+
+        public void Craft(Inventory inventory) {
+            if (!Craftable(inventory)) return;
 
             foreach (Part ingredient in Ingredients)
                 inventory.RemoveAmount(ingredient.Key, ingredient.Amount);

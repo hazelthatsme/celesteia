@@ -1,4 +1,5 @@
 using System;
+using Celesteia.Game.Components.Items;
 using Celesteia.Resources.Types;
 using Celesteia.UI.Properties;
 using Microsoft.Xna.Framework;
@@ -10,6 +11,8 @@ namespace Celesteia.UI.Elements.Game {
     public class CraftingRecipeSlot : Clickable {
         public const float SLOT_SIZE = 64f;
         public const float SLOT_SPACING = 16f;
+
+        public Inventory referenceInv;
 
         public CraftingRecipeSlot(Rect rect) {
             SetRect(rect);
@@ -118,6 +121,14 @@ namespace Celesteia.UI.Elements.Game {
                 newHeight
             );
         }
+        
+        Color color;
+        public override void Update(GameTime gameTime, out bool clickedAnything) {
+            base.Update(gameTime, out clickedAnything);
+
+            if (!this.GetEnabled()) return;
+            color = _recipe.Craftable(referenceInv) ? Color.White : Color.Gray;
+        }
 
         Rectangle rectangle;
         Rectangle itemRectangle;
@@ -131,10 +142,10 @@ namespace Celesteia.UI.Elements.Game {
             textRectangle = GetScaledTriangle(rectangle, .4f);
 
             // Draw the slot's texture.
-            if (_patches != null) ImageUtilities.DrawPatched(spriteBatch, rectangle, _patches, _patchSize, Color.White);
-            else spriteBatch.Draw(GetTexture(spriteBatch), rectangle, null, Color.White);
+            if (_patches != null) ImageUtilities.DrawPatched(spriteBatch, rectangle, _patches, _patchSize, color);
+            else spriteBatch.Draw(GetTexture(spriteBatch), rectangle, null, color);
 
-            spriteBatch.Draw(_recipe.Result.GetItemType().Sprite, itemRectangle, Color.White);
+            spriteBatch.Draw(_recipe.Result.GetItemType().Sprite, itemRectangle, color);
             TextUtilities.DrawAlignedText(spriteBatch, textRectangle, _text.GetFont(), _recipe.Result.Amount + "", _text.GetColor(), _text.GetAlignment(), _text.GetFontSize());
         }
 

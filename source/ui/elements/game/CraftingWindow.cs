@@ -46,9 +46,10 @@ namespace Celesteia.UI.Elements.Game {
                         .SetRecipe(recipe)
                         .SetOnMouseUp((button, point) => {
                             if (button == MonoGame.Extended.Input.MouseButton.Left) {
-                                recipe.TryCraft(_referenceInventory);
+                                recipe.Craft(_referenceInventory);
                             }
                         });
+                    slot.referenceInv = _referenceInventory;
                     slot.SetPivot(new Vector2(0f, 0f));
 
                     index++;
