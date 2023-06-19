@@ -18,13 +18,15 @@ namespace Celesteia.Game.Input {
         public static List<Keys> exemptedFromAny = new List<Keys> {
             { Keys.F3 }, { Keys.F11 }
         };
-        public static bool AnyKey() {
-            bool anyKey = _curr.GetPressedKeys().Length > 0;
 
-            for (int i = 0; i < exemptedFromAny.Count; i++) {
-                anyKey = !_curr.GetPressedKeys().Contains(exemptedFromAny[i]);
-                if (!anyKey) break;
-            }
+        private static Keys[] pressed;
+        public static bool AnyKey() {
+            pressed = _curr.GetPressedKeys();
+            bool anyKey = pressed.Length > 0;
+            
+            if (anyKey)
+                for (int i = 0; i < exemptedFromAny.Count; i++)
+                    anyKey = !pressed.Contains(exemptedFromAny[i]);
 
             return anyKey;
         }

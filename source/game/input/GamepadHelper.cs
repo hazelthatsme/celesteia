@@ -13,7 +13,12 @@ namespace Celesteia.Game.Input {
             _curr = GamePad.GetState(0);
         }
 
-        public static bool AnyButton() => !IsDown(Buttons.None);
+        public static bool AnyButton() {
+            foreach (Buttons b in Enum.GetValues<Buttons>())
+                if (IsDown(b)) return true;
+
+            return false;
+        }
 
         // Was true, now true.
         public static bool Held(Buttons buttons) => _prev.IsButtonDown(buttons) && _curr.IsButtonDown(buttons);
