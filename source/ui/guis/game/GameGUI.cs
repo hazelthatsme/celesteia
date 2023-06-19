@@ -63,6 +63,13 @@ namespace Celesteia.GUIs.Game {
                 _state = value;
                 _inventoryScreen.SetEnabled((int)_state > 0);
                 _craftingScreen.SetEnabled((int)_state > 1);
+
+                if ((int)_state < 1 && CursorItem != null) {
+                    ItemStack item = CursorItem;
+                    CursorItem = null;
+
+                    _inventory.AddItem(item);
+                }
             }
         }
 
