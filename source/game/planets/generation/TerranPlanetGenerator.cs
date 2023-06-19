@@ -139,7 +139,7 @@ namespace Celesteia.Game.Planets.Generation {
 
         private int defaultOffset => _chunkMap.BlockHeight / 3;
         public int GetHeightValue(int x) => (int)Math.Round((_noise.GetNoise(x / 1f, 0f) * 24f) + defaultOffset);
-        public float GetCaveValue(int x, int y) => _noise.GetNoise(x / 0.6f, y / 0.4f);
+        public float GetCaveValue(int x, int y) => _noise.GetNoise(x / 0.6f, y / 0.7f);
         public float GetOreValue(int x, int y, float offsetX, float offsetY) => (_noise.GetNoise((x + offsetX) * 5f, (y + offsetY) * 5f) + 1) / 2f;
 
         private int blocksBetweenTrees = 5;
