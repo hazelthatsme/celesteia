@@ -13,7 +13,7 @@ namespace Celesteia.Game.Systems {
     {
         private Camera2D _camera;
         private InputManager _input;
-        private float smoothing = 2f;
+        private float smoothing = 64f;
 
         private ComponentMapper<Transform2> transformMapper;
 
@@ -31,9 +31,9 @@ namespace Celesteia.Game.Systems {
         public override void Update(GameTime gameTime)
         {
             foreach (int entityId in ActiveEntities) {
-                pos = transformMapper.Get(entityId).Position * _camera.ScaledZoom * smoothing;
-                pos.X = MathF.Round(pos.X) / (_camera.ScaledZoom * smoothing);
-                pos.Y = MathF.Round(pos.Y) / (_camera.ScaledZoom * smoothing);
+                pos = transformMapper.Get(entityId).Position * smoothing;
+                pos.X = MathF.Round(pos.X) / smoothing;
+                pos.Y = MathF.Round(pos.Y) / smoothing;
                 _camera.Center = pos;
                 break;
             }
