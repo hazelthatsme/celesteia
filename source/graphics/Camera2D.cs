@@ -46,10 +46,13 @@ namespace Celesteia.Graphics {
                 - Scale according to zoom value and inverse sprite scaling.
                 - Always round the viewport width and height to prevent half-pixel rounding issues.
         */
+        private float maxScale = 0f;
         public Matrix GetViewMatrix() {
+            maxScale = MathF.Max(MathF.Ceiling(ViewportWidth / 1920f), MathF.Ceiling(ViewportHeight / 1080f));
             return Matrix.CreateTranslation(-Center.X, -Center.Y, 0f) * 
                 Matrix.CreateRotationZ(Rotation) *
                 Matrix.CreateScale(ScaledZoom, ScaledZoom, 1f) * 
+                Matrix.CreateScale(maxScale, maxScale, 1f) *
                 Matrix.CreateTranslation(ViewportWidth / 2f, ViewportHeight / 2f, 0f);
         }
 
