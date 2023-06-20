@@ -56,14 +56,8 @@ namespace Celesteia.Graphics {
                 Matrix.CreateTranslation(ViewportWidth / 2f, ViewportHeight / 2f, 0f);
         }
 
-        // Forward to ScreenToWorld(Vector2)
-        public Vector2 ScreenToWorld(Point point) {
-            return ScreenToWorld(new Vector2(point.X, point.Y));
-        }
-        
         // Transform the viewport relative mouse position to the inverse view matrix to get the pointer's position in the world.
-        public Vector2 ScreenToWorld(Vector2 screenPosition) {
-            return Vector2.Transform(screenPosition - new Vector2(ViewportX, ViewportY), Matrix.Invert(GetViewMatrix()));
-        }
+        public Vector2 ScreenToWorld(Point point)
+        => Vector2.Transform(new Vector2(point.X - ViewportX, point.Y - ViewportY), Matrix.Invert(GetViewMatrix()));
     }
 }
