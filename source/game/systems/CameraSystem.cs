@@ -12,28 +12,23 @@ namespace Celesteia.Game.Systems {
     public class CameraSystem : EntityUpdateSystem
     {
         private Camera2D _camera;
-        private InputManager _input;
-        private float smoothing = 2f;
+        private float smoothing = 128f;
 
         private ComponentMapper<Transform2> transformMapper;
 
-        public CameraSystem(Camera2D camera, InputManager input) : base(Aspect.All(typeof(TargetPosition), typeof(CameraFollow))) {
-            _camera = camera;
-            _input = input;
-        }
+        public CameraSystem(Camera2D camera) : base(Aspect.All(typeof(Transform2), typeof(CameraFollow)))
+        => _camera = camera;
 
         public override void Initialize(IComponentMapperService mapperService)
-        {
-            transformMapper = mapperService.GetMapper<Transform2>();
-        }
+        => transformMapper = mapperService.GetMapper<Transform2>();
 
         Vector2 pos;
         public override void Update(GameTime gameTime)
         {
             foreach (int entityId in ActiveEntities) {
-                pos = transformMapper.Get(entityId).Position * _camera.ScaledZoom * smoothing;
-                pos.X = MathF.Round(pos.X) / (_camera.ScaledZoom * smoothing);
-                pos.Y = MathF.Round(pos.Y) / (_camera.ScaledZoom * smoothing);
+                pos = transformMapper.Get(entityId).Position * smoothing;
+                pos.X = MathF.Round(pos.X) / smoothing;
+                pos.Y = MathF.Round(pos.Y) / smoothing;
                 _camera.Center = pos;
                 break;
             }

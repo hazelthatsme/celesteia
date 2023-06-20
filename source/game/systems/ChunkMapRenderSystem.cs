@@ -12,7 +12,7 @@ namespace Celesteia.Game.Systems {
         private readonly SpriteBatch _spriteBatch;
         private ChunkVector _lastChunkPos;
         private ChunkVector _pivotChunkPos => ChunkVector.FromVector2(_camera.Center);
-        public int RenderDistance = 5;
+        public int RenderDistance = 4;
         private ChunkMap _chunkMap;
 
         public ChunkMapRenderSystem(Camera2D camera, SpriteBatch spriteBatch, ChunkMap chunkMap) {
@@ -29,9 +29,9 @@ namespace Celesteia.Game.Systems {
         {
             if (_lastChunkPos != _pivotChunkPos) {
                 activeChunks.Clear();
-                for (int i = -RenderDistance; i < RenderDistance; i++) {
+                for (int i = -RenderDistance; i <= RenderDistance; i++) {
                     _v.X = _pivotChunkPos.X + i;
-                    for (int j = -RenderDistance; j < RenderDistance; j++) {
+                    for (int j = -RenderDistance; j <= RenderDistance; j++) {
                         _v.Y = _pivotChunkPos.Y + j;
 
                         if (!_chunkMap.ChunkIsInMap(_v)) continue;

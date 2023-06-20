@@ -19,7 +19,7 @@ namespace Celesteia
 {
     public class GameInstance : Microsoft.Xna.Framework.Game
     {
-        public static readonly string Version = "Alpha 1.3";
+        public static readonly string Version = "Alpha 1.3.1";
         public static bool DebugMode { get; private set; }
         
         private readonly List<string> cmdArgs;
@@ -77,7 +77,7 @@ namespace Celesteia
             InactiveSleepTime = new TimeSpan(0);
 
             // Set maximum framerate to avoid resource soaking.
-            IsFixedTimeStep = true;
+            //IsFixedTimeStep = true;
             //TargetElapsedTime = TimeSpan.FromSeconds(1 / 144.0);
 
             // Allow game window to be resized, and set the title.

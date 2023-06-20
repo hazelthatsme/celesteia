@@ -19,7 +19,7 @@ namespace Celesteia.Graphics {
         public int Zoom {
             get { return _zoom; }
             set {
-                _zoom = MathHelper.Clamp(value, 2, 8);
+                _zoom = MathHelper.Clamp(value, 1, 8);
                 ScaledZoom = _zoom * ResourceManager.INVERSE_SPRITE_SCALING;
             }
         }
@@ -46,21 +46,18 @@ namespace Celesteia.Graphics {
                 - Scale according to zoom value and inverse sprite scaling.
                 - Always round the viewport width and height to prevent half-pixel rounding issues.
         */
+        private float maxScale = 0f;
         public Matrix GetViewMatrix() {
+            maxScale = MathF.Max(MathF.Ceiling(ViewportWidth / 1920f), MathF.Ceiling(ViewportHeight / 1080f));
             return Matrix.CreateTranslation(-Center.X, -Center.Y, 0f) * 
                 Matrix.CreateRotationZ(Rotation) *
                 Matrix.CreateScale(ScaledZoom, ScaledZoom, 1f) * 
+                Matrix.CreateScale(maxScale, maxScale, 1f) *
                 Matrix.CreateTranslation(ViewportWidth / 2f, ViewportHeight / 2f, 0f);
         }
 
-        // Forward to ScreenToWorld(Vector2)
-        public Vector2 ScreenToWorld(Point point) {
-            return ScreenToWorld(new Vector2(point.X, point.Y));
-        }
-        
         // Transform the viewport relative mouse position to the inverse view matrix to get the pointer's position in the world.
-        public Vector2 ScreenToWorld(Vector2 screenPosition) {
-            return Vector2.Transform(screenPosition - new Vector2(ViewportX, ViewportY), Matrix.Invert(GetViewMatrix()));
-        }
+        public Vector2 ScreenToWorld(Point point)
+        => Vector2.Transform(new Vector2(point.X - ViewportX, point.Y - ViewportY), Matrix.Invert(GetViewMatrix()));
     }
 }
