@@ -1,4 +1,4 @@
-[![Video preview](https://img.youtube.com/vi/BLnrp-1Y1iw/maxresdefault.jpg)](https://www.youtube.com/watch?v=BLnrp-1Y1iw)
+[![celesteia.com](./img/banner.jpg)](https://www.celesteia.com)
 
 # Celesteia
 This repository contains the source code for Celesteia.
